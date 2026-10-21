@@ -6,6 +6,7 @@ import './i18n';
 import './styles.css';
 import { App } from './App';
 import { ApiRequestError } from './lib/api';
+import { ToastProvider } from './components/Toasts';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <App />
+        <ToastProvider>
+          <App />
+        </ToastProvider>
       </BrowserRouter>
     </QueryClientProvider>
   </StrictMode>,

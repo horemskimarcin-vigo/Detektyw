@@ -35,6 +35,17 @@ export default defineConfig({
         navigateFallback: '/index.html',
         navigateFallbackDenylist: [/^\/api\//],
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        runtimeCaching: [
+          {
+            // Grafiki odblokowanych materiałów – do przeglądania offline.
+            urlPattern: ({ url }) => /^\/api\/games\/[^/]+\/assets\//.test(url.pathname),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'case-assets',
+              expiration: { maxEntries: 400, maxAgeSeconds: 60 * 60 * 24 * 30 },
+            },
+          },
+        ],
       },
     }),
   ],

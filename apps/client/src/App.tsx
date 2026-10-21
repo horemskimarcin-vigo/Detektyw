@@ -8,7 +8,8 @@ import { RegisterPage } from './pages/RegisterPage';
 import { ForgotPasswordPage, ResetPasswordPage } from './pages/ResetPasswordPages';
 import { HomePage } from './pages/HomePage';
 import { ProfilePage } from './pages/ProfilePage';
-import { GamePage } from './pages/GamePage';
+import { GameShell } from './pages/game/GameShell';
+import { JoinPage } from './pages/JoinPage';
 
 export function App() {
   const { t } = useTranslation();
@@ -33,6 +34,10 @@ export function App() {
           <Route path="/reset-hasla" element={<ForgotPasswordPage />} />
           <Route path="/reset-hasla/:token" element={<ResetPasswordPage />} />
           <Route
+            path="/dolacz/:code"
+            element={<Navigate to="/logowanie" replace state={{ from: location.pathname }} />}
+          />
+          <Route
             path="*"
             element={<Navigate to="/logowanie" replace state={{ from: location.pathname }} />}
           />
@@ -43,10 +48,11 @@ export function App() {
 
   return (
     <Routes>
+      <Route path="/gra/:id/*" element={<GameShell />} />
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/profil" element={<ProfilePage />} />
-        <Route path="/gra/:id" element={<GamePage />} />
+        <Route path="/dolacz/:code" element={<JoinPage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
     </Routes>

@@ -1,0 +1,37 @@
+# Lokalnie: `docker compose up --build` → http://localhost:3000 (Mailpit: http://localhost:8025)
+# Na VPS: ustaw APP_URL na adres https i postaw przed aplikacją reverse proxy z TLS (np. Caddy).
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://detektyw:${POSTGRES_PASSWORD:-detektyw}@db:5432/detektyw
+      APP_URL: ${APP_URL:-http://localhost:3000}
+      SMTP_URL: ${SMTP_URL:-smtp://mailpit:1025}
+      MAIL_FROM: ${MAIL_FROM:-Detektyw <no-reply@localhost>}
+      TRUST_PROXY: ${TRUST_PROXY:-false}
+    ports:
+      - '3000:3000'
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: detektyw
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-detektyw}
+      POSTGRES_DB: detektyw
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U detektyw']
+      interval: 5s
+      retries: 10
+  mailpit:
+    image: axllent/mailpit:v1.27
+    profiles: ['dev']
+    ports:
+      - '8025:8025'
+volumes:
+  pgdata:

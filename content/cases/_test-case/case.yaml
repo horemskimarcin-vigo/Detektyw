@@ -1,0 +1,7 @@
+id: _test-case
+version: '0.1.0'
+internal: true
+title: 'Sprawa testowa: zaginiony klucz'
+teaser: 'Krótka sprawa do testów silnika i scenariuszy e2e.'
+estimatedHours: '10 min'
+contentWarning: 'Brak treści drastycznych.'

@@ -1,0 +1,84 @@
+{
+  "app": {
+    "name": "Detektyw",
+    "tagline": "Teczka leży na biurku. Reszta zależy od Ciebie.",
+    "adultWarning": "Gra porusza tematykę zbrodni, śmierci i przemocy. Przeznaczona dla osób pełnoletnich. Opisy są rzeczowe, bez drastycznych szczegółów.",
+    "offline": "Jesteś offline. Możesz przeglądać pobrane materiały; akcje śledcze wymagają połączenia.",
+    "updateReady": "Dostępna jest nowa wersja gry.",
+    "update": "Odśwież",
+    "loading": "Wczytywanie…",
+    "back": "Wróć"
+  },
+  "auth": {
+    "login": "Zaloguj się",
+    "register": "Załóż konto",
+    "logout": "Wyloguj",
+    "email": "E-mail",
+    "password": "Hasło",
+    "newPassword": "Nowe hasło",
+    "currentPassword": "Obecne hasło",
+    "displayName": "Nazwa detektywa",
+    "displayNameHint": "Widoczna dla partnera w trybie kooperacji.",
+    "passwordHint": "Co najmniej 10 znaków. Najlepiej kilka słów.",
+    "acceptAdult": "Mam ukończone 18 lat i rozumiem, że gra dotyczy zbrodni.",
+    "noAccount": "Nie masz konta?",
+    "haveAccount": "Masz już konto?",
+    "forgot": "Nie pamiętasz hasła?",
+    "resetTitle": "Reset hasła",
+    "resetIntro": "Podaj adres e-mail konta. Wyślemy link do ustawienia nowego hasła.",
+    "resetSend": "Wyślij link",
+    "resetSent": "Jeśli konto o tym adresie istnieje, wiadomość z linkiem jest już w drodze. Link jest ważny godzinę.",
+    "resetSet": "Ustaw nowe hasło",
+    "resetDone": "Hasło zmienione. Zaloguj się nowym hasłem.",
+    "privacy": "Przechowujemy tylko e-mail, nazwę, skrót hasła i postęp gry. Konto możesz w każdej chwili usunąć w profilu."
+  },
+  "home": {
+    "myCases": "Moje sprawy",
+    "noCases": "Nie prowadzisz jeszcze żadnej sprawy.",
+    "newCase": "Nowa sprawa",
+    "continue": "Wznów",
+    "solo": "Solo",
+    "coop": "Kooperacja (2 graczy)",
+    "noHints": "Tryb wyzwania: bez podpowiedzi",
+    "start": "Rozpocznij śledztwo",
+    "status": {
+      "active": "w toku",
+      "finished": "zakończona",
+      "abandoned": "porzucona"
+    },
+    "updated": "ostatnia zmiana {{date}}",
+    "estimated": "Szacowany czas: {{time}}",
+    "abandon": "Porzuć sprawę",
+    "abandonConfirm": "Porzucić tę sprawę? Zapisu nie da się później wznowić."
+  },
+  "profile": {
+    "title": "Profil i ustawienia",
+    "save": "Zapisz",
+    "saved": "Zapisano.",
+    "appearance": "Wygląd",
+    "theme": "Motyw",
+    "themeDark": "Ciemny",
+    "themeLight": "Jasny",
+    "themeSystem": "Systemowy",
+    "fontScale": "Rozmiar tekstu",
+    "reduceMotion": "Ogranicz animacje",
+    "assistant": "Asystent",
+    "assistantProactive": "Asystent może zaproponować pomoc, gdy utknę",
+    "noHintsChallenge": "Domyślnie zaczynaj sprawy w trybie bez podpowiedzi",
+    "security": "Bezpieczeństwo",
+    "changePassword": "Zmień hasło",
+    "passwordChanged": "Hasło zmienione. Inne urządzenia zostały wylogowane.",
+    "data": "Twoje dane",
+    "export": "Pobierz moje dane (JSON)",
+    "deleteAccount": "Usuń konto",
+    "deleteWarning": "Usunięcie konta jest nieodwracalne. Sprawy solo zostaną skasowane, a z gier w kooperacji zostaniesz wypisany.",
+    "deleteConfirm": "Usuń konto na zawsze"
+  },
+  "game": {
+    "underConstruction": "Silnik śledztwa powstaje w kolejnym etapie prac. Twoja sprawa jest zapisana i będzie można ją tu wznowić."
+  },
+  "nav": {
+    "home": "Sprawy",
+    "profile": "Profil"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "detektyw",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "npm run dev -w @detektyw/server & npm run dev -w @detektyw/client",
+    "build": "npm run build -w @detektyw/client && npm run build -w @detektyw/server",
+    "start": "npm run start -w @detektyw/server",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "db:generate": "npm run db:generate -w @detektyw/server",
+    "db:migrate": "npm run db:migrate -w @detektyw/server",
+    "seed": "npm run seed -w @detektyw/server",
+    "e2e": "playwright test",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3"
+  }
+}

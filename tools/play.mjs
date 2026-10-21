@@ -5,6 +5,8 @@ import { existsSync } from 'node:fs';
 import path from 'node:path';
 
 const root = path.resolve(import.meta.dirname, '..');
+// Ustawienia z pliku .env (np. ANTHROPIC_API_KEY), jeśli istnieje.
+if (existsSync(path.join(root, '.env'))) process.loadEnvFile(path.join(root, '.env'));
 const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 const port = process.env.PORT ?? '3000';
 

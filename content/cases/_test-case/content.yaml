@@ -1,0 +1,420 @@
+people:
+  - id: t_owner
+    name: Irena Wolska
+    role: victim
+    title: właścicielka galerii
+    age: 58
+    bio: Prowadzi galerię od dwudziestu lat. Zgłosiła kradzież.
+    facts:
+      - text: Klucz był ubezpieczony na wysoką kwotę.
+        when: { read: t_m_report }
+  - id: t_guard
+    name: Marek Zięba
+    role: suspect
+    title: nocny stróż
+    age: 44
+    bio: Pracuje w galerii od roku. Ma klucze do sal.
+    relations:
+      - person: t_owner
+        label: pracodawczyni
+    interview:
+      opening: 'Stróż siada naprzeciwko, splata ręce. – Ja tylko robiłem obchód.'
+      breakText: '– Dość tego. Bez adwokata nic więcej nie powiem.'
+      lockOnBreak: true
+      lockedText: Stróż rozmawia już tylko przez adwokata.
+      confrontDefault: '– Nie wiem, co to ma ze mną wspólnego.'
+      questions:
+        - id: t_q_guard_round
+          text: O której robił pan ostatni obchód?
+          responses:
+            - text: '– O pierwszej. Wszystko było w porządku.'
+              effects: { set: [guard_claims_one] }
+        - id: t_q_guard_phone
+          text: Z kim pan rozmawiał tej nocy przez telefon?
+          requires: { has: t_m_phones }
+          responses:
+            - when: { tone: press }
+              text: '– Z siostrzeńcem, no dobrze! Prosił, żebym na chwilę wyszedł.'
+              effects: { set: [guard_admits_call] }
+            - text: '– Z nikim ważnym.'
+      confrontations:
+        - evidence: t_h_ash
+          responses:
+            - text: '– Palę na zewnątrz, nie w sali. To nie mój popiół.'
+  - id: t_nephew
+    name: Kamil Zięba
+    role: suspect
+    title: siostrzeniec stróża
+    age: 23
+    bio: Student, czasem pomaga wujowi w galerii.
+    knownWhen: { any: [{ flag: guard_admits_call }, { has: t_m_phones }] }
+    interview:
+      opening: 'Chłopak wierci się na krześle.'
+      breakText: '– Ja wychodzę.'
+      confrontDefault: '– Co pan mi tu pokazuje?'
+      questions:
+        - id: t_q_nephew_night
+          text: Gdzie był pan w nocy?
+          responses:
+            - text: '– W akademiku. Spałem.'
+      confrontations:
+        - evidence: t_m_cctv
+          responses:
+            - text: '– To… nie musi być mój rower.'
+              effects: { set: [nephew_shaken] }
+  - id: t_curator
+    name: Ewa Sowa
+    role: suspect
+    title: kuratorka
+    age: 36
+    bio: Odpowiada za ekspozycję. Ostatnio pokłóciła się z właścicielką.
+    interview:
+      opening: 'Kuratorka patrzy na zegarek.'
+      breakText: '– Skończyliśmy.'
+      confrontDefault: '– Nie widzę związku.'
+      questions:
+        - id: t_q_curator_fight
+          text: O co poszła kłótnia z właścicielką?
+          responses:
+            - text: '– O pensję. To nie tajemnica.'
+  - id: t_baker
+    name: Jan Piekarz
+    role: witness
+    title: piekarz z naprzeciwka
+    bio: Zaczyna pracę o trzeciej w nocy.
+    interview:
+      opening: 'Piekarz otrzepuje mąkę z fartucha.'
+      breakText: '– Muszę wracać do pieca.'
+      confrontDefault: '– Nie znam się na tym.'
+      questions:
+        - id: t_q_baker_saw
+          text: Widział pan kogoś przy galerii?
+          responses:
+            - when: { trust: { gte: 40 } }
+              text: '– Chłopaka na rowerze, koło wpół do drugiej. Wszedł bocznymi drzwiami.'
+              effects: { set: [baker_saw_bike] }
+            - text: '– Nie pamiętam.'
+
+materials:
+  - id: t_m_report
+    type: report
+    title: Notatka służbowa z miejsca zdarzenia
+    date: '03.03.2025'
+    source: Komenda Miejska
+    start: true
+    body:
+      kind: document
+      format: report
+      header:
+        - { label: Sygnatura, value: 'RSD-123/25' }
+      text: |
+        Gablota otwarta **kluczem**, bez śladów włamania.
+        Boczne drzwi zamknięte, alarm wyłączony między 1:20 a 1:50.
+  - id: t_m_testimony_guard
+    type: testimony
+    title: Zeznanie stróża
+    start: true
+    body:
+      kind: document
+      format: testimony
+      text: Stróż twierdzi, że ostatni obchód zrobił o 1:00 i nikogo nie widział.
+  - id: t_m_photo
+    type: photo
+    title: Zdjęcie sali z gablotą
+    start: true
+    body:
+      kind: photo
+      image: t_photo.svg
+      caption: Sala główna, widok od wejścia.
+      width: 1600
+      height: 1000
+      hotspots:
+        - id: t_h_ash
+          x: 0.72
+          y: 0.78
+          r: 0.05
+          label: Popiół na podłodze
+          description: Świeży popiół papierosowy przy gablocie.
+        - id: t_h_scratch
+          x: 0.5
+          y: 0.45
+          r: 0.03
+          minZoom: 2
+          label: Rysa przy zamku gabloty
+          description: Drobna rysa – zamek ktoś otwierał w pośpiechu.
+          effects: { set: [lock_scratch] }
+  - id: t_m_press
+    type: press
+    title: 'Gazeta: zagadka zegarowej wieży'
+    start: true
+    redHerring: true
+    body:
+      kind: press
+      outlet: Kurier Miejski
+      headline: Kuratorka w konflikcie z właścicielką
+      text: Plotki o konflikcie w galerii rozgrzewają miasto.
+  - id: t_m_cctv
+    type: cctv
+    title: Monitoring z ulicy
+    body:
+      kind: cctv
+      camera: K-2
+      location: ul. Zegarowa
+      frames:
+        - { t: '01:24:10', image: t_cctv_1.svg, caption: Pusta ulica. }
+        - t: '01:31:02'
+          image: t_cctv_2.svg
+          caption: Rowerzysta przy bocznych drzwiach.
+          hotspots:
+            - id: t_h_bike
+              x: 0.6
+              y: 0.6
+              r: 0.08
+              label: Rower z czerwonym koszykiem
+              description: Charakterystyczny czerwony koszyk.
+        - { t: '01:48:40', image: t_cctv_3.svg, caption: Rowerzysta odjeżdża. }
+      log:
+        - { t: '01:31', text: 'Osoba na rowerze zatrzymuje się przy bocznych drzwiach.' }
+  - id: t_m_phones
+    type: phone
+    title: Billing telefonu stróża
+    private: true
+    body:
+      kind: table
+      columns: [Godzina, Numer, Czas]
+      rows:
+        - ['01:15', '+48 600 000 111 (K. Zięba)', '2:10']
+  - id: t_m_messages
+    type: messages
+    title: Wiadomości z telefonu siostrzeńca
+    unlockWhen: { flag: nephew_shaken }
+    lockWhen: { decision: t_d_press }
+    body:
+      kind: messages
+      participants: [Kamil, Nieznany]
+      messages:
+        - { from: Nieznany, t: '23:02', text: Klucz jutro. Zapłata jak ustalono. }
+        - { from: Kamil, t: '23:05', text: 'Ok. Wujek wyjdzie na papierosa.' }
+  - id: t_m_bike
+    type: inventory
+    title: Protokół zatrzymania roweru
+    body:
+      kind: table
+      columns: [Przedmiot, Uwagi]
+      rows:
+        - [Rower z czerwonym koszykiem, Należy do Kamila Zięby]
+
+decisions:
+  - id: t_d_cctv
+    category: police
+    title: Zabezpieczyć monitoring z ulicy
+    description: Patrol pobierze nagrania z kamer na ul. Zegarowej.
+    cost: { time: 1, police: 1 }
+    outcomes:
+      - text: Nagranie zabezpieczone.
+        effects: { unlock: [t_m_cctv] }
+  - id: t_d_phones
+    category: lab
+    title: Billing telefonu stróża
+    description: Wniosek do operatora o połączenia z nocy kradzieży.
+    cost: { time: 0, lab: 1 }
+    key: true
+    outcomes:
+      - text: Wniosek wysłany do operatora.
+        delayed:
+          after: 2
+          text: Operator przesłał billing.
+          effects: { unlock: [t_m_phones] }
+  - id: t_d_search
+    category: warrant
+    title: Nakaz zatrzymania roweru
+    description: Wniosek do prokuratora o zatrzymanie roweru z nagrania.
+    cost: { time: 1, patience: 1 }
+    requires: { hotspot: t_h_bike }
+    key: true
+    outcomes:
+      - when: { known: t_nephew }
+        text: Prokurator wydał nakaz. Rower zatrzymany.
+        effects: { unlock: [t_m_bike] }
+      - text: Prokurator odmawia – nie wiadomo, czyj to rower.
+        effects: { budget: { patience: -1 } }
+  - id: t_d_press
+    category: press
+    title: Ujawnić prasie nagranie
+    description: Opublikować kadr z rowerzystą z apelem o pomoc.
+    solverAvoid: true
+    exclusiveGroup: press
+    outcomes:
+      - text: Nagranie trafiło do mediów. Ktoś zaczął zacierać ślady.
+        effects: { set: [press_leak] }
+
+assistant:
+  name: Komisarz Grabowski
+  title: stary wyjadacz z wydziału
+  cooldownMinutes: 3
+  nodes:
+    - id: t_hint_cctv
+      key: true
+      priority: 10
+      activeWhen: { not: { has: t_m_cctv } }
+      resolvedWhen: { has: t_m_cctv }
+      levels:
+        - Czy ktoś mógł widzieć galerię z zewnątrz tej nocy?
+        - Ulica przed galerią bywa pod okiem kamer. Pomyśl o zleceniach dla patrolu.
+        - Zleć zabezpieczenie monitoringu z ulicy Zegarowej.
+    - id: t_hint_bike
+      key: true
+      priority: 5
+      activeWhen: { has: t_m_cctv }
+      resolvedWhen: { hotspot: t_h_bike }
+      refs: [t_m_cctv]
+      levels:
+        - Czy na nagraniu jest coś, po czym da się kogoś rozpoznać?
+        - Przyjrzyj się dokładniej kadrom z monitoringu.
+        - Na kadrze z 01:31 obejrzyj z bliska pojazd przy drzwiach.
+  fallback:
+    - Co w tej sprawie nie zgadza się z resztą?
+    - Wróć do zeznań i porównaj godziny.
+    - Zestaw zeznanie stróża z notatką o alarmie.
+  refusals:
+    - Synu, tego ci nie powiem. Wnioski są twoje.
+    - Nie zgaduję za ciebie. Pokaż mi dowody, nie nazwiska.
+  smalltalk:
+    - Kawa z automatu znowu smakuje jak tektura.
+  waitLines:
+    - Daj sobie chwilę, przemyśl to, co już masz.
+  disabledText: Grasz bez podpowiedzi. Radź sobie sam, detektywie.
+
+accusation:
+  maxEvidence: 4
+  motives:
+    - { id: t_mo_money, text: Zapłata od kolekcjonera }
+    - { id: t_mo_revenge, text: Zemsta na właścicielce }
+    - { id: t_mo_insurance, text: Wyłudzenie ubezpieczenia }
+  means:
+    - { id: t_me_key, text: Klucz do gabloty pożyczony od stróża }
+    - { id: t_me_force, text: Wyważenie gabloty }
+  opportunities:
+    - { id: t_op_break, text: Wyjście stróża około 1:30 }
+    - { id: t_op_day, text: Kradzież w ciągu dnia }
+
+solution:
+  culprit: t_nephew
+  motive: t_mo_money
+  means: t_me_key
+  opportunity: t_op_break
+  keyEvidence:
+    - { ref: t_h_bike, weight: 2 }
+    - { ref: t_m_phones, weight: 2 }
+    - { ref: t_m_bike, weight: 2 }
+    - { ref: t_m_messages, weight: 3 }
+  requiredEvidence: [t_h_bike, t_m_phones]
+  contradictions:
+    - {
+        id: t_c_round,
+        description: Obchód o 1:00 a telefon o 1:15,
+        refs: [t_m_testimony_guard, t_m_phones],
+      }
+  turningPoints:
+    - { id: t_tp_press, description: Przeciek do prasy niszczy wiadomości, decisions: [t_d_press] }
+
+endings:
+  - id: t_end_full
+    title: Pełny sukces
+    tone: positive
+    priority: 100
+    when: { all: [{ accusedCorrect: true }, { strength: { gte: 5 } }, { reasoning: { gte: 2 } }] }
+    epilogue: Akt oskarżenia jest szczelny. Klucz wraca do gabloty.
+    addenda:
+      - when: { hints: { gte: 3 } }
+        text: Grabowski uśmiecha się pod wąsem – trochę mu zawdzięczasz.
+  - id: t_end_weak
+    title: Wyrok z zastrzeżeniami
+    tone: positive
+    priority: 50
+    when: { accusedCorrect: true }
+    epilogue: Sąd skazuje oskarżonego, choć obrona punktuje braki w dowodach.
+  - id: t_end_wrong
+    title: Niewinny za kratami
+    tone: negative
+    priority: 40
+    when: { all: [{ accusedCorrect: false }, { closedCase: false }] }
+    epilogue: Twój podejrzany trafia do aresztu. Klucz nigdy się nie odnajduje.
+  - id: t_end_closed
+    title: Sprawa umorzona
+    tone: neutral
+    priority: 10
+    when: true
+    epilogue: Śledztwo zostaje umorzone z braku dowodów.
+
+playthroughs:
+  - name: pełny sukces
+    expectEnding: t_end_full
+    actions:
+      - { type: take_decision, decisionId: t_d_phones }
+      - { type: solve }
+      - {
+          type: accuse,
+          accusation:
+            {
+              suspectId: t_nephew,
+              evidence: [t_h_bike, t_m_phones, t_m_bike],
+              motiveId: t_mo_money,
+              meansId: t_me_key,
+              opportunityId: t_op_break,
+            },
+        }
+  - name: słabe oskarżenie
+    expectEnding: t_end_weak
+    actions:
+      - { type: solve }
+      - {
+          type: accuse,
+          accusation:
+            {
+              suspectId: t_nephew,
+              evidence: [t_m_report],
+              motiveId: t_mo_revenge,
+              meansId: t_me_force,
+              opportunityId: t_op_day,
+            },
+        }
+  - name: niewinny
+    expectEnding: t_end_wrong
+    actions:
+      - {
+          type: accuse,
+          accusation:
+            {
+              suspectId: t_curator,
+              evidence: [t_m_press],
+              motiveId: t_mo_revenge,
+              meansId: t_me_force,
+              opportunityId: t_op_day,
+            },
+        }
+  - name: umorzenie po terminie
+    expectEnding: t_end_closed
+    actions:
+      - { type: wait_until, time: 8 }
+      - { type: close_case }
+  - name: kooperacja z głosowaniem
+    mode: coop
+    expectEnding: t_end_wrong
+    actions:
+      - {
+          type: propose,
+          proposal:
+            {
+              kind: accusation,
+              accusation:
+                {
+                  suspectId: t_guard,
+                  evidence: [t_m_report],
+                  motiveId: t_mo_money,
+                  meansId: t_me_key,
+                  opportunityId: t_op_break,
+                },
+            },
+        }
+      - { type: vote, proposalId: pr1, approve: true, seat: 2 }

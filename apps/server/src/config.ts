@@ -15,6 +15,13 @@ const envSchema = z.object({
     .transform((v) => v === 'true'),
   CLIENT_DIST: z.string().optional(),
   LOG_LEVEL: z.string().default('info'),
+  /** Opcjonalna warstwa LLM asystenta (wymaga ANTHROPIC_API_KEY). */
+  ASSISTANT_LLM: z
+    .enum(['on', 'off'])
+    .default('off')
+    .transform((v) => v === 'on'),
+  ASSISTANT_LLM_MODEL: z.string().default('claude-opus-5-5'),
+  ASSISTANT_LLM_MAX_PER_HOUR: z.coerce.number().int().min(1).default(30),
 });
 
 export interface Config {
@@ -30,6 +37,9 @@ export interface Config {
   clientDist?: string;
   logLevel: string;
   cookieSecure: boolean;
+  assistantLlm: boolean;
+  assistantLlmModel: string;
+  assistantLlmMaxPerHour: number;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
@@ -47,6 +57,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     clientDist: e.CLIENT_DIST,
     logLevel: e.LOG_LEVEL,
     cookieSecure: e.APP_URL.startsWith('https://'),
+    assistantLlm: e.ASSISTANT_LLM,
+    assistantLlmModel: e.ASSISTANT_LLM_MODEL,
+    assistantLlmMaxPerHour: e.ASSISTANT_LLM_MAX_PER_HOUR,
   };
 }
 

@@ -19,11 +19,14 @@
     "db:migrate": "npm run db:migrate -w @detektyw/server",
     "seed": "npm run seed -w @detektyw/server",
     "e2e": "playwright test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "validate": "tsx tools/validate-case.ts"
   },
   "devDependencies": {
+    "@detektyw/engine": "*",
     "@playwright/test": "1.56.1",
     "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
     "typescript": "~5.9.3"
   }
 }

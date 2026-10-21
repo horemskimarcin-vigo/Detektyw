@@ -1,14 +1,18 @@
-import { readdirSync, readFileSync, existsSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { parse as parseYaml } from 'yaml';
 import type { CaseSummary } from '@detektyw/shared';
+import type { CaseDef } from '@detektyw/engine';
+import { loadAllCases } from '@detektyw/engine/node';
 
 export interface CaseEntry {
   summary: CaseSummary;
   version: string;
   /** Sprawy testowe nie są pokazywane graczom w produkcji. */
   internal: boolean;
+  def: CaseDef;
+  assetsDir: string;
+  assets: Set<string>;
 }
 
 export interface CaseRegistry {
@@ -29,23 +33,22 @@ export function defaultContentDir(): string {
   return found;
 }
 
-/** Rejestr spraw: na tym etapie tylko metadane z case.yaml (silnik w kamieniu 3). */
+/** Rejestr spraw: definicje wczytane i zwalidowane schematem przy starcie serwera. */
 export function loadCaseRegistry(dir = defaultContentDir()): CaseRegistry {
   const entries = new Map<string, CaseEntry>();
-  for (const name of readdirSync(dir)) {
-    const file = path.join(dir, name, 'case.yaml');
-    if (!existsSync(file)) continue;
-    const meta = parseYaml(readFileSync(file, 'utf8')) as Record<string, unknown>;
-    const id = String(meta.id);
-    entries.set(id, {
-      version: String(meta.version),
-      internal: meta.internal === true,
+  for (const c of loadAllCases(dir)) {
+    entries.set(c.def.id, {
+      def: c.def,
+      version: c.def.version,
+      internal: c.def.internal,
+      assetsDir: c.assetsDir,
+      assets: new Set(c.assets),
       summary: {
-        id,
-        title: String(meta.title),
-        teaser: String(meta.teaser ?? ''),
-        estimatedHours: String(meta.estimatedHours ?? ''),
-        contentWarning: String(meta.contentWarning ?? ''),
+        id: c.def.id,
+        title: c.def.title,
+        teaser: c.def.teaser,
+        estimatedHours: c.def.estimatedHours,
+        contentWarning: c.def.contentWarning,
       },
     });
   }

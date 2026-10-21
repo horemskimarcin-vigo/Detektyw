@@ -3,6 +3,7 @@ import cookie from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import fastifyStatic from '@fastify/static';
+import websocket from '@fastify/websocket';
 import { existsSync } from 'node:fs';
 import path from 'node:path';
 import type { Config } from './config.js';
@@ -14,6 +15,13 @@ import { loadCaseRegistry, type CaseRegistry } from './services/cases.js';
 import authRoutes from './routes/auth.js';
 import accountRoutes from './routes/account.js';
 import gameRoutes from './routes/games.js';
+import { Realtime } from './services/realtime.js';
+import { GameService } from './services/game-service.js';
+import {
+  createAnthropicStylist,
+  passthroughStylist,
+  type AssistantStylist,
+} from './services/assistant-llm.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -21,6 +29,8 @@ declare module 'fastify' {
     db: Db;
     mailer: Mailer;
     cases: CaseRegistry;
+    realtime: Realtime;
+    games: GameService;
   }
 }
 
@@ -29,9 +39,10 @@ export interface AppDeps {
   db: Db;
   mailer?: Mailer;
   cases?: CaseRegistry;
+  stylist?: AssistantStylist;
 }
 
-export async function buildApp({ config, db, mailer, cases }: AppDeps) {
+export async function buildApp({ config, db, mailer, cases, stylist }: AppDeps) {
   const app = Fastify({
     logger: { level: config.logLevel },
     trustProxy: config.trustProxy,
@@ -46,6 +57,20 @@ export async function buildApp({ config, db, mailer, cases }: AppDeps) {
       createMailer({ smtpUrl: config.smtpUrl, from: config.mailFrom, log: (m) => app.log.info(m) }),
   );
   app.decorate('cases', cases ?? loadCaseRegistry());
+  app.decorate('realtime', new Realtime());
+  const assistantStylist =
+    stylist ??
+    (config.assistantLlm
+      ? createAnthropicStylist({
+          model: config.assistantLlmModel,
+          maxPerGamePerHour: config.assistantLlmMaxPerHour,
+          log: (m) => app.log.warn(m),
+        })
+      : passthroughStylist);
+  app.decorate(
+    'games',
+    new GameService(db, app.cases, app.realtime, assistantStylist, config.env !== 'production'),
+  );
 
   await app.register(helmet, {
     contentSecurityPolicy: {
@@ -63,6 +88,7 @@ export async function buildApp({ config, db, mailer, cases }: AppDeps) {
     },
   });
   await app.register(cookie);
+  await app.register(websocket, { options: { maxPayload: 4096 } });
   await app.register(rateLimit, {
     max: 300,
     timeWindow: '1 minute',

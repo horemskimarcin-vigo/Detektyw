@@ -84,6 +84,8 @@ export const games = pgTable(
     state: jsonb('state').notNull(),
     stateVersion: integer('state_version').notNull().default(0),
     noHints: boolean('no_hints').notNull().default(false),
+    /** Kod zaproszenia do kooperacji (aktywny, dopóki brakuje drugiego gracza). */
+    inviteCode: text('invite_code').unique(),
     createdBy: uuid('created_by').references(() => users.id, { onDelete: 'set null' }),
     createdAt: createdAt(),
     updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
@@ -140,4 +142,21 @@ export const endingsUnlocked = pgTable(
     unlockedAt: timestamp('unlocked_at', { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.caseId, t.endingId] })],
+);
+
+/** Czat i szybkie reakcje w kooperacji. */
+export const chatMessages = pgTable(
+  'chat_messages',
+  {
+    id: serial('id').primaryKey(),
+    gameId: uuid('game_id')
+      .notNull()
+      .references(() => games.id, { onDelete: 'cascade' }),
+    userId: uuid('user_id').references(() => users.id, { onDelete: 'set null' }),
+    seat: integer('seat').notNull(),
+    kind: text('kind', { enum: ['text', 'reaction'] }).notNull(),
+    text: text('text').notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [index('chat_game_idx').on(t.gameId, t.id)],
 );

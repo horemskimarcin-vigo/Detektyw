@@ -5,3 +5,17 @@ title: 'Sprawa testowa: zaginiony klucz'
 teaser: 'Krótka sprawa do testów silnika i scenariuszy e2e.'
 estimatedHours: '10 min'
 contentWarning: 'Brak treści drastycznych.'
+calendar:
+  startDate: '2025-03-03'
+budget:
+  time: 8
+  lab: 1
+  police: 1
+  patience: 2
+briefing:
+  title: 'Kradzież w Galerii Pod Zegarem'
+  text: |
+    W nocy z niedzieli na poniedziałek z zamkniętej gabloty Galerii Pod Zegarem zniknął zabytkowy klucz do ratuszowej wieży.
+    Gablota nie nosi śladów włamania. Właścicielka galerii, Irena Wolska, zgłosiła kradzież rano.
+    Masz cztery dni, żeby wskazać sprawcę.
+deadlineText: 'Prokurator żąda decyzji: oskarż kogoś albo zamknij sprawę.'

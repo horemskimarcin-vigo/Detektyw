@@ -1,0 +1,87 @@
+# Scenariusze dla walidatora: każde zakończenie musi być osiągalne.
+playthroughs:
+  - name: pełny sukces
+    expectEnding: end_full
+    actions:
+      - { type: take_decision, decisionId: d_press_silence }
+      - { type: solve }
+      - type: accuse
+        accusation: { suspectId: p_joanna, evidence: [h_cal_fri, m21, m20, m25, m23, m41], motiveId: mo_fraud, meansId: me_statue, opportunityId: op_meeting }
+
+  - name: sukces okupiony zatrzymaniem niewinnego
+    expectEnding: end_costly
+    actions:
+      - { type: take_decision, decisionId: d_arrest_bak }
+      - { type: solve }
+      - type: accuse
+        accusation: { suspectId: p_joanna, evidence: [h_cal_fri, m21, m20, m25, m23, m41], motiveId: mo_fraud, meansId: me_statue, opportunityId: op_meeting }
+
+  - name: wyrok mimo zgrzytów (same przesłuchania)
+    expectEnding: end_procedural
+    actions:
+      - { type: solve, decisions: false }
+      - type: accuse
+        accusation: { suspectId: p_joanna, evidence: [h_cal_fri, m23, m25], motiveId: mo_fraud, meansId: me_statue, opportunityId: op_meeting }
+
+  - name: trafne, ale bez uzasadnienia
+    expectEnding: end_acquitted
+    actions:
+      - type: accuse
+        accusation: { suspectId: p_joanna, evidence: [m05], motiveId: mo_robbery, meansId: me_tool, opportunityId: op_breakin }
+
+  - name: przeciek i błędne oskarżenie
+    expectEnding: end_strikes_again
+    actions:
+      - { type: take_decision, decisionId: d_press_staff }
+      - type: accuse
+        accusation: { suspectId: p_bak, evidence: [m05], motiveId: mo_payment, meansId: me_tool, opportunityId: op_breakin }
+
+  - name: kozioł ofiarny
+    expectEnding: end_scapegoat
+    actions:
+      - type: accuse
+        accusation: { suspectId: p_bak, evidence: [m05, m44], motiveId: mo_payment, meansId: me_tool, opportunityId: op_breakin }
+
+  - name: syn
+    expectEnding: end_son
+    actions:
+      - type: accuse
+        accusation: { suspectId: p_pawel, evidence: [m09], motiveId: mo_robbery, meansId: me_push, opportunityId: op_breakin }
+
+  - name: wdowa
+    expectEnding: end_widow
+    actions:
+      - type: accuse
+        accusation: { suspectId: p_marta, evidence: [m01], motiveId: mo_robbery, meansId: me_tool, opportunityId: op_breakin }
+
+  - name: inwestor
+    expectEnding: end_trial
+    actions:
+      - type: accuse
+        accusation: { suspectId: p_lisiecki, evidence: [m01], motiveId: mo_robbery, meansId: me_tool, opportunityId: op_breakin }
+
+  - name: osoba postronna
+    expectEnding: end_absurd
+    actions:
+      - type: accuse
+        accusation: { suspectId: p_agnieszka, evidence: [m01], motiveId: mo_robbery, meansId: me_tool, opportunityId: op_breakin }
+
+  - name: umorzenie po terminie
+    expectEnding: end_timeout
+    actions:
+      - { type: wait_until, time: 20 }
+      - { type: close_case }
+
+  - name: umorzenie przed terminem
+    expectEnding: end_shelved
+    actions:
+      - { type: close_case }
+
+  - name: kooperacja – wspólne oskarżenie
+    mode: coop
+    expectEnding: end_procedural
+    actions:
+      - { type: solve, decisions: false }
+      - type: propose
+        proposal: { kind: accusation, accusation: { suspectId: p_joanna, evidence: [h_cal_fri, m23, m25], motiveId: mo_fraud, meansId: me_statue, opportunityId: op_meeting } }
+      - { type: vote, proposalId: PROPOSAL, approve: true, seat: 2 }

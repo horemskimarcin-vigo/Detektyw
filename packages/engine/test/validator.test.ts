@@ -32,3 +32,16 @@ describe('walidator sprawy', () => {
     expect(errors).toMatch(/niepełna drabinka/);
   });
 });
+
+describe('sprawa główna', () => {
+  it('przechodzi walidator (zakończenia, martwe punkty, drabinki, wycieki)', async () => {
+    const path = await import('node:path');
+    const { loadCaseDir } = await import('../src/node/index.js');
+    const loaded = loadCaseDir(
+      path.resolve(import.meta.dirname, '../../../content/cases/zawierzbie'),
+    );
+    const r = validateCase(loaded.def, { assets: loaded.assets, randomRuns: 25 });
+    expect(r.errors).toEqual([]);
+    expect(r.endingsReached.length).toBe(loaded.def.endings.length);
+  }, 120_000);
+});

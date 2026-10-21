@@ -448,8 +448,11 @@ export const caseSchema = z
         means: id,
         opportunity: id,
         keyEvidence: z.array(z.object({ ref: id, weight: z.number().min(0) }).strict()).min(1),
-        /** Minimalny zestaw dowodów, bez którego rozwiązania nie da się uzasadnić. */
-        requiredEvidence: z.array(id).min(1),
+        /**
+         * Minimalny zestaw dowodów, bez którego rozwiązania nie da się uzasadnić.
+         * Element może być listą alternatyw (wystarczy dowolny z nich).
+         */
+        requiredEvidence: z.array(z.union([id, z.array(id).min(1)])).min(1),
         contradictions: z
           .array(z.object({ id, description: z.string(), refs: z.array(id) }).strict())
           .default([]),

@@ -214,7 +214,7 @@ export function validateCase(def: CaseDef, opts: ValidateOptions = {}): Validati
     errors.push('rozwiązanie: nieznane okoliczności.');
   for (const r of [
     ...sol.keyEvidence.map((k) => k.ref),
-    ...sol.requiredEvidence,
+    ...sol.requiredEvidence.flat(),
     ...sol.contradictions.flatMap((c) => c.refs),
   ]) {
     if (!exists.material(r) && !exists.hotspot(r))
@@ -492,6 +492,10 @@ export function runPlaythrough(
       const { seat: _seat, ...rest } = raw as GameAction & { seat?: number };
       void _seat;
       action = rest as GameAction;
+      // „PROPOSAL” w scenariuszu oznacza ostatnią złożoną propozycję.
+      if (action.type === 'vote' && action.proposalId === 'PROPOSAL') {
+        action = { ...action, proposalId: s.proposals.at(-1)?.id ?? 'brak' };
+      }
     }
     try {
       s = applyAction(def, s, action, { seat, now: 0 }).state;

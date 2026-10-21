@@ -140,6 +140,59 @@ describe('przesłuchania', () => {
     expect(warm.state.flags.baker_saw_bike).toBe(true);
   });
 
+  it('wymijająca odpowiedź nie zamyka pytania – można spróbować ponownie', () => {
+    let s = act(newGame(), { type: 'start_interview', personId: 't_baker' }).state;
+    s = act(s, {
+      type: 'ask',
+      personId: 't_baker',
+      questionId: 't_q_baker_saw',
+      tone: 'press',
+    }).state;
+    expect(s.flags.baker_saw_bike).toBeUndefined();
+    // pytanie wciąż dostępne
+    const again = act(s, {
+      type: 'ask',
+      personId: 't_baker',
+      questionId: 't_q_baker_saw',
+      tone: 'empathetic',
+    });
+    s = again.state;
+    s = act(s, {
+      type: 'ask',
+      personId: 't_baker',
+      questionId: 't_q_baker_saw',
+      tone: 'empathetic',
+    }).state;
+    expect(s.flags.baker_saw_bike).toBe(true);
+    // po rozstrzygającej odpowiedzi pytanie znika
+    expect(() =>
+      act(s, { type: 'ask', personId: 't_baker', questionId: 't_q_baker_saw', tone: 'calm' }),
+    ).toThrow();
+  });
+
+  it('stres opada między rozmowami', () => {
+    let s = newGame();
+    s.interviews.t_curator!.stress = 80;
+    s.interviews.t_curator!.sessions = 1;
+    s = act(s, { type: 'start_interview', personId: 't_curator' }).state;
+    expect(s.interviews.t_curator!.stress).toBe(55);
+  });
+
+  it('rozmowa rozpoczęta w ostatnim pół dniu trwa do końca', () => {
+    let s = newGame();
+    for (let i = 0; i < 7; i++) s = act(s, { type: 'wait' }).state;
+    s = act(s, { type: 'start_interview', personId: 't_curator' }).state;
+    expect(s.phase).toBe('investigation');
+    s = act(s, {
+      type: 'ask',
+      personId: 't_curator',
+      questionId: 't_q_curator_fight',
+      tone: 'calm',
+    }).state;
+    s = act(s, { type: 'end_interview', personId: 't_curator' }).state;
+    expect(s.phase).toBe('deadline');
+  });
+
   it('zbyt agresywne przesłuchanie zrywa rozmowę i blokuje świadka', () => {
     let s = newGame();
     s.interviews.t_guard!.stress = 85;

@@ -1,0 +1,314 @@
+people:
+  - id: p_joanna
+    name: Joanna Kret
+    role: suspect
+    title: kierowniczka hotelu
+    age: 41
+    bio: >-
+      Pracuje w hotelu od sześciu lat, od czterech jako kierowniczka. Prowadzi kadry, zaopatrzenie i płatności.
+      Opanowana, elegancka, rzeczowa. Mieszka sama na Osiedlu Słonecznym. Jeździ białą Skodą Fabią.
+    facts:
+      - text: Twierdzi, że w piątek wyszła z pracy o 18:30 i cały wieczór spędziła w domu.
+      - text: Twierdzi, że zgubiła kartę do drzwi personelu w środę, a zgłosiła to w sobotę rano.
+      - text: Wyjechała z parkingu hotelu o 18:31 (kamera) – zgodnie ze swoim zeznaniem.
+        when: { flag: fabia_known }
+      - text: W piątek przed południem długo rozmawiała z właścicielem za zamkniętymi drzwiami.
+        when: { flag: joanna_nervous }
+      - text: Wprowadzała do systemu i opisywała faktury dostawców, w tym Bud-Rem Serwis.
+        when: { any: [{ flag: fraud_known }, { asked: qe_approved }] }
+      - text: Prezesem Bud-Rem Serwis jest Dariusz Kret.
+        when: { flag: fraud_known }
+      - text: Sąsiedzi mówią, że od roku „żyje ponad stan”.
+        when: { any: [{ has: m26 }, { asked: qh_lifestyle }] }
+    relations:
+      - { person: p_victim, label: "szef od 6 lat" }
+      - { person: p_halina, label: sąsiadka przez płot }
+    interview:
+      baseStress: 30
+      baseTrust: 50
+      breakAt: 92
+      pressSensitivity: 0.8
+      questionsPerSession: 5
+      opening: >-
+        Joanna Kret siada, poprawia mankiet żakietu. Oczy ma podkrążone, ale głos spokojny.
+        – Proszę pytać. Hotel to moje drugie życie. Zrobię wszystko, żeby pomóc.
+      breakText: >-
+        – Nie będę tego dłużej słuchać. Jeżeli mam status podejrzanej, proszę mi to powiedzieć wprost.
+        Następna rozmowa – w obecności adwokata.
+      confrontDefault: "– Nie rozumiem, co to ma ze mną wspólnego."
+      questions:
+        - id: qj_evening
+          text: Co robiła pani w piątek wieczorem?
+          responses:
+            - text: >-
+                – Wyszłam o wpół do siódmej, zrobiłam zakupy w Biedronce przy rynku i pojechałam do domu. Kąpiel, książka, wcześnie spać.
+                Nudny piątek samotnej kobiety.
+        - id: qj_contact
+          text: Czy rozmawiała pani z szefem po wyjściu z pracy?
+          responses:
+            - text: "– Nie. Wiktor nie dzwonił do pracowników po godzinach. Taką miał zasadę."
+              effects: { set: [joanna_denied_call] }
+        - id: qj_morning
+          text: O czym rozmawiała pani z szefem w piątek przed południem?
+          requires: { flag: joanna_nervous }
+          responses:
+            - when: { stress: { gte: 55 } }
+              text: >-
+                – O… o remoncie. O wykonawcy. Wiktor był w złym humorze, krzyczał. Nie wiem, czemu ktoś to państwu w ogóle mówi.
+            - text: "– O grafiku, o remoncie, o dostawcach. Zwykła rozmowa kierowniczki z szefem."
+        - id: qj_card
+          text: Kiedy i gdzie zgubiła pani kartę dostępu?
+          responses:
+            - text: >-
+                – W środę. Chyba na parkingu, wypadła mi z kieszeni płaszcza. W czwartek i piątek wpuszczała mnie Teresa albo recepcja.
+                W sobotę rano zgłosiłam to do firmy, bo przypomniałam sobie w tym całym zamieszaniu.
+        - id: qj_budrem
+          text: Czym zajmuje się firma Bud-Rem Serwis?
+          requires: { any: [{ flag: fraud_known }, { has: m22 }, { has: m41 }, { flag: cal_accountant }] }
+          responses:
+            - when: { tone: press }
+              text: >-
+                – To… drobne naprawy, konserwacja. Wszystko było zlecone. Wiktor zatwierdzał każdą paczkę przelewów!
+                Proszę zapytać mojego kuzyna, on prowadzi tę firmę. Nie wiedziałam, że to ma jakieś znaczenie.
+              effects: { set: [joanna_cousin] }
+            - text: "– Konserwacja, drobne naprawy, przeglądy. Jeden z wielu dostawców. Wiktor zatwierdzał wszystkie przelewy."
+        - id: qj_shelf
+          text: Co stało na pustym miejscu na półce w gabinecie?
+          requires: { flag: statuette_gap }
+          responses:
+            - text: "– Na półce? Nie wiem… jakieś nagrody, dyplomy. Nigdy się nie przyglądałam. Sprzątanie to nie mój dział."
+              effects: { set: [joanna_shelf_denial] }
+        - id: qj_who
+          text: Kto pani zdaniem mógł to zrobić?
+          responses:
+            - text: >-
+                – Bąk. Groził mu, wszyscy to czytali na Facebooku. Był karany. Miał klucz do bramy od strony remontu.
+                Ja bym go sprawdziła w pierwszej kolejności.
+        - id: qj_binder
+          text: Czego dotyczył segregator, którego brakuje na regale w gabinecie?
+          requires: { any: [{ read: m11 }, { flag: diary_monday }] }
+          responses:
+            - when: { stress: { gte: 50 } }
+              text: "– Nie wiem. Wiktor trzymał tam różne rzeczy. Może zabrał do domu? Może… nie wiem."
+            - text: "– Pewnie archiwum. Wiktor sam układał te segregatory, nikt inny ich nie ruszał."
+      confrontations:
+        - evidence: m17
+          responses:
+            - text: >-
+                – Ach… tak. Dzwonił. Minutę. Pytał, gdzie są klucze do magazynu z pościelą. Zupełnie wyleciało mi to z głowy, przepraszam.
+                To było nic ważnego.
+              effects: { set: [joanna_lie_call] }
+        - evidence: m19
+          responses:
+            - text: >-
+                – Byłam w centrum? Możliwe… Pojechałam jeszcze do Żabki po wino. Telefon łapie różne stacje, to chyba wiadomo.
+              effects: { set: [joanna_lie_bts] }
+        - evidence: m21
+          responses:
+            - when: { stress: { gte: 45 } }
+              text: >-
+                – Ktoś musiał mieć moją kartę! Mówiłam, że zgubiłam! …W czwartek? W czwartek rano też? Nie… może się pomyliłam z dniem.
+                Zgłosiłam w sobotę, bo dopiero wtedy… Proszę mnie nie łapać za słówka.
+              effects: { set: [joanna_lie_card] }
+            - text: "– Kartę zgubiłam. Ktoś jej użył. To chyba najlepszy dowód, że trzeba szukać osoby, która ją znalazła."
+              effects: { set: [joanna_lie_card] }
+        - evidence: m20
+          responses:
+            - text: "– Mój telefon? W hotelu? To niemożliwe. Może… może łączy się automatycznie z daleka. Nie znam się na tym."
+              effects: { stress: { p_joanna: 10 } }
+        - evidence: m25
+          responses:
+            - text: "– Pani Gajda myli dni tygodnia. Ma ponad siedemdziesiąt lat i ogląda seriale całe noce. Byłam w domu."
+        - evidence: h_cal_fri
+          responses:
+            - text: >-
+                – „J.K.”? To mogą być różne osoby. Wiktor miał setki kontaktów. Może ktoś z hurtowni… Ja nie byłam z nim umówiona.
+        - evidence: m23
+          responses:
+            - text: >-
+                – Te faktury zatwierdzał Wiktor! Podpisywał zestawienia. Jeżeli coś było nie tak, to… Proszę rozmawiać z moim pełnomocnikiem.
+              effects: { stress: { p_joanna: 12 } }
+        - evidence: m22
+          responses:
+            - text: "– Login „jkret” znała połowa biura. Hasło wisiało na karteczce przy monitorze. Każdy mógł zlecić te przelewy."
+        - evidence: m43
+          responses:
+            - text: "– Bezdomny alkoholik, który widział „kobietę w płaszczu”? W Zawierzbiu połowa kobiet nosi jasne płaszcze."
+        - evidence: m37
+          responses:
+            - text: "– To nie moje! Ktoś mi to podrzucił. Garaż był otwarty, każdy mógł wejść. Nie powiem nic więcej bez adwokata."
+              endSession: true
+        - evidence: m39
+          responses:
+            - text: >-
+                – Moje odciski? Na nagrodzie hotelu? Brałam ją do ręki sto razy, przy każdej gali i sesji zdjęciowej!
+                Koniec rozmowy. Adwokat.
+              endSession: true
+        - evidence: h_statue_base
+          responses:
+            - text: "– Nie wiem, co to jest i skąd się wzięło w moim garażu. Rozmawiamy dalej tylko przez adwokata."
+              endSession: true
+
+  - id: p_lisiecki
+    name: dr Tomasz Lisiecki
+    role: suspect
+    title: stomatolog i inwestor, chciał kupić hotel
+    age: 52
+    bio: >-
+      Właściciel trzech klinik stomatologicznych i kilku kamienic w regionie. Od dwóch lat próbował odkupić „Pod Lipami”,
+      by zrobić z niego hotel spa. Elegancki, pewny siebie, z dobrymi znajomościami.
+    facts:
+      - text: Złożył ofertę 4,2 mln zł – Ostrowski odmówił.
+        when: { any: [{ asked: ql_offer }, { has: m29 }] }
+      - text: Twierdzi, że w piątek wieczorem nie opuszczał gali w Dworku Zawierzbie.
+        when: { asked: ql_gala }
+      - text: Wyjechał z gali o 21:39 i wrócił o 22:11.
+        when: { flag: lisiecki_left }
+      - text: O 21:52 płacił kartą na stacji Moya przy ul. Krakowskiej, 6 km od hotelu.
+        when: { has: m32 }
+    relations:
+      - { person: p_victim, label: "kontrahent – chciał kupić hotel" }
+    interview:
+      baseStress: 15
+      baseTrust: 40
+      breakAt: 75
+      lockOnBreak: true
+      pressSensitivity: 0.7
+      questionsPerSession: 4
+      opening: "Lisiecki spogląda na zegarek. – Mam pacjentów od czternastej. Proszę pytać konkretnie."
+      breakText: "– Na tym kończymy. Każda kolejna rozmowa wyłącznie w obecności mojego mecenasa – i proszę się spodziewać skargi."
+      lockedText: Dr Lisiecki rozmawia już wyłącznie przez swojego mecenasa.
+      confrontDefault: "– Proszę mi oszczędzić. To nie ma ze mną nic wspólnego."
+      questions:
+        - id: ql_offer
+          text: Jaką ofertę złożył pan za hotel?
+          responses:
+            - text: >-
+                – Cztery miliony dwieście tysięcy. Uczciwie, z nadwyżką. Wiktor odmówił, na środowym obiedzie powiedział, że prędzej spali hotel,
+                niż mi go sprzeda. Rozstaliśmy się w zgodzie. Interesy, nic osobistego.
+        - id: ql_gala
+          text: Gdzie był pan w piątek wieczorem?
+          responses:
+            - text: >-
+                – Na gali charytatywnej w Dworku. Od siódmej do wpół do dwunastej. Licytowałem obraz dla hospicjum, jest w protokole.
+                Nie ruszałem się stamtąd.
+        - id: ql_future
+          text: Co teraz stanie się z hotelem?
+          responses:
+            - text: "– Zdecydują spadkobiercy. Moja oferta jest aktualna. Wiem, jak to brzmi. Ale nie zmienię jej z powodu plotek."
+        - id: ql_phone
+          text: Po co dzwonił pan do Ostrowskiego w piątek o 14:20?
+          requires: { has: m17 }
+          responses:
+            - text: "– Żeby przypomnieć o gali. Odmówił przyjścia, powiedział, że ma wieczorem „rozmowę, której nie może przełożyć”. Tyle."
+              effects: { set: [lis_evening_meeting] }
+      confrontations:
+        - evidence: m33
+          responses:
+            - text: >-
+                – No tak. Wyjechałem na pół godziny. Na stację Moya na Krakowskiej, po papierosy. Żona nie wie, że znów palę – stąd ta… nieścisłość.
+                Mam paragon w portfelu, proszę. Krakowska jest na drugim końcu miasta niż hotel.
+              effects: { unlock: [m32], set: [lisiecki_alibi] }
+        - evidence: h_gala_audi
+          responses:
+            - text: >-
+                – Tak, to moje auto. Pojechałem po papierosy na Moyę przy Krakowskiej. Paragon mam przy sobie, proszę.
+              effects: { unlock: [m32], set: [lisiecki_alibi] }
+        - evidence: m29
+          responses:
+            - text: "– Mój mecenas już pisze pozew przeciwko tej gazecie."
+        - evidence: h_cal_wed
+          responses:
+            - text: "– „NIE sprzedaję” – podkreślone dwa razy? Cały Wiktor. Mnie powiedział to samo, prosto w oczy."
+
+  - id: p_bak
+    name: Krzysztof Bąk
+    role: suspect
+    title: wykonawca remontu (BĄK-REMONTY)
+    age: 46
+    bio: >-
+      Właściciel małej firmy remontowej. Od marca remontował skrzydło zachodnie hotelu. Spór z Ostrowskim o 38 000 zł zaległej zapłaty.
+      W październiku napisał na Facebooku, że Ostrowski „jeszcze pożałuje”. W 2014 r. skazany za pobicie (wyrok w zawieszeniu).
+    facts:
+      - text: Ostrowski był mu winien 38 000 zł za dach i łazienki.
+        when: { asked: qb_money }
+      - text: Ma klucz do bramy bocznej od strony remontu.
+      - text: Jego bus był na parkingu hotelu od 21:28 do 21:41.
+        when: { flag: van_seen }
+      - text: O 21:46 jego bus przejeżdżał ul. Wiślaną, kilometr od hotelu.
+        when: { flag: van_left }
+      - text: Przyznał, że był w hotelu po narzędzia i słyszał kobiecy głos w gabinecie.
+        when: { flag: bak_admits }
+    relations:
+      - { person: p_victim, label: "zleceniodawca – spór o zapłatę" }
+    interview:
+      baseStress: 45
+      baseTrust: 20
+      breakAt: 85
+      pressSensitivity: 1.3
+      questionsPerSession: 5
+      availableWhen: { not: { flag: bak_arrested } }
+      unavailableText: Po zatrzymaniu Bąk odmawia składania wyjaśnień bez adwokata, a adwokat nie zgadza się na dalsze rozmowy.
+      opening: "Bąk siada ciężko, ręce w smarze. – Wiem, co o mnie piszą. Ja go nie ruszyłem. Pytajcie, ale szybko."
+      breakText: "– Wrabiacie mnie, jak wszyscy! Koniec. Rozmawiajcie z moim adwokatem."
+      confrontDefault: "– I co ja mam z tym wspólnego?"
+      questions:
+        - id: qb_evening
+          text: Gdzie był pan w piątek wieczorem?
+          responses:
+            - text: "– W domu, w Lipowcu. Żona potwierdzi. Telewizja, kolacja, spać."
+        - id: qb_threat
+          text: Napisał pan, że Ostrowski „jeszcze pożałuje”. Co to miało znaczyć?
+          responses:
+            - when: { tone: press }
+              text: "– Że go podam do sądu, a nie że go zatłukę! Takie gadanie, nerwy. Ile razy mam to powtarzać?!"
+            - text: "– Że pójdę do sądu. Wisiał mi trzydzieści osiem tysięcy. Nerwy mnie poniosły, napisałem głupio."
+        - id: qb_money
+          text: Ile był panu winien Ostrowski i za co?
+          responses:
+            - text: >-
+                – Trzydzieści osiem tysięcy. Za dach i dwie łazienki. Twierdził, że fuszerka, że fugi krzywe. Szukał pretekstu, żeby nie płacić.
+                W piątek napisał mi, że w poniedziałek zmienia zamki w skrzydle i moich narzędzi nie odzyskam bez sądu.
+              effects: { set: [bak_tools] }
+        - id: qb_heard
+          text: Co pan zauważył w głównym budynku, kiedy był pan w hotelu?
+          requires: { flag: bak_admits }
+          responses:
+            - when: { trust: { gte: 35 } }
+              text: >-
+                – W gabinecie paliło się światło, okno uchylone. Przechodziłem z narzędziami pod oknem, tak koło wpół do dziesiątej.
+                Rozmawiali – on i kobieta. Ona cicho, ale nerwowo. Wyraźnie słyszałem: „Wiktor, proszę cię”. On na to twardo, coś jak
+                „nie ma mowy, w poniedziałek”. Nie zaglądałem, nie moja sprawa. Wsiadłem w busa i pojechałem.
+              effects: { set: [bak_heard_woman] }
+            - text: "– Nic. Wziąłem swoje i pojechałem. Nie słucham cudzych rozmów."
+        - id: qb_voice
+          text: Czy rozpoznał pan głos tej kobiety?
+          requires: { flag: bak_heard_woman }
+          responses:
+            - text: "– Nie na pewno. Niski, spokojny… nie młoda dziewczyna. Nie będę strzelał, żeby potem ktoś przeze mnie niewinnie nie poszedł siedzieć."
+      confrontations:
+        - evidence: m15
+          responses:
+            - when: { any: [{ trust: { gte: 30 } }, { tone: empathetic }] }
+              text: >-
+                – Dobra. Byłem. Około wpół do dziesiątej, po swoje narzędzia – miałem klucz do bramy od remontu. Kwadrans, wszedłem, wyszedłem.
+                Skłamałem, bo wiedziałem, co pomyślicie. Nie ruszyłem go. Mogę to podpisać.
+              effects: { set: [bak_admits], unlock: [m27] }
+            - text: "– To nie musi być mój bus! Białych busów jest pełno. Wrabiacie mnie!"
+        - evidence: h_cam_van
+          responses:
+            - when: { any: [{ trust: { gte: 30 } }, { tone: empathetic }] }
+              text: >-
+                – No… mój. Byłem po narzędzia, bo zapowiedział, że zmienia zamki. Kwadrans. Do niego nie wchodziłem. Mogę to podpisać.
+              effects: { set: [bak_admits], unlock: [m27] }
+            - text: "– Logo jak logo. Pokażcie mi twarz kierowcy."
+        - evidence: h_butts
+          responses:
+            - text: "– No i co? Palę. Stałem pod tą bramą pół roku, codziennie. To niczego nie dowodzi."
+        - evidence: m16
+          responses:
+            - text: "– Za kwadrans dziesiąta już byłem na Wiślanej. Sami widzicie. Wracałem do domu."
+              effects: { set: [van_left] }
+        - evidence: m05
+          responses:
+            - text: "– Pisali, że po północy? O północy to ja spałem. I pobicie było jedenaście lat temu, odsiedziałem swoje w zawieszeniu."

@@ -96,7 +96,10 @@ export interface InterviewState {
   sessions: number;
   inSession: boolean;
   questionsThisSession: number;
+  /** Pytania zadane choć raz (do warunków `asked`). */
   asked: string[];
+  /** Pytania wyczerpane – rozstrzygające odpowiedzi. Brak pola w starych zapisach = `asked`. */
+  spent?: string[];
   confronted: string[];
   locked: boolean;
   transcript: TranscriptEntry[];
@@ -150,6 +153,7 @@ export function createInitialState(def: CaseDef, opts: InitOptions): GameState {
         inSession: false,
         questionsThisSession: 0,
         asked: [],
+        spent: [],
         confronted: [],
         locked: false,
         transcript: [],

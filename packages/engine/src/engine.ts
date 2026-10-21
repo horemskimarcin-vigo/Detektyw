@@ -228,7 +228,9 @@ export function advanceTime(def: CaseDef, state: GameState, units: number) {
 }
 
 function checkDeadline(def: CaseDef, state: GameState) {
-  if (state.phase === 'investigation' && state.time >= def.budget.time) {
+  // Rozpoczęta w ostatnim pół dniu rozmowa toczy się do końca – termin zapada po niej.
+  const talking = Object.values(state.interviews).some((i) => i.inSession);
+  if (state.phase === 'investigation' && state.time >= def.budget.time && !talking) {
     state.phase = 'deadline';
     for (const p of state.pending)
       journal(state, 'deadline', `${p.label}: wyniki nie dotarły przed terminem.`);
@@ -274,7 +276,7 @@ export function availableQuestions(def: CaseDef, state: GameState, personId: str
   if (!person?.interview || !i) return [];
   const ctx = ctxOf(def, state, { interview: interviewCtx(personId, i, i.lastTone ?? 'calm') });
   return person.interview.questions.filter(
-    (q) => (q.repeatable || !i.asked.includes(q.id)) && evaluate(q.requires, ctx),
+    (q) => (q.repeatable || !(i.spent ?? i.asked).includes(q.id)) && evaluate(q.requires, ctx),
   );
 }
 
@@ -309,6 +311,12 @@ function respond(
   i.transcript.push({ session: i.sessions, kind: 'answer', text: r.text });
   applyEffect(def, state, r.effects, seat);
   return r;
+}
+
+/** Odpowiedź rozstrzygająca: wnosi efekt albo nie ma „lepszej” wersji zależnej od warunków. */
+function isConclusive(r: ResponseDef, all: ResponseDef[]): boolean {
+  if (r.effects) return true;
+  return !all.some((x) => x !== r && x.when !== undefined && x.effects);
 }
 
 function applyTone(def: CaseDef, personId: string, i: InterviewState, tone: Tone) {
@@ -619,6 +627,9 @@ export function applyAction(
       for (const other of Object.values(state.interviews)) other.inSession = false;
       const i = state.interviews[action.personId]!;
       advanceTime(def, state, 1);
+      // Między rozmowami emocje opadają (stres wraca w stronę poziomu wyjściowego).
+      const base = idx.people.get(action.personId)!.interview!.baseStress;
+      if (i.sessions > 0 && i.stress > base) i.stress = Math.max(base, i.stress - 25);
       i.sessions++;
       i.inSession = true;
       i.questionsThisSession = 0;
@@ -637,6 +648,8 @@ export function applyAction(
       applyTone(def, action.personId, i, action.tone);
       if (!i.asked.includes(q.id)) i.asked.push(q.id);
       const r = respond(def, state, action.personId, i, action.tone, q.responses, seat);
+      // Nieudana próba (odpowiedź wymijająca, gdy istnieje lepsza) nie zamyka pytania – można wrócić później.
+      if (isConclusive(r, q.responses)) (i.spent ??= [...i.asked]).push(q.id);
       result.messages.push(r.text);
       afterAnswer(def, action.personId, i, r, result);
       break;
@@ -672,16 +685,9 @@ export function applyAction(
                 ctxOf(def, state, { interview: interviewCtx(action.personId, i, action.tone) }),
               ),
           );
-      if (!already) i.confronted.push(action.evidence);
-      const r = respond(
-        def,
-        state,
-        action.personId,
-        i,
-        action.tone,
-        entry?.responses ?? [{ text: iv.confrontDefault, endSession: false }],
-        seat,
-      );
+      const responses = entry?.responses ?? [{ text: iv.confrontDefault, endSession: false }];
+      const r = respond(def, state, action.personId, i, action.tone, responses, seat);
+      if (!already && isConclusive(r, responses)) i.confronted.push(action.evidence);
       result.messages.push(r.text);
       afterAnswer(def, action.personId, i, r, result);
       break;

@@ -112,15 +112,13 @@ export class GameService {
         })
         .returning();
       await tx.insert(gamePlayers).values({ gameId: g!.id, userId, seat: 1 });
-      await tx
-        .insert(gameEvents)
-        .values({
-          gameId: g!.id,
-          seq: 0,
-          actorUserId: userId,
-          type: 'game_created',
-          payload: { mode },
-        });
+      await tx.insert(gameEvents).values({
+        gameId: g!.id,
+        seq: 0,
+        actorUserId: userId,
+        type: 'game_created',
+        payload: { mode },
+      });
       return g!;
     });
   }
@@ -239,15 +237,13 @@ export class GameService {
           })
           .where(eq(games.id, gameId))
           .returning();
-        await tx
-          .insert(gameEvents)
-          .values({
-            gameId,
-            seq: version,
-            actorUserId: userId,
-            type: action.type,
-            payload: action,
-          });
+        await tx.insert(gameEvents).values({
+          gameId,
+          seq: version,
+          actorUserId: userId,
+          type: action.type,
+          payload: action,
+        });
         if (finished && state.ending && game!.status !== 'finished') {
           const players = await tx
             .select({ userId: gamePlayers.userId })

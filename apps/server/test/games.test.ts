@@ -40,6 +40,34 @@ describe('rozgrywka przez API', () => {
     }
   });
 
+  it('sprawa główna: widok startowy nie zdradza ukrytych materiałów ani rozwiązania', async () => {
+    const a = new Agent(ctx.app);
+    await registerUser(a, 'glowna@example.com');
+    const res = await a.post('/api/games', { caseId: 'zawierzbie', mode: 'solo' });
+    const view = await a.get(`/api/games/${res.body.id}`);
+    const def = ctx.app.cases.get('zawierzbie')!.def;
+    const visible = new Set(view.body.materials.map((m: { id: string }) => m.id));
+    const json = JSON.stringify(view.body);
+    for (const m of def.materials) {
+      if (!visible.has(m.id)) expect(json).not.toContain(m.title);
+    }
+    for (const secret of [
+      'mo_fraud',
+      'me_statue',
+      'op_meeting',
+      'Złota Lipa',
+      'solution',
+      'h_cal_fri',
+      'grounds',
+    ]) {
+      expect(json).not.toContain(secret);
+    }
+    expect(view.body.accusationOptions.motives.map((o: { id: string }) => o.id)).toEqual([
+      'mo_robbery',
+      'mo_payment',
+    ]);
+  });
+
   it('wykonuje akcje, zapisuje stan i odrzuca niepoprawne', async () => {
     const a = new Agent(ctx.app);
     await registerUser(a, 'akcje@example.com');

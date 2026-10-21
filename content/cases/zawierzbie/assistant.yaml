@@ -1,0 +1,129 @@
+assistant:
+  name: Henryk Wilk
+  title: komisarz w stanie spoczynku, „stary wyjadacz”
+  cooldownMinutes: 4
+  actionsToSkipCooldown: 6
+  stuckAfterMinutes: 15
+  stuckAfterActions: 30
+  nodes:
+    - id: hn_deadline
+      priority: 100
+      activeWhen: { time: { gte: 17 } }
+      resolvedWhen: false
+      levels:
+        - Zegar tyka. Masz już w ręku coś, co obroni się przed sądem, czy wciąż zbierasz?
+        - Zostało niewiele czasu. Uporządkuj, co wiesz – motyw, sposób, okazja – i zdecyduj, czego naprawdę brakuje.
+        - "Spójrz na swoją oś czasu i tablicę: jeśli trzy elementy aktu oskarżenia trzymają się dowodów, pora iść do prokuratora."
+
+    - id: hn_staging
+      key: true
+      priority: 50
+      activeWhen: true
+      resolvedWhen: { all: [{ any: [{ flag: glass_outside }, { has: m14 }] }, { flag: robbery_doubt }] }
+      refs: [m02, m03]
+      levels:
+        - Włamywacz, który przychodzi po gotówkę… Czy to miejsce naprawdę wygląda na robotę włamywacza?
+        - Fotografie z miejsca zdarzenia mówią więcej niż pierwsza notatka patrolu. Przyjrzyj się oknu i biurku.
+        - Na zdjęciu okna sprawdź, po której stronie leży szkło. Na zdjęciu gabinetu – co złodziej zostawił na biurku.
+
+    - id: hn_calendar
+      key: true
+      priority: 45
+      activeWhen: true
+      resolvedWhen: { flag: diary_jk }
+      refs: [m02]
+      levels:
+        - Czy ofiara mogła się z kimś umówić tamtego wieczoru?
+        - Ludzie jego pokolenia wszystko zapisywali na papierze. Na biurku mogło coś zostać.
+        - Na fotografii gabinetu przybliż stertę papierów na biurku, a potem obejrzyj z bliska to, co pod nią znajdziesz.
+
+    - id: hn_weapon
+      key: true
+      priority: 40
+      activeWhen: { has: m12 }
+      resolvedWhen: { all: [{ flag: statuette_gap }, { flag: statuette_known }] }
+      refs: [m02, m12]
+      levels:
+        - Czym właściwie zadano ten cios?
+        - Protokół sekcji opisuje kształt narzędzia. Czy coś w gabinecie do tego pasuje – albo czegoś w nim brakuje?
+        - Przybliż półkę na zdjęciu gabinetu, a potem zapytaj kogoś, kto codziennie tam bywał, co na niej stało.
+
+    - id: hn_money
+      key: true
+      priority: 35
+      activeWhen: { time: { gte: 1 } }
+      resolvedWhen: { any: [{ flag: fraud_known }, { has: m22 }] }
+      levels:
+        - Pieniądze to najstarszy motyw świata. Czy ktoś przyglądał się finansom tego hotelu?
+        - Ktoś z zewnątrz prowadził księgi hotelu. Taka osoba widzi więcej niż rodzina.
+        - Porozmawiaj z księgową i zapytaj, czy ofiara kontaktowała się z nią w ostatnich dniach.
+
+    - id: hn_opportunity
+      key: true
+      priority: 30
+      activeWhen: { all: [{ flag: diary_jk }, { flag: fraud_known }] }
+      resolvedWhen: { any: [{ has: m25 }, { has: m19 }, { has: m20 }, { has: m21 }] }
+      levels:
+        - Ktoś miał być w gabinecie o wpół do dziesiątej. Kto mógł tam być, choć twierdzi coś innego?
+        - Zeznania o tym, gdzie kto spędził wieczór, da się sprawdzić niezależnie – technika, dokumenty, sąsiedzi.
+        - Zestaw zeznania osób z otoczenia ofiary z billingami, rejestrem kart drzwi personelu i relacjami sąsiadów.
+
+    - id: hn_calls
+      priority: 25
+      activeWhen: { has: m17 }
+      resolvedWhen: { any: [{ flag: marta_call }, { flag: joanna_lie_call }] }
+      refs: [m17]
+      levels:
+        - Czy wszyscy mówią prawdę o tym, z kim rozmawiali w piątek?
+        - Billing ofiary pokazuje, kto do kogo dzwonił. Porównaj to z zeznaniami.
+        - Okaż billing ofiary osobom, które zaprzeczały, że rozmawiały z nim w piątek wieczorem.
+
+    - id: hn_witness_bak
+      priority: 20
+      activeWhen: { has: m15 }
+      resolvedWhen: { any: [{ flag: bak_admits }, { flag: bak_arrested }] }
+      refs: [m15]
+      levels:
+        - Ktoś był w hotelu wcześniej tego wieczoru i nie spieszy się, żeby o tym powiedzieć.
+        - Nagranie z parkingu może rozwiązać komuś język – o ile nie zaczniesz od krzyku.
+        - Okaż wykonawcy remontu nagranie z kamery hotelu, spokojnie albo z empatią, i zapytaj, co widział w budynku.
+
+    - id: hn_witness_zenon
+      priority: 18
+      activeWhen: { known: p_zenon }
+      resolvedWhen: { any: [{ flag: zenon_saw }, { decision: d_zenon_dismiss }, { time: { gte: 12 } }] }
+      levels:
+        - Ktoś mógł widzieć ogród hotelu tej nocy – ktoś, kogo nikt nie traktuje poważnie.
+        - Człowiek bez dachu nad głową nie ufa policji. Ton rozmowy ma tu ogromne znaczenie.
+        - Porozmawiaj z Zenonem Mazurem łagodnie, zapytaj najpierw o wieczór, a dopiero potem o to, co widział później.
+
+    - id: hn_neighbors
+      priority: 15
+      activeWhen: { all: [{ flag: fraud_known }, { not: { known: p_halina } }] }
+      resolvedWhen: { known: p_halina }
+      levels:
+        - W małym mieście sąsiedzi wiedzą, kto o której wraca do domu.
+        - Ktoś z personelu hotelu może wiedzieć, gdzie mieszkają koledzy i kto obok nich podgląda świat zza firanki.
+        - Zapytaj recepcjonistkę, gdzie mieszkają osoby z kierownictwa hotelu – albo zleć dzielnicowemu wywiad środowiskowy.
+
+  fallback:
+    - Co w tej sprawie nie pasuje do reszty? Zacznij od tego, co Cię uwiera.
+    - Wróć do zeznań i porównaj godziny z tym, co mówią dokumenty i nagrania.
+    - Ułóż oś czasu piątkowego wieczoru od 17:00 do 23:00 i zaznacz, czyje słowa nie mają potwierdzenia.
+
+  refusals:
+    - Synu, córko – wszystko jedno. Nazwisk Ci nie podam. Wnioski są Twoje, ja tylko patrzę, czy nie zgubisz drogi.
+    - Nie gram w „ciepło-zimno” z nazwiskami. Pokaż mi dowody, a nie zgadywanki.
+    - Gdybym wskazywał palcem, to po co by mi był śledczy? Wróć do papierów.
+    - Ładnie próbujesz, ale nie. Czterdzieści lat w policji nauczyło mnie trzymać język za zębami.
+    - Nie potwierdzam i nie wykluczam. Oskarżenie podpisujesz Ty, nie ja.
+  smalltalk:
+    - Kawa z automatu na komendzie smakuje tak samo jak w dziewięćdziesiątym czwartym. Niektóre rzeczy się nie zmieniają.
+    - Zawierzbie to małe miasto. Tu każdy ma tajemnicę i każdy myśli, że nikt o niej nie wie.
+    - Pamiętaj – prasa pisze szybko, a sąd czyta powoli.
+    - Notuj wszystko. Za trzy dni nie będziesz pamiętać, kto co powiedział i o której.
+  waitLines:
+    - Spokojnie, nie wszystko naraz. Przetraw to, co już masz.
+    - Daj sobie chwilę. Najpierw sprawdź poprzedni trop, potem pogadamy.
+    - Nie jestem automatem z odpowiedziami. Popracuj chwilę, a wrócę z czymś konkretniejszym.
+  disabledText: Grasz bez podpowiedzi. Wilk tylko kiwa głową znad kubka – tym razem radzisz sobie sam.

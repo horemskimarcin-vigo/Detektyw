@@ -1,0 +1,302 @@
+decisions:
+  # ---------------- policja ----------------
+  - id: d_cctv_hotel
+    category: police
+    title: Zabezpieczyć zapis z kamery hotelu
+    description: Technik zgra nagranie z rejestratora w recepcji (kamera nad wejściem głównym, przedni parking).
+    cost: { police: 1 }
+    outcomes:
+      - text: Nagranie z piątku 18:00–24:00 zgrane i przekazane do teczki.
+        effects: { unlock: [m15] }
+
+  - id: d_billing_victim
+    category: police
+    title: Billing telefonu ofiary
+    description: Wniosek do operatora o wykaz połączeń i logowań telefonu Wiktora Ostrowskiego z 14.11.
+    cost: { police: 1 }
+    outcomes:
+      - text: Wniosek wysłany do operatora. Odpowiedź zwykle w ciągu doby.
+        delayed:
+          after: 2
+          text: Operator przesłał billing telefonu ofiary.
+          effects: { unlock: [m17] }
+
+  - id: d_cards
+    category: police
+    title: Rejestr kart dostępu od dostawcy systemu
+    description: Zwrócić się do firmy SecurDoor o eksport zdarzeń z zamka drzwi personelu za ostatni tydzień.
+    cost: { police: 1 }
+    outcomes:
+      - text: Firma SecurDoor przyjęła zapytanie.
+        delayed:
+          after: 1
+          text: Nadszedł eksport rejestru zdarzeń zamka drzwi personelu.
+          effects: { unlock: [m21] }
+
+  - id: d_neighborhood
+    category: police
+    title: Wywiad środowiskowy dzielnicowego
+    description: Dzielnicowy porozmawia z sąsiadami osób z najbliższego otoczenia ofiary i z mieszkańcami ul. Lipowej.
+    cost: { police: 1, time: 1 }
+    outcomes:
+      - text: Dzielnicowy złożył notatkę z wywiadu.
+        effects: { unlock: [m26], reveal: [p_halina, p_zenon] }
+
+  - id: d_cctv_city
+    category: police
+    title: Zebrać nagrania z kamer w okolicy hotelu
+    description: Patrol obejdzie sklepy, stacje paliw i posesje przy drogach wyjazdowych z ul. Lipowej i zabezpieczy nagrania z piątkowego wieczoru.
+    cost: { police: 1, time: 1 }
+    outcomes:
+      - text: Patrol zebrał nagrania. Jedno okazało się przydatne – stacja Orlen na ul. Wiślanej. Trwa zgrywanie.
+        delayed:
+          after: 1
+          text: Zgrano nagranie ze stacji Orlen na ul. Wiślanej.
+          effects: { unlock: [m16] }
+
+  - id: d_billing_pawel
+    category: police
+    title: Billing telefonu Pawła Ostrowskiego
+    description: Wniosek o wykaz połączeń i logowań telefonu syna ofiary.
+    cost: { police: 1 }
+    outcomes:
+      - text: Wniosek wysłany do operatora.
+        delayed:
+          after: 2
+          text: Operator przesłał billing telefonu Pawła Ostrowskiego.
+          effects: { unlock: [m18] }
+
+  - id: d_billing_joanna
+    category: police
+    title: Billing telefonu Joanny Kret
+    description: Wniosek o wykaz połączeń i logowań telefonu kierowniczki hotelu. Prokurator zgodzi się tylko przy konkretnych podstawach.
+    cost: { police: 1 }
+    requires: { any: [{ flag: diary_jk }, { has: m17 }, { has: m21 }, { flag: fraud_known }, { flag: joanna_nervous }] }
+    outcomes:
+      - text: Prokurator zaakceptował wniosek. Wysłano zapytanie do operatora.
+        delayed:
+          after: 2
+          text: Operator przesłał billing telefonu Joanny Kret.
+          effects: { unlock: [m19] }
+
+  - id: d_bank
+    category: police
+    title: Wyciągi z rachunku hotelu
+    description: Zażądać od banku wyciągów z rachunku firmowego hotelu za 2025 r. wraz z danymi zlecających przelewy.
+    cost: { police: 1 }
+    requires: { any: [{ flag: fraud_known }, { flag: cal_accountant }, { flag: marta_hint_theft }, { flag: pawel_hint_theft }] }
+    outcomes:
+      - text: Bank przyjął żądanie.
+        delayed:
+          after: 2
+          text: Bank przekazał wyciągi z rachunku hotelu.
+          effects: { unlock: [m22] }
+
+  - id: d_cctv_gala
+    category: police
+    title: Nagranie z parkingu Dworku Zawierzbie
+    description: Zabezpieczyć zapis kamery parkingu z gali charytatywnej, by zweryfikować alibi dr. Lisieckiego.
+    cost: { police: 1 }
+    requires: { asked: ql_gala }
+    outcomes:
+      - text: Nagranie z parkingu Dworku zgrane.
+        effects: { unlock: [m33] }
+
+  # ---------------- laboratorium i biegli ----------------
+  - id: d_lab_particles
+    category: lab
+    title: Badanie mikrośladów z rany
+    description: Analiza cząstek o złotawym połysku zabezpieczonych w trakcie sekcji (pakiet A-3).
+    cost: { lab: 1 }
+    requires: { has: m12 }
+    outcomes:
+      - text: Materiał przekazany do pracowni fizykochemii.
+        delayed:
+          after: 2
+          text: Pracownia przesłała wyniki badania mikrośladów.
+          effects: { unlock: [m13] }
+
+  - id: d_lab_window
+    category: lab
+    title: Ekspertyza szyby z okna gabinetu
+    description: Biegły zbada rozkład odłamków i charakter pęknięć, by ustalić, z której strony wybito szybę.
+    cost: { lab: 1 }
+    outcomes:
+      - text: Odłamki przekazane biegłemu.
+        delayed:
+          after: 1
+          text: Biegły przesłał opinię dotyczącą szyby.
+          effects: { unlock: [m14] }
+
+  - id: d_lab_tox
+    category: lab
+    title: Badanie toksykologiczne
+    description: Pełny panel toksykologiczny krwi ofiary (alkohol, leki, środki odurzające).
+    cost: { lab: 1 }
+    requires: { has: m12 }
+    solverAvoid: true
+    outcomes:
+      - text: Próbki przekazane do pracowni toksykologii.
+        delayed:
+          after: 2
+          text: Nadeszły wyniki badania toksykologicznego.
+          effects: { unlock: [m42] }
+
+  - id: d_wifi
+    category: expert
+    title: Biegły informatyk – dziennik routera Wi-Fi
+    description: >-
+      Zabezpieczyć dziennik połączeń hotelowego routera. Uwaga: według informatyka hotelu wpisy są nadpisywane po ok. 5 dniach.
+    cost: { lab: 1, time: 1 }
+    requires: { time: { lt: 9 } }
+    outcomes:
+      - text: Biegły skopiował dziennik routera. Analiza potrwa pół dnia.
+        delayed:
+          after: 1
+          text: Biegły informatyk przesłał opinię dotyczącą dziennika Wi-Fi.
+          effects: { unlock: [m20] }
+
+  - id: d_laptop
+    category: expert
+    title: Analiza laptopa ofiary
+    description: Biegły informatyk odblokuje laptop i zabezpieczy dokumenty z ostatnich dni.
+    cost: { lab: 1 }
+    outcomes:
+      - text: Laptop przekazany biegłemu.
+        delayed:
+          after: 2
+          text: Biegły przesłał wyniki analizy laptopa – jeden plik zwrócił uwagę.
+          effects: { unlock: [m41] }
+
+  - id: d_lab_statue
+    category: lab
+    title: Ekspertyza statuetki z przeszukania
+    description: Badania DNA, daktyloskopijne i porównanie lakieru z mikrośladami z rany.
+    cost: { lab: 1 }
+    requires: { has: m38 }
+    outcomes:
+      - text: Statuetka przekazana do laboratorium. Priorytet pilny.
+        delayed:
+          after: 2
+          text: Laboratorium przesłało ekspertyzę statuetki.
+          effects: { unlock: [m39] }
+
+  # ---------------- prokurator ----------------
+  - id: d_search
+    category: warrant
+    title: Wniosek o przeszukanie domu i garażu Joanny Kret
+    description: >-
+      Prokurator wyda postanowienie tylko wtedy, gdy przedstawisz konkretne, niezależne poszlaki. Odmowa nadwyręża jej cierpliwość.
+    cost: { patience: 1, time: 1 }
+    key: true
+    requires: { any: [{ flag: diary_jk }, { has: m19 }, { has: m21 }, { has: m20 }, { has: m25 }] }
+    outcomes:
+      - when: { all: [{ counter: grounds, gte: 2 }, { not: { flag: press_staff } }] }
+        text: Prokurator wydała postanowienie. Przeszukanie przeprowadzono jeszcze tego samego dnia.
+        effects: { unlock: [m37, m38], set: [searched] }
+      - when: { all: [{ counter: grounds, gte: 2 }, { flag: press_staff }] }
+        text: Prokurator wydała postanowienie. Przeszukanie przeprowadzono – bez rezultatu.
+        effects: { unlock: [m40], lock: [m37, m38, m39], set: [searched, search_empty] }
+      - text: >-
+          Prokurator Zając: „Inicjały w kalendarzu to za mało, żeby wchodzić komuś do domu. Proszę przynieść coś niezależnego.”
+          Wniosek oddalony.
+        effects: { set: [search_refused] }
+
+  - id: d_search_2
+    category: warrant
+    title: Ponowny wniosek o przeszukanie u Joanny Kret
+    description: Drugi wniosek, z nowymi dowodami. Kolejna odmowa mocno nadwyręży cierpliwość prokuratora.
+    cost: { patience: 1, time: 1 }
+    key: true
+    requires: { all: [{ flag: search_refused }, { counter: grounds, gte: 2 }] }
+    outcomes:
+      - when: { not: { flag: press_staff } }
+        text: Tym razem prokurator wydała postanowienie. Przeszukanie przeprowadzono.
+        effects: { unlock: [m37, m38], set: [searched] }
+      - text: Prokurator wydała postanowienie. Przeszukanie przeprowadzono – bez rezultatu.
+        effects: { unlock: [m40], lock: [m37, m38, m39], set: [searched, search_empty] }
+
+  - id: d_arrest_bak
+    category: arrest
+    title: Zatrzymać Krzysztofa Bąka na 48 godzin
+    description: >-
+      Prasa i część mieszkańców domagają się zatrzymania wykonawcy remontu. Zatrzymanie wymaga zgody prokuratora
+      i dwóch policjantów na czynności.
+    cost: { patience: 1, police: 1 }
+    key: true
+    solverAvoid: true
+    outcomes:
+      - text: >-
+          Bąk zatrzymany w świetle kamer lokalnej telewizji. Po 48 godzinach sąd nie przychyla się do wniosku o areszt i Bąk wychodzi.
+          Jego adwokat zapowiada, że klient nie będzie już rozmawiał z policją. „Kurier” pisze o „bezradności śledczych”.
+        effects: { set: [bak_arrested], budget: { patience: -1 } }
+
+  - id: d_arrest_pawel
+    category: arrest
+    title: Zatrzymać Pawła Ostrowskiego
+    description: Syn ofiary skłamał co do miejsca pobytu. Zatrzymanie pozwoli zabezpieczyć jego telefon.
+    cost: { patience: 1, police: 1 }
+    key: true
+    requires: { has: m18 }
+    solverAvoid: true
+    outcomes:
+      - text: >-
+          Paweł zatrzymany na oczach pracowników hotelu. Zabezpieczono jego telefon. Po kilku godzinach w celi przyznał, że grał w karty.
+          Matka zapowiada skargę, w mieście huczy od plotek.
+        effects: { set: [pawel_arrested, pawel_poker], unlock: [m30] }
+
+  # ---------------- media ----------------
+  - id: d_press_robbery
+    category: press
+    title: "Komunikat dla mediów: „sprawdzamy wątek włamania”"
+    description: Rzecznik potwierdzi oficjalnie, że policja bada wątek rabunkowy. Prasa dostanie swoją historię i na chwilę da spokój.
+    exclusiveGroup: press
+    solverAvoid: true
+    outcomes:
+      - text: Lokalne media trąbią o „bandzie włamywaczy”. Na komendzie zrobiło się ciszej, a w mieście – spokojniej.
+        effects: { set: [press_robbery] }
+
+  - id: d_press_staff
+    category: press
+    title: "Komunikat dla mediów: „sprawdzamy personel hotelu”"
+    description: Ujawnić, że śledczy przyglądają się pracownikom hotelu i jego finansom. Może skłonić świadków do zgłoszenia się.
+    exclusiveGroup: press
+    solverAvoid: true
+    outcomes:
+      - text: >-
+          „Kurier” publikuje tekst „Zabójca wśród swoich?”. Zgłasza się kilku świadków, ale żaden nie wnosi nic nowego.
+          W hotelu panuje nerwowa atmosfera.
+        effects: { set: [press_staff] }
+
+  - id: d_press_silence
+    category: press
+    title: Odmówić mediom komentarza
+    description: Żadnych informacji do zakończenia czynności. Prasa będzie spekulować, a prokurator – niecierpliwić się.
+    exclusiveGroup: press
+    outcomes:
+      - text: Media spekulują dalej na własną rękę. Śledztwo toczy się w ciszy.
+        effects: { set: [press_silent] }
+
+  # ---------------- świadek o wątpliwej reputacji ----------------
+  - id: d_zenon_trust
+    category: witness
+    title: Przyjąć zeznania Zenona Mazura do protokołu
+    description: >-
+      Prokurator ma wątpliwości co do wiarygodności bezdomnego, który pije. Formalne przesłuchanie (z badaniem trzeźwości) wymaga jej zgody.
+    cost: { patience: 1 }
+    requires: { flag: zenon_saw }
+    exclusiveGroup: zenon
+    outcomes:
+      - text: Prokurator zgodziła się. Zenon Mazur złożył zeznania, trzeźwy, w obecności protokolantki.
+        effects: { unlock: [m43] }
+
+  - id: d_zenon_dismiss
+    category: witness
+    title: Uznać relację Zenona Mazura za niewiarygodną
+    description: Nie angażować prokuratora. Relacja bezdomnego zostanie w notatce służbowej, bez mocy dowodowej.
+    requires: { flag: zenon_saw }
+    exclusiveGroup: zenon
+    solverAvoid: true
+    outcomes:
+      - text: Relację Zenona odłożono do notatki. Następnego dnia Zenon wyjechał z miasta.
+        effects: { set: [zenon_dismissed] }

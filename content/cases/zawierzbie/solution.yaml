@@ -1,0 +1,83 @@
+# SPOILERY – plik czytany wyłącznie przez serwer.
+accusation:
+  maxEvidence: 6
+  motives:
+    - { id: mo_robbery, text: "Rabunek – sprawca przyszedł po pieniądze z kasetki" }
+    - { id: mo_payment, text: "Zemsta za niezapłacone 38 000 zł za remont", requires: { known: p_bak } }
+    - { id: mo_debt, text: "Desperacja z powodu długów hazardowych i odmowy pomocy", requires: { flag: pawel_debt } }
+    - { id: mo_inherit, text: "Spadek i polisa na życie przed rozstrzygnięciem rozwodu", requires: { any: [{ has: m35 }, { has: m36 }] } }
+    - { id: mo_sale, text: "Usunięcie przeszkody w przejęciu hotelu", requires: { any: [{ asked: ql_offer }, { has: m29 }, { flag: cal_lisiecki }] } }
+    - id: mo_fraud
+      text: Uciszenie ofiary, która odkryła wyprowadzanie pieniędzy z hotelu i zamierzała to zgłosić
+      requires: { any: [{ flag: fraud_known }, { has: m22 }, { has: m41 }] }
+  means:
+    - { id: me_tool, text: "Cios narzędziem budowlanym (młotek, łom) przyniesionym przez sprawcę" }
+    - { id: me_push, text: "Popchnięcie w trakcie szamotaniny i uderzenie głową o kant sejfu" }
+    - id: me_statue
+      text: Cios mosiężną statuetką „Złota Lipa” z półki w gabinecie
+      requires: { any: [{ flag: statuette_known }, { has: m13 }, { has: m37 }] }
+  opportunities:
+    - { id: op_breakin, text: "Wtargnięcie przez okno gabinetu po północy" }
+    - id: op_gate
+      text: Wejście bramą boczną od strony remontu ok. 21:30
+      requires: { any: [{ flag: van_seen }, { flag: bak_admits }] }
+    - id: op_gala
+      text: Wyjazd z gali w Dworku między 21:39 a 22:11
+      requires: { flag: lisiecki_left }
+    - id: op_meeting
+      text: Umówione wieczorne spotkanie w gabinecie, wejście tylnymi drzwiami personelu ok. 21:25
+      requires: { flag: diary_jk }
+
+solution:
+  culprit: p_joanna
+  motive: mo_fraud
+  means: me_statue
+  opportunity: op_meeting
+  keyEvidence:
+    - { ref: h_cal_fri, weight: 2 }
+    - { ref: m23, weight: 2 }
+    - { ref: m22, weight: 2 }
+    - { ref: m41, weight: 2 }
+    - { ref: m25, weight: 2 }
+    - { ref: m19, weight: 3 }
+    - { ref: m20, weight: 3 }
+    - { ref: m21, weight: 3 }
+    - { ref: h_orlen_fabia, weight: 2 }
+    - { ref: m43, weight: 2 }
+    - { ref: m27, weight: 1 }
+    - { ref: m17, weight: 1 }
+    - { ref: m13, weight: 1 }
+    - { ref: m14, weight: 1 }
+    - { ref: m37, weight: 3 }
+    - { ref: h_statue_base, weight: 3 }
+    - { ref: m39, weight: 5 }
+  requiredEvidence: [h_cal_fri, m12, [m23, m22, m41], [m25, m21, m19, m20]]
+  contradictions:
+    - id: c_evening
+      description: "Kierowniczka: wieczór w domu ↔ karta 21:24, Wi-Fi 21:23–22:02, BTS centrum, sąsiadka (powrót po 22:30), kamera Orlen 22:09."
+      refs: [m08, m21, m20, m19, m25, m16]
+    - id: c_card
+      description: "Karta „zgubiona w środę” ↔ użycia w czwartek i piątek rano, zgłoszenie dopiero w sobotę 09:12."
+      refs: [m08, m21]
+    - id: c_call
+      description: "„Nie rozmawiałam z szefem po pracy” ↔ billing ofiary: połączenie 21:05."
+      refs: [m17]
+    - id: c_staging
+      description: "„Włamanie” ↔ szkło na zewnątrz, nietknięte kosztowności i sejf, brak śladów pod oknem."
+      refs: [m01, m02, m03, m11, m14]
+    - id: c_marta
+      description: "(śledź) Żona: brak kontaktu od tygodni ↔ telefon 20:15."
+      refs: [m17]
+    - id: c_pawel
+      description: "(śledź) Syn: wieczór w domu ↔ BTS Kolejowa, sąsiedzi."
+      refs: [m09, m18, m26]
+  turningPoints:
+    - id: tp_press
+      description: "Komunikat dla mediów – przeciek o personelu powoduje pozbycie się narzędzia zbrodni."
+      decisions: [d_press_staff, d_press_robbery, d_press_silence]
+    - id: tp_arrest
+      description: "Zatrzymanie Bąka – presja prasy, koszt moralny, utrata świadka."
+      decisions: [d_arrest_bak]
+    - id: tp_zenon
+      description: "Zaufać świadkowi o wątpliwej reputacji czy go odrzucić."
+      decisions: [d_zenon_trust, d_zenon_dismiss]

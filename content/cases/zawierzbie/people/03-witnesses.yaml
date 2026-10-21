@@ -1,0 +1,300 @@
+people:
+  - id: p_agnieszka
+    name: Agnieszka Wrona
+    role: witness
+    title: recepcjonistka (zmiana dzienna do 20:00)
+    age: 27
+    bio: Pracuje na recepcji od dwóch lat. W piątek miała zmianę 14:00–20:00. Spostrzegawcza, lubiana przez gości.
+    facts:
+      - text: Widziała kłótnię Wiktora z Pawłem o 17:00.
+        when: { asked: qa_argument }
+      - text: Wychodząc o 20:00 usłyszała od szefa, że „czeka na kogoś później”.
+        when: { asked: qa_left }
+      - text: Jest w związku z Pawłem Ostrowskim.
+        when: { flag: agnieszka_pawel }
+    relations:
+      - { person: p_pawel, label: "partner (w tajemnicy)", when: { flag: agnieszka_pawel } }
+    interview:
+      baseStress: 35
+      baseTrust: 50
+      breakAt: 85
+      questionsPerSession: 5
+      opening: "Agnieszka ściska w dłoniach chusteczkę. – Nie mogę uwierzyć. Jeszcze w piątek z nim rozmawiałam."
+      breakText: "– Przepraszam… nie dam rady. Muszę wyjść."
+      confrontDefault: "– Nie wiem, przykro mi. Nic mi to nie mówi."
+      questions:
+        - id: qa_argument
+          text: Co widziała pani w piątek o 17:00?
+          responses:
+            - text: >-
+                – Pan Wiktor i Paweł kłócili się w holu. Paweł krzyczał, że „ma czas do jutra”, że „oni przyjdą”. Pan Wiktor powiedział,
+                że ani złotówki więcej, że ma iść się leczyć. Paweł trzasnął drzwiami. Chodziło o pieniądze, nie o remont.
+              effects: { set: [pawel_debt] }
+        - id: qa_morning
+          text: Czy w piątek działo się w hotelu coś nietypowego?
+          responses:
+            - text: >-
+                – Pani Joanna długo siedziała u szefa przed południem, z zamkniętymi drzwiami. Prawie godzinę. Wyszła czerwona na twarzy,
+                powiedziała, że „ma migrenę”, i zamknęła się w swoim biurze. Potem do końca dnia była jakaś… nieobecna.
+              effects: { set: [joanna_nervous] }
+        - id: qa_left
+          text: O której pani wyszła i czy szef był jeszcze w hotelu?
+          responses:
+            - text: >-
+                – O ósmej. Szef był w gabinecie. Zapytałam, czy zamknąć recepcję, powiedział, że tak, bo „czeka na kogoś później i sam otworzy”.
+                Nie mówił na kogo.
+              effects: { set: [someone_at_930] }
+        - id: qa_shelf
+          text: Co stało na półce w gabinecie szefa?
+          requires: { flag: statuette_gap }
+          responses:
+            - text: >-
+                – Złota Lipa! Nagroda „Hotel Roku” z 2019. Mosiężne drzewko na ośmiokątnej podstawie, ciężkie jak cegła – szef był z niej dumny,
+                zawsze stała na środku półki. Pani Joanna odbierała ją z nim na gali, jest nawet zdjęcie w holu.
+              effects: { set: [statuette_known] }
+        - id: qa_joanna_home
+          text: Gdzie mieszka pani Kret?
+          responses:
+            - text: >-
+                – Na Osiedlu Słonecznym, w szeregowcu. Byłam raz z dokumentami. Obok mieszka pani Gajda – taka sąsiadka, co wszystko widzi,
+                pani Joanna się z niej śmieje, że „lepsza niż monitoring”.
+              effects: { reveal: [p_halina] }
+        - id: qa_pawel
+          text: Co panią łączy z Pawłem Ostrowskim?
+          requires: { any: [{ flag: pawel_debt }, { trust: { gte: 60 } }] }
+          responses:
+            - when: { trust: { gte: 58 } }
+              text: >-
+                – Jesteśmy razem. Od roku. Pan Wiktor nie wiedział, nie pozwalał na „romanse z personelem”. Paweł ma problemy, ale nie jest zły.
+                W piątek wieczorem nie było go w domu – pisał mi, że „jedzie się odegrać”. Boję się, że to wygląda źle.
+              effects: { set: [agnieszka_pawel] }
+            - text: "– Jesteśmy… kolegami z pracy. Czemu państwo pytacie?"
+      confrontations:
+        - evidence: h_shelf
+          responses:
+            - text: "– Tu stała Złota Lipa! Nagroda hotelu, mosiężna, ciężka. Nie ma jej?"
+              effects: { set: [statuette_known] }
+        - evidence: h_cal_fri
+          responses:
+            - text: "– „J.K.”… Szef tak pisał o różnych osobach skrótami. Ale „B-R” – to chyba ta firma od konserwacji, Bud-Rem. Fakturami zajmowała się pani Joanna."
+
+  - id: p_teresa
+    name: Teresa Lis
+    role: witness
+    title: sprzątaczka, znalazła ciało
+    age: 49
+    bio: Pracuje w hotelu od dziewięciu lat. Codziennie od 7:30. Zna każdy kąt budynku.
+    interview:
+      baseStress: 40
+      baseTrust: 45
+      breakAt: 85
+      questionsPerSession: 5
+      opening: "Teresa Lis siada na brzegu krzesła. – Ciągle go widzę, jak tam leżał. Pytajcie, powiem, co wiem."
+      breakText: "– Przepraszam, nie mogę… Muszę się przewietrzyć."
+      confrontDefault: "– Ja tam się nie znam na papierach. Sprzątam."
+      questions:
+        - id: qt_found
+          text: Proszę dokładnie opisać, co pani zastała w gabinecie.
+          responses:
+            - text: >-
+                – Światło się paliło, zimno jak w psiarni. Pan Wiktor leżał twarzą do podłogi przy sejfie. Kasetka na biurku otwarta, kluczyk w zamku.
+                Laptop i ten jego złoty zegarek leżały na biurku. Pomyślałam jeszcze – złodziej, a zegarka nie wziął?
+              effects: { set: [robbery_doubt] }
+        - id: qt_glass
+          text: Gdzie leżało szkło z wybitej szyby?
+          responses:
+            - text: >-
+                – Prawie nic w środku! Kilka okruszków na parapecie. Wszystko na trawniku pod oknem. Pamiętam, bo pomyślałam, że nie będzie co zamiatać.
+              effects: { set: [glass_outside] }
+        - id: qt_shelf
+          text: Czy w gabinecie czegoś brakowało?
+          requires: { any: [{ flag: statuette_gap }, { asked: qt_found }] }
+          responses:
+            - when: { flag: statuette_gap }
+              text: >-
+                – Tak! Złotej Lipy. Mosiężna nagroda na takiej kanciastej podstawie, ośmiokątnej. Codziennie ją odkurzałam,
+                w czwartek po południu jeszcze stała. I segregatora z regału, tego między „Kadrami” a „Remontem” – czerwony był, z naklejką „B-R”.
+              effects: { set: [statuette_known, binder_br] }
+            - text: "– Na pierwszy rzut oka nie. Ale ja byłam w szoku, nie rozglądałam się."
+        - id: qt_garden
+          text: Czy ktoś nocuje na terenie hotelu?
+          responses:
+            - text: >-
+                – Zenek. Zenon Mazur. Bezdomny, nieszkodliwy. Jak jest zimno, śpi w altanie za kuchnią, pan Wiktor pozwalał i dawał mu zupę.
+                W sobotę rano go nie było, ale koc został.
+              effects: { reveal: [p_zenon] }
+        - id: qt_backdoor
+          text: Kto ma dostęp do tylnych drzwi?
+          responses:
+            - text: >-
+                – Cały personel ma karty. Drzwi same się zatrzaskują, od środka otwiera się przyciskiem. W czwartek i piątek rano?
+                Nie, nikogo nie wpuszczałam, każdy wchodził swoją kartą.
+              effects: { set: [teresa_no_letin] }
+      confrontations:
+        - evidence: h_shelf
+          responses:
+            - text: "– Tu stała Złota Lipa! Ośmiokątna podstawa, mosiądz. Codziennie ją wycierałam. Widać jeszcze ślad w kurzu."
+              effects: { set: [statuette_known] }
+        - evidence: m08
+          responses:
+            - text: "– Pani Joanna zgubiła kartę w środę? Dziwne. W czwartek rano widziałam, jak sama otwiera sobie drzwi kartą, przyszła zaraz po mnie."
+              effects: { set: [joanna_lie_card] }
+
+  - id: p_halina
+    name: Halina Gajda
+    role: witness
+    title: sąsiadka Joanny Kret (ul. Słoneczna 12)
+    age: 71
+    bio: Emerytowana nauczycielka. Mieszka sama, okno kuchni wychodzi na podjazd sąsiedniego domu. Nieufna wobec obcych.
+    knownWhen: { decision: d_neighborhood }
+    interview:
+      baseStress: 25
+      baseTrust: 30
+      breakAt: 80
+      questionsPerSession: 4
+      opening: "Halina Gajda nalewa herbatę do dwóch filiżanek, choć nikt o nią nie prosił. – Policja u mnie. W czym rzecz?"
+      breakText: "– Proszę wyjść. W moim domu nikt na mnie nie będzie krzyczał."
+      confrontDefault: "– Ja tam nie wiem. Ja tylko widzę, co za oknem."
+      questions:
+        - id: qh_smalltalk
+          text: Długo pani tu mieszka?
+          responses:
+            - text: >-
+                – Czterdzieści lat, w tym domu. Uczyłam polskiego w liceum. Wszystkich tu znam, połowę uczyłam. Teraz ludzie się nie znają,
+                tylko samochody im się zmieniają.
+              effects: { trust: { p_halina: 12 } }
+        - id: qh_friday
+          text: Czy widziała pani w piątek wieczorem samochód sąsiadki?
+          responses:
+            - when: { trust: { gte: 40 } }
+              text: >-
+                – Pani Joanny? Białej Skody nie było cały wieczór. Przyjechała po wpół do jedenastej – wiem, bo zaczynał się mój serial na Polsacie,
+                o 22:30, i reflektory mi przeleciały po ścianie. Wjechała od razu do garażu. W garażu światło do północy. Mogę to podpisać.
+              effects: { unlock: [m25], set: [halina_saw] }
+            - text: "– A dlaczego państwo pytacie? Ja nie plotkuję o sąsiadach."
+        - id: qh_saturday
+          text: A w sobotę rano?
+          requires: { any: [{ asked: qh_friday }] }
+          responses:
+            - text: >-
+                – O siódmej myła samochód na podjeździe. W listopadzie, w szlafroku! I odkurzała w środku, długo. Pierwszy raz widziałam.
+                Zawsze jeździ do myjni przy Biedronce.
+              effects: { set: [car_washed] }
+        - id: qh_lifestyle
+          text: Jaka jest pani Kret jako sąsiadka?
+          responses:
+            - text: >-
+                – Grzeczna, mówi dzień dobry. Od roku jakby jej się poprzewracało – nowy samochód, taras, wakacje na Zanzibarze.
+                Na pensji kierowniczki hotelu w Zawierzbiu? Ja jestem stara, ale liczyć umiem.
+              effects: { set: [lifestyle] }
+      confrontations:
+        - evidence: m08
+          responses:
+            - when: { trust: { gte: 40 } }
+              text: "– Cały wieczór w domu? Nieprawda. Mówię, co widziałam. Samochodu nie było do wpół do jedenastej."
+              effects: { unlock: [m25], set: [halina_saw] }
+            - text: "– Nie będę nikogo oskarżać. Proszę pytać ją."
+
+  - id: p_zenon
+    name: Zenon Mazur
+    role: witness
+    title: bezdomny, nocował w altanie hotelu
+    age: 58
+    bio: Od lat bez stałego adresu. Pije, ale – jak mówią w okolicy – „nikomu nic złego nie zrobił”. Policji nie ufa.
+    knownWhen: { any: [{ decision: d_neighborhood }, { flag: zenon_named }] }
+    interview:
+      baseStress: 55
+      baseTrust: 20
+      breakAt: 80
+      questionsPerSession: 4
+      availableWhen: { all: [{ time: { lt: 12 } }, { not: { decision: d_zenon_dismiss } }] }
+      unavailableText: Zenon Mazur wyjechał z Zawierzbia. W noclegowni w Kielcach mówią, że „był i poszedł dalej”.
+      opening: "Mężczyzna w za dużej kurtce trzyma kubek z gorącą herbatą obiema dłońmi. – Ja nic nie zrobiłem. Ja tam tylko spałem."
+      breakText: "– Ja wiedziałem, że tak będzie. Zawsze na Zenka. Idę stąd."
+      confrontDefault: "– Ja się na papierach nie znam."
+      questions:
+        - id: qz_night
+          text: Gdzie pan spał z piątku na sobotę?
+          responses:
+            - text: "– W altanie za kuchnią. Szef pozwalał. Zimno było jak diabli, nie spałem za dużo."
+        - id: qz_bus
+          text: Widział pan kogoś wieczorem w ogrodzie?
+          responses:
+            - text: >-
+                – Koło wpół do dziesiątej bus tego budowlańca. Facet poszedł z latarką do skrzydła, wrócił z narzędziami, pojechał. Krótko był.
+        - id: qz_saw
+          text: Czy później widział pan jeszcze kogoś?
+          requires: { asked: qz_bus }
+          responses:
+            - when: { trust: { gte: 30 } }
+              text: >-
+                – Widziałem… Koło dziesiątej z tylnych drzwi wyszła kobieta. Jasny płaszcz. Szła szybko, niosła coś zawiniętego w biały ręcznik,
+                jak dziecko, przy piersi. Wsiadła do małego białego auta i odjechała bez świateł, dopiero na ulicy włączyła.
+                Twarzy nie widziałem. Wcześniej nie mówiłem, bo kto by uwierzył Zenkowi.
+              effects: { set: [zenon_saw] }
+            - text: "– Nikogo. Spałem. Nic nie widziałem, nic nie wiem."
+        - id: qz_why_not
+          text: Dlaczego pan zniknął w sobotę rano?
+          responses:
+            - text: "– Bo jak przyjeżdża policja, a Zenek śpi w ogrodzie, to wiadomo, kto będzie winny. Nie jestem głupi."
+      confrontations:
+        - evidence: h_shed
+          responses:
+            - text: "– No, to moje. Koc i karton. Szef pozwalał. Butelki… nie wszystkie moje."
+
+  - id: p_ewa
+    name: Ewa Dziedzic
+    role: other
+    title: księgowa – biuro rachunkowe obsługujące hotel
+    age: 45
+    bio: Prowadzi księgi hotelu od 2015 r. Rzeczowa i precyzyjna. Z ofiarą była w stałym kontakcie.
+    interview:
+      baseStress: 20
+      baseTrust: 50
+      breakAt: 90
+      questionsPerSession: 5
+      opening: "Ewa Dziedzic kładzie na stole segregator. – Spodziewałam się tej rozmowy. Przygotowałam dokumenty."
+      breakText: "– Odpowiem na dalsze pytania na piśmie."
+      confrontDefault: "– To nie mój obszar, nie potrafię tego ocenić."
+      questions:
+        - id: qe_thursday
+          text: Czy Wiktor Ostrowski kontaktował się z panią przed śmiercią?
+          responses:
+            - text: >-
+                – W czwartek i w piątek. Zapytałam go przy zamknięciu października o faktury jednego dostawcy – Bud-Rem Serwis.
+                W tym roku zapłacono im prawie dwieście tysięcy, a nie ma żadnego protokołu odbioru prac. Szef był w szoku. Proszę, przygotowałam zestawienie.
+              effects: { unlock: [m23], set: [fraud_known] }
+        - id: qe_approved
+          text: Kto zatwierdzał płatności dla Bud-Rem?
+          requires: { flag: fraud_known }
+          responses:
+            - text: >-
+                – Faktury opisywała i wprowadzała do systemu kierowniczka hotelu, pani Kret. Tak było od 2020 r. Przelewy zlecała z bankowości
+                ze swojego loginu, szef raz w miesiącu klikał zbiorczą akceptację. Nie czytał każdej pozycji – ufał jej.
+        - id: qe_plan
+          text: Co Ostrowski zamierzał zrobić z tą wiedzą?
+          requires: { flag: fraud_known }
+          responses:
+            - text: >-
+                – W czwartek o 17:40 powiedział, że „wszystko jasne”, że w poniedziałek idzie do prokuratury. Ale najpierw chciał dać
+                „tej osobie” szansę się wytłumaczyć, „po ludzku, twarzą w twarz”. Nie powiedział, kiedy ani gdzie.
+              effects: { set: [planned_confrontation] }
+        - id: qe_binder
+          text: Czy Ostrowski miał kopie dokumentów Bud-Rem?
+          requires: { flag: fraud_known }
+          responses:
+            - text: "– Tak, wydrukowałam mu komplet – faktury, wyciągi, KRS. Włożył to do czerwonego segregatora i podpisał „B-R”."
+              effects: { set: [binder_br] }
+        - id: qe_other_debts
+          text: Czy hotel miał inne problemy finansowe?
+          responses:
+            - text: >-
+                – Spór z panem Bąkiem o 38 tysięcy – szef wstrzymał płatność, bo miał zastrzeżenia do jakości. I ugoda rozwodowa, która by hotel
+                mocno obciążyła. Ale hotel był wypłacalny.
+      confrontations:
+        - evidence: m22
+          responses:
+            - text: "– Te same przelewy, które mam w zestawieniu. Login „jkret” – to login kierowniczki. Tylko ona go używała, ja widzę logi akceptacji."
+        - evidence: h_cal_fri
+          responses:
+            - text: "– „B-R” to Bud-Rem, na pewno. Szef tak to skracał, kiedy rozmawialiśmy. „Faktury B-R” – o tym właśnie rozmawialiśmy w czwartek."

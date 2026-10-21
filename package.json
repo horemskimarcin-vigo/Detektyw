@@ -20,7 +20,9 @@
     "seed": "npm run seed -w @detektyw/server",
     "e2e": "playwright test",
     "format": "prettier --write .",
-    "validate": "tsx tools/validate-case.ts"
+    "validate": "tsx tools/validate-case.ts",
+    "check:bundle": "tsx tools/check-bundle.ts",
+    "check": "npm run typecheck && npm test && npm run validate && npm run build && npm run check:bundle"
   },
   "devDependencies": {
     "@detektyw/engine": "*",

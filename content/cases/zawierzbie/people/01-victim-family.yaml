@@ -1,0 +1,240 @@
+people:
+  - id: p_victim
+    name: Wiktor Ostrowski
+    role: victim
+    title: właściciel hotelu „Pod Lipami”
+    age: 63
+    bio: >-
+      Od 1998 r. prowadził hotel „Pod Lipami”, odziedziczony po ojcu. W mieście znany, szanowany, uparty. Od dwóch lat w separacji
+      z żoną. Hotel od tygodnia zamknięty dla gości z powodu remontu skrzydła zachodniego.
+    facts:
+      - text: Zginął od pojedynczego ciosu w tył głowy, między 21:00 a 23:00 w piątek.
+        when: { has: m12 }
+      - text: Nie zamierzał sprzedawać hotelu.
+        when: { any: [{ flag: cal_lisiecki }, { asked: ql_offer }] }
+      - text: W czwartek wypytywał księgową o faktury jednego z dostawców.
+        when: { any: [{ flag: cal_accountant }, { flag: fraud_known }] }
+      - text: Na poniedziałek 17.11 zaplanował wizytę w prokuraturze.
+        when: { any: [{ flag: diary_monday }, { has: m41 }] }
+      - text: "W piątek wieczorem czekał w gabinecie na kogoś („J.K.”, 21:30)."
+        when: { flag: diary_jk }
+    relations:
+      - { person: p_marta, label: "żona (w separacji, sprawa rozwodowa w toku)" }
+      - { person: p_pawel, label: "syn, zastępca dyrektora hotelu" }
+      - { person: p_joanna, label: "kierowniczka hotelu od 6 lat" }
+      - { person: p_bak, label: "wykonawca remontu – spór o zapłatę" }
+      - { person: p_lisiecki, label: "chciał kupić hotel" }
+      - { person: p_ewa, label: "księgowa hotelu" }
+
+  - id: p_marta
+    name: Marta Ostrowska
+    role: suspect
+    title: żona ofiary (w separacji)
+    age: 57
+    bio: >-
+      Od dwóch lat mieszka w Radomiu u siostry. Rozwód i podział majątku w toku – sporna jest spłata za hotel.
+      Formalnie wciąż żona i spadkobierczyni.
+    facts:
+      - text: Jest uposażoną z polisy na życie męża (400 000 zł).
+        when: { has: m35 }
+      - text: Domaga się 1,2 mln zł spłaty w ugodzie rozwodowej.
+        when: { has: m36 }
+      - text: Twierdzi, że w piątek była na urodzinach siostry w Radomiu.
+        when: { asked: qm_evening }
+      - text: Rozmawiała z mężem w piątek o 20:15 (12 minut) – choć początkowo zaprzeczała.
+        when: { flag: marta_call }
+    relations:
+      - { person: p_victim, label: mąż }
+      - { person: p_pawel, label: syn }
+    interview:
+      baseStress: 30
+      baseTrust: 35
+      breakAt: 88
+      questionsPerSession: 5
+      opening: >-
+        Marta Ostrowska przyjeżdża z Radomia z adwokatką, która zostaje na korytarzu. Siada prosto, płaszcza nie zdejmuje.
+        – Proszę pytać. Chcę wiedzieć, kto to zrobił, tak samo jak wy.
+      breakText: "– Wystarczy. Następnym razem proszę o kontakt przez moją pełnomocniczkę."
+      confrontDefault: "– Nie wiem, co to ma wspólnego ze mną. Proszę zapytać kogoś, kto bywał w hotelu."
+      questions:
+        - id: qm_evening
+          text: Gdzie była pani w piątek wieczorem?
+          responses:
+            - text: >-
+                – W Radomiu, u siostry. Pięćdziesiąte urodziny, dwadzieścia osób, restauracja „Pod Zegarem”.
+                Wróciłam do mieszkania siostry po północy. Każdy to potwierdzi.
+              effects: { set: [marta_alibi] }
+        - id: qm_contact
+          text: Kiedy ostatnio rozmawiała pani z mężem?
+          responses:
+            - when: { trust: { gte: 60 } }
+              text: >-
+                – Szczerze? W piątek wieczorem, przez telefon. Kłóciliśmy się o ugodę. Nie powiedziałam tego od razu, bo… wiem, jak to wygląda.
+              effects: { set: [marta_call] }
+            - text: "– Tygodnie temu. Od miesięcy rozmawiamy przez adwokatów."
+        - id: qm_divorce
+          text: Na jakim etapie był rozwód?
+          responses:
+            - text: >-
+                – Sprawa o podział majątku. Wiktor chciał zatrzymać hotel, ja chciałam uczciwej spłaty. Moja adwokatka wysłała mu projekt ugody.
+                Proszę, mam kopię. Nie ukrywam, że chodziło o pieniądze. Po trzydziestu latach małżeństwa chyba mi się należą.
+              effects: { unlock: [m36] }
+        - id: qm_insurance
+          text: Czy mąż miał polisę na życie?
+          requires: { any: [{ asked: qm_divorce }, { has: m28 }] }
+          responses:
+            - text: >-
+                – Tak, od lat. Ja jestem uposażoną, Wiktor chyba nigdy tego nie zmienił. Proszę, tu jest kopia z mojej skrzynki.
+                Zanim państwo zapytacie: nie potrzebuję jego śmierci, żeby dostać pieniądze. Wystarczył mi sąd.
+              effects: { unlock: [m35] }
+        - id: qm_hotel
+          text: Kto w hotelu zajmował się pieniędzmi?
+          responses:
+            - text: >-
+                – Kierowniczka, pani Kret. Wiktor powtarzał, że bez niej by nie dał rady – papiery, przelewy, dostawcy.
+                Ufał jej bardziej niż własnemu synowi. Ostatnio jednak przy telefonie był jakiś… nieswój. Mówił, że „ktoś go okradał”,
+                ale myślałam, że chodzi o mnie i ugodę.
+              effects: { set: [marta_hint_theft] }
+        - id: qm_pawel
+          text: Jakie relacje miał mąż z synem?
+          responses:
+            - text: >-
+                – Trudne. Paweł ma… problem. Długi. Wiktor przestał mu pomagać. Ale Paweł nie podniósłby ręki na ojca. Nie mój syn.
+              effects: { set: [pawel_debt] }
+      confrontations:
+        - evidence: m17
+          responses:
+            - text: >-
+                – Dobrze, tak. Dzwoniłam o 20:15. Chciałam, żeby podpisał ugodę przed świętami. Krzyczeliśmy na siebie dwanaście minut.
+                Powiedział na koniec, że „ma dziś na głowie gorsze sprawy niż ja” i że „ktoś przyjdzie o wpół do dziesiątej”. Rozłączył się.
+                To była nasza ostatnia rozmowa. Nie powiedziałam od razu, bo wyglądałoby to… właśnie tak, jak wygląda.
+              effects: { set: [marta_call, someone_at_930] }
+        - evidence: m35
+          responses:
+            - text: "– Polisa ma czternaście lat. Gdybym chciała pieniędzy z polisy, nie wynajmowałabym adwokatki od rozwodów."
+        - evidence: m28
+          responses:
+            - text: "– Szmatławiec. Piszą o moim synu jak o mordercy. Zapamiętajcie: Paweł nie skrzywdziłby ojca."
+
+  - id: p_pawel
+    name: Paweł Ostrowski
+    role: suspect
+    title: syn ofiary, zastępca dyrektora hotelu
+    age: 29
+    bio: >-
+      Jedyny syn Wiktora. Formalnie zastępca dyrektora, w praktyce rzadko w pracy. Nerwowy, zmęczony, unika wzroku.
+      W piątek o 17:00 pokłócił się z ojcem w holu hotelu.
+    facts:
+      - text: Ma długi u lichwiarza – ok. 60 000 zł, termin spłaty mijał w piątek.
+        when: { flag: pawel_debt }
+      - text: Twierdził, że w piątek wieczorem był w domu.
+        when: { asked: qp_evening }
+      - text: "W piątek wieczorem grał w karty u Mariana Kołka (Kolejowa 7), 21:00–02:00."
+        when: { flag: pawel_poker }
+      - text: Kołek i inni gracze potwierdzają, że był u nich przez cały wieczór.
+        when: { has: m31 }
+    relations:
+      - { person: p_victim, label: ojciec }
+      - { person: p_marta, label: matka }
+      - { person: p_agnieszka, label: "spotykają się (w tajemnicy)", when: { flag: agnieszka_pawel } }
+    interview:
+      baseStress: 50
+      baseTrust: 35
+      breakAt: 88
+      questionsPerSession: 5
+      opening: "Paweł siada na brzegu krzesła. Ręce mu drżą. – Ja już wszystko powiedziałem. Ale pytajcie."
+      breakText: "– Nie wytrzymam tego. Wychodzę. Jak chcecie mnie zatrzymać, to zatrzymajcie."
+      confrontDefault: "– Nie wiem. Naprawdę nie wiem, co to jest."
+      questions:
+        - id: qp_evening
+          text: Gdzie był pan w piątek między 21:00 a 23:00?
+          responses:
+            - text: "– W domu. Mecz, piwo, spać. Mówiłem już."
+        - id: qp_argument
+          text: O co pokłócił się pan z ojcem w piątek po południu?
+          responses:
+            - when: { any: [{ tone: empathetic }, { trust: { gte: 50 } }] }
+              text: >-
+                – O pieniądze. Moje długi. Prosiłem, żeby mi pożyczył – ostatni raz. Powiedział, że nie da ani złotówki,
+                że mam iść na terapię. Wykrzyczałem mu, że ma czas do jutra, bo inaczej… ludzie przyjdą do hotelu. Głupio to zabrzmiało.
+              effects: { set: [pawel_debt] }
+            - text: "– O remont. Ojciec nie słuchał nikogo. Różnica zdań."
+        - id: qp_debt
+          text: Ile jest pan winien i komu?
+          requires: { flag: pawel_debt }
+          responses:
+            - text: >-
+                – Sześćdziesiąt tysięcy. Człowiekowi, na którego wołają „Gruby”. Nie podam nazwiska, nie znam go.
+                Wiem, jak to wygląda. Ale z martwego ojca pieniędzy szybciej nie dostanę – spadek to miesiące.
+        - id: qp_enemies
+          text: Czy ojciec miał wrogów?
+          responses:
+            - text: >-
+                – Bąk, ten od remontu – groził mu. Lisiecki chciał kupić hotel. Matka chciała pieniędzy.
+                A ostatnio… ojciec wrócił w czwartek od komputera wściekły, siedział nad papierami do nocy. Powiedział mi tylko:
+                „W tym hotelu ktoś mnie okrada, a ty się martwisz o swoje karty”.
+              effects: { set: [pawel_hint_theft] }
+        - id: qp_joanna
+          text: Jak ojciec układał sobie współpracę z kierowniczką?
+          responses:
+            - text: >-
+                – Joanna? Ojciec jej ufał bardziej niż mnie. Ona prowadziła wszystko: faktury, przelewy, dostawców. Ja tylko podpisywałem grafiki.
+        - id: qp_agnieszka
+          text: Co łączy pana z Agnieszką Wroną?
+          requires: { flag: agnieszka_pawel }
+          responses:
+            - text: "– Jesteśmy razem. Ojciec nie wiedział. Proszę jej w to nie mieszać, ona nic nie ma do tej sprawy."
+      confrontations:
+        - evidence: m18
+          responses:
+            - text: >-
+                – Dobra. Nie byłem w domu. Grałem w karty u Mariana Kołka, na Kolejowej, w garażu. Od dziewiątej do drugiej.
+                Chciałem się odegrać, żeby oddać dług. Przegrałem. Wstydziłem się powiedzieć. Proszę – to są moje wiadomości,
+                tam wszystko jest. Marian potwierdzi, i jeszcze czterech chłopaków.
+              effects: { set: [pawel_poker, pawel_debt], unlock: [m30] }
+        - evidence: m26
+          responses:
+            - when: { stress: { gte: 60 } }
+              text: >-
+                – Sąsiedzi… No dobrze. Nie było mnie w domu. Byłem na kartach u Mariana Kołka, na Kolejowej. Do drugiej w nocy.
+                Proszę, tu są wiadomości. Marian potwierdzi.
+              effects: { set: [pawel_poker, pawel_debt], unlock: [m30] }
+            - text: "– Sąsiedzi niech pilnują swoich okien. Mogłem spać przy zgaszonym świetle, nie?"
+        - evidence: m28
+          responses:
+            - text: "– Śmieci. Ale… tak. Mam długi. To akurat prawda."
+              effects: { set: [pawel_debt] }
+        - evidence: m35
+          responses:
+            - text: "– Polisa jest na matkę, nie na mnie. Sprawdźcie."
+
+  - id: p_kolek
+    name: Marian Kołek
+    role: other
+    title: emeryt, organizator „prywatnych” partii pokera
+    age: 60
+    bio: Były kolejarz z ul. Kolejowej. W garażu organizuje karciane wieczory „dla znajomych”.
+    knownWhen: { any: [{ has: m18 }, { flag: pawel_poker }] }
+    interview:
+      baseStress: 40
+      baseTrust: 30
+      breakAt: 80
+      questionsPerSession: 3
+      opening: "Starszy mężczyzna w kraciastej koszuli nie wygląda na przestraszonego – patrzy prosto w oczy. – W czym rzecz?"
+      breakText: "– Bez adwokata już nic nie powiem."
+      confrontDefault: "– Nie wiem, o co chodzi."
+      questions:
+        - id: qk_friday
+          text: Czy Paweł Ostrowski był u pana w piątek wieczorem?
+          responses:
+            - when: { any: [{ tone: empathetic }, { trust: { gte: 40 } }, { flag: pawel_poker }] }
+              text: >-
+                – Był. Przyjechał przed dziewiątą, wyjechał po drugiej. Przegrał ze cztery tysiące. Pięciu nas było, wszyscy potwierdzą.
+                Tylko proszę – to nie żadne kasyno, gramy między swoimi. Ojca mu szkoda, chłopak się nie pozbiera.
+              effects: { unlock: [m31] }
+            - text: "– A kto pyta? U mnie nie ma żadnego kasyna."
+        - id: qk_left
+          text: Czy Paweł wychodził w trakcie gry?
+          requires: { has: m31 }
+          responses:
+            - text: "– Na papierosa przed garaż, na pięć minut. Auto stało pod płotem całą noc, zastawione moim."

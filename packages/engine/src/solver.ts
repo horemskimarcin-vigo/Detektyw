@@ -11,7 +11,7 @@ import {
   isMaterialVisible,
 } from './engine.js';
 import { evaluate } from './conditions.js';
-import type { CaseDef } from './schema.js';
+import type { CaseDef, ResponseDef } from './schema.js';
 import type { GameState } from './state.js';
 
 /**
@@ -41,6 +41,88 @@ function pickTone(strategy: ToneStrategy, state: GameState, personId: string): T
   if (i.trust < 40) return 'empathetic';
   if (i.stress < 45) return 'press';
   return 'calm';
+}
+
+/** Na ile odpowiedź posuwa śledztwo (odblokowanie > ujawnienie osoby > ustalenie). */
+function productivity(responses: ResponseDef[]): number {
+  return Math.max(
+    0,
+    ...responses.map(
+      (r) =>
+        (r.effects?.unlock?.length ?? 0) * 10 +
+        (r.effects?.reveal?.length ?? 0) * 4 +
+        (r.effects?.set?.length ?? 0),
+    ),
+  );
+}
+
+const TONES: Tone[] = ['calm', 'empathetic', 'press'];
+
+/**
+ * Najlepszy ruch w trwającej rozmowie: symuluje każde pytanie/konfrontację w każdym tonie
+ * i wybiera taki, który daje rozstrzygającą, wnoszącą coś odpowiedź. Pytań bez szans pomija.
+ */
+function bestInterviewMove(
+  def: CaseDef,
+  state: GameState,
+  personId: string,
+  seat: number,
+  strategy: ToneStrategy,
+  confrontations: { evidence: string; responses: ResponseDef[] }[],
+): GameAction | null {
+  const i = state.interviews[personId]!;
+  const spent = (s: GameState) => s.interviews[personId]!.spent ?? s.interviews[personId]!.asked;
+  const candidates: { action: GameAction; score: number }[] = [];
+  const tones =
+    strategy === 'adaptive' ? TONES : [strategy, ...TONES.filter((t) => t !== strategy)];
+  for (const q of availableQuestions(def, state, personId)) {
+    const firstTime = !i.asked.includes(q.id);
+    for (const tone of tones) {
+      const action: GameAction = { type: 'ask', personId, questionId: q.id, tone };
+      let next: GameState;
+      try {
+        next = applyAction(def, state, action, { seat, now: 0 }).state;
+      } catch {
+        continue;
+      }
+      const conclusive = spent(next).includes(q.id) || q.repeatable;
+      if (!conclusive && !firstTime) continue;
+      const gained = progressGain(state, next);
+      candidates.push({
+        action,
+        score: (conclusive ? 10 : 1) + gained * 5 - (tone === 'press' ? 1 : 0),
+      });
+      if (conclusive) break;
+    }
+  }
+  for (const c of confrontations) {
+    for (const tone of tones) {
+      const action: GameAction = { type: 'confront', personId, evidence: c.evidence, tone };
+      let next: GameState;
+      try {
+        next = applyAction(def, state, action, { seat, now: 0 }).state;
+      } catch {
+        continue;
+      }
+      if (!next.interviews[personId]!.confronted.includes(c.evidence)) continue;
+      candidates.push({
+        action,
+        score: 8 + progressGain(state, next) * 5 - (tone === 'press' ? 1 : 0),
+      });
+      break;
+    }
+  }
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates[0]?.action ?? null;
+}
+
+function progressGain(a: GameState, b: GameState): number {
+  return (
+    Object.keys(b.materials).length -
+    Object.keys(a.materials).length +
+    (Object.keys(b.flags).length - Object.keys(a.flags).length) * 0.5 +
+    (b.knownPeople.length - a.knownPeople.length)
+  );
 }
 
 /** Następna akcja śledczego albo null, gdy nie ma już nic do zrobienia. */
@@ -96,41 +178,51 @@ export function nextSolverAction(
   const active = Object.entries(state.interviews).find(([, i]) => i.inSession);
   if (active) {
     const [personId] = active;
-    const q = availableQuestions(def, state, personId)[0];
-    if (q)
-      return { type: 'ask', personId, questionId: q.id, tone: pickTone(strategy, state, personId) };
-    const c = pendingConfrontations(personId)[0];
-    if (c)
-      return {
-        type: 'confront',
-        personId,
-        evidence: c.evidence,
-        tone: pickTone(strategy, state, personId),
-      };
-    return { type: 'end_interview', personId };
+    const best = bestInterviewMove(
+      def,
+      state,
+      personId,
+      seat,
+      strategy,
+      pendingConfrontations(personId),
+    );
+    return best ?? { type: 'end_interview', personId };
   }
 
-  if (state.time + 1 <= def.budget.time) {
-    for (const p of def.people) {
-      if (!p.interview || interviewAvailability(def, state, p.id) !== null) continue;
-      const i = state.interviews[p.id]!;
-      // Zapytania dostępne przed rozpoczęciem sesji szacujemy symulując stan „w sesji”.
-      const probe = structuredClone(state);
-      probe.interviews[p.id]!.inSession = true;
-      probe.interviews[p.id]!.sessions = i.sessions + 1;
-      const hasQuestions = availableQuestions(def, probe, p.id).length > 0;
-      if (hasQuestions || pendingConfrontations(p.id).length > 0)
-        return { type: 'start_interview', personId: p.id };
-    }
-  }
-
+  // Zlecenia najpierw – wyniki przychodzą z opóźnieniem, a część śladów przepada z czasem.
   if (opts.decisions !== false) {
     for (const d of def.decisions) {
       if (d.solverAvoid || !decisionAvailable(def, state, d) || !decisionAffordable(def, state, d))
         continue;
       if (d.key && state.mode === 'coop' && state.seats.length > 1) continue;
+      // Nie składamy wniosku, który dziś skończyłby się odmową (gorszy wariant niż warunkowe).
+      const outcome = d.outcomes.find((o) => evaluate(o.when, { def, state }));
+      if (outcome && outcome.when === undefined && d.outcomes.some((o) => o.when !== undefined))
+        continue;
       return { type: 'take_decision', decisionId: d.id };
     }
+  }
+
+  if (state.time + 1 <= def.budget.time) {
+    let best: { id: string; score: number } | null = null;
+    for (const p of def.people) {
+      if (!p.interview || interviewAvailability(def, state, p.id) !== null) continue;
+      const i = state.interviews[p.id]!;
+      // Pytania dostępne przed rozpoczęciem sesji szacujemy symulując stan „w sesji”.
+      const probe = structuredClone(state);
+      probe.interviews[p.id]!.inSession = true;
+      probe.interviews[p.id]!.sessions = i.sessions + 1;
+      const questions = availableQuestions(def, probe, p.id);
+      const confr = pendingConfrontations(p.id);
+      if (!questions.length && !confr.length) continue;
+      if (!bestInterviewMove(def, probe, p.id, seat, strategy, confr)) continue;
+      const score =
+        questions.reduce((n, q) => n + productivity(q.responses), 0) +
+        confr.reduce((n, c) => n + productivity(c.responses), 0) +
+        0.1;
+      if (!best || score > best.score) best = { id: p.id, score };
+    }
+    if (best) return { type: 'start_interview', personId: best.id };
   }
 
   if (state.pending.length > 0 && state.time < def.budget.time) return { type: 'wait' };
@@ -159,16 +251,15 @@ export function runSolver(def: CaseDef, start: GameState, opts: SolverOptions = 
 
 /** Czy z danego stanu da się uzasadnić rozwiązanie (wymagane dowody + poprawne odpowiedzi). */
 export function solutionDerivable(def: CaseDef, state: GameState, seat?: number) {
-  const s = seat ?? state.seats[0]!;
+  const sd = seat ?? state.seats[0]!;
   const sol = def.solution;
-  const missing = sol.requiredEvidence.filter(
-    (r) =>
-      !isMaterialVisible(state, r, s) &&
-      !(
-        r in state.hotspots &&
-        isMaterialVisible(state, indexCase(def).hotspots.get(r)!.materialId, s)
-      ),
-  );
+  const has = (r: string) =>
+    isMaterialVisible(state, r, sd) ||
+    (r in state.hotspots &&
+      isMaterialVisible(state, indexCase(def).hotspots.get(r)!.materialId, sd));
+  const missing = sol.requiredEvidence
+    .filter((req) => ![req].flat().some(has))
+    .map((req) => [req].flat().join(' | '));
   const opts = accusationOptions(def, state);
   const missingOptions = [
     !opts.suspects.some((x) => x.id === sol.culprit) && 'sprawca nieznany',

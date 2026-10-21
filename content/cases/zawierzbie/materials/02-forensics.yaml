@@ -1,0 +1,369 @@
+materials:
+  - id: m10
+    type: photo
+    title: "Fotografia nr 15: kalendarz z biurka ofiary"
+    date: "15.11.2025"
+    source: Technik kryminalistyki
+    summary: Kalendarz książkowy otwarty na tygodniu 10–16 listopada. Pismo ofiary – drobne, pochyłe.
+    body:
+      kind: photo
+      image: a04.svg
+      caption: Rozkładówka kalendarza. Lewa strona – środa, czwartek, piątek; prawa – weekend i poniedziałek.
+      width: 1600
+      height: 1000
+      hotspots:
+        - id: h_cal_wed
+          x: 0.28
+          y: 0.25
+          r: 0.07
+          label: "Środa: „13:00 Lisiecki – obiad (NIE sprzedaję!)”"
+          description: Wpis podkreślony dwa razy. Ostrowski nie zamierzał sprzedawać hotelu.
+          effects: { set: [cal_lisiecki] }
+        - id: h_cal_thu
+          x: 0.28
+          y: 0.51
+          r: 0.07
+          label: "Czwartek: „17:30 E. Dziedzic – faktury?? B-R / KRS”"
+          description: Wpis o spotkaniu lub telefonie z księgową. „B-R” zakreślone kółkiem.
+          effects: { set: [cal_accountant] }
+        - id: h_cal_fri
+          x: 0.28
+          y: 0.78
+          r: 0.08
+          label: "Piątek: „21:30 J.K. – faktury B-R !!”"
+          description: Wieczorne spotkanie w piątek, w dniu śmierci. Inicjały „J.K.” i ponownie „B-R”. Trzy wykrzykniki.
+          effects: { set: [diary_jk] }
+        - id: h_cal_mon
+          x: 0.72
+          y: 0.62
+          r: 0.08
+          label: "Poniedziałek: „10:00 Prokuratura – zawiadomienie (teczka!)”"
+          description: Ostrowski planował w poniedziałek złożyć w prokuraturze zawiadomienie. „Teczka” – może chodzi o brakujący segregator?
+          effects: { set: [diary_monday] }
+
+  - id: m12
+    type: autopsy
+    title: Protokół sekcji zwłok – Wiktor Ostrowski
+    date: "16.11.2025"
+    source: Zakład Medycyny Sądowej, dr hab. Irena Sokół
+    unlockWhen: { time: { gte: 2 } }
+    body:
+      kind: document
+      format: autopsy
+      header:
+        - { label: Nr sekcji, value: "ZMS-1187/25" }
+        - { label: Zlecający, value: "Prokuratura Rejonowa w Zawierzbiu, RSD-418/25" }
+        - { label: Data, value: "16.11.2025" }
+      text: |
+        # Badanie zewnętrzne
+        Zwłoki mężczyzny, wzrost 178 cm, masa ok. 86 kg. W okolicy potylicznej prawej **rana tłuczona o kształcie łukowato-łamanym**,
+        dł. 7 cm, z otarciem naskórka po stronie przyśrodkowej. Brak obrażeń o charakterze obronnym na dłoniach i przedramionach.
+        Brak innych obrażeń.
+
+        # Badanie wewnętrzne
+        Złamanie wieloodłamowe kości potylicznej prawej z wgłobieniem odłamów. Krwiak podtwardówkowy, stłuczenie płatów potylicznych.
+        Kształt wgłobienia odpowiada **krawędzi przedmiotu twardego, ciężkiego, o podstawie wielokątnej** – fragment obrysu
+        wskazuje na figurę o kątach ok. 135°, odcinki ok. 5–6 cm (np. **ośmiokąt**).
+        W ranie stwierdzono **drobne cząstki o złotawym połysku**, zabezpieczone do badań (pakiet A-3).
+
+        # Ustalenia
+        1. Przyczyna zgonu: **uraz czaszkowo-mózgowy** spowodowany pojedynczym, silnym uderzeniem w tył głowy.
+        2. Ułożenie rany wskazuje, że pokrzywdzony **stał tyłem lub bokiem do sprawcy** i nie spodziewał się ciosu.
+        3. Treść żołądka: częściowo strawiony posiłek (zupa, mięso, ziemniaki). Przy kolacji ok. 19:00 – **zgon między 21:00 a 23:00**.
+        4. Alkohol we krwi – oznaczenie w toku (pakiet T-1).
+        5. Nie stwierdzono śladów przemieszczania zwłok po zgonie.
+      signature: "dr hab. n. med. Irena Sokół"
+
+  - id: m13
+    type: lab
+    title: "Ekspertyza mikrośladów z rany (pakiet A-3)"
+    date: "pracownia fizykochemii"
+    source: Laboratorium Kryminalistyczne KWP
+    body:
+      kind: document
+      format: lab
+      header:
+        - { label: Materiał, value: "Cząstki z rany okolicy potylicznej, pakiet A-3" }
+        - { label: Metoda, value: "SEM-EDS, FTIR" }
+      text: |
+        **Wyniki:**
+        - Cząstki metaliczne: **mosiądz** (Cu ok. 63%, Zn ok. 37%), tzw. mosiądz odlewniczy.
+        - Na części cząstek **powłoka lakieru nitrocelulozowego z pigmentem złotym** – typowa dla przedmiotów dekoracyjnych
+          (statuetki, trofea, okucia ozdobne), niespotykana w narzędziach warsztatowych.
+        - Nie stwierdzono śladów rdzy, smarów ani stali narzędziowej.
+
+        **Wniosek:** narzędziem był najprawdopodobniej masywny przedmiot dekoracyjny z lakierowanego mosiądzu.
+      signature: "biegły: mgr inż. Krystian Mazurek"
+
+  - id: m14
+    type: lab
+    title: Opinia techniczna – szyba okna gabinetu
+    date: "laboratorium"
+    source: Laboratorium Kryminalistyczne KWP
+    body:
+      kind: document
+      format: lab
+      text: |
+        Zbadano rozkład odłamków szyby (zebranych z trawnika i z wnętrza pomieszczenia) oraz charakter pęknięć na krawędziach.
+
+        - Na zewnątrz zebrano ok. **92%** masy odłamków, wewnątrz ok. 8%.
+        - Linie łuków (tzw. linie Wallnera) na krawędziach odłamków wskazują, że **siła działała od strony wnętrza pomieszczenia**.
+        - Na krawędziach otworu brak włókien tekstylnych, krwi i śladów przeciskania się.
+        - Klamka okna w pozycji zamkniętej, na niej odciski palców wyłącznie ofiary.
+
+        **Wniosek:** szybę wybito od wewnątrz. Nikt nie wszedł przez okno.
+      signature: "biegły: dr inż. Anna Wiśniewska"
+
+  - id: m42
+    type: lab
+    title: Wynik badania toksykologicznego (pakiet T-1)
+    date: "laboratorium"
+    source: Zakład Medycyny Sądowej
+    redHerring: true
+    body:
+      kind: document
+      format: lab
+      text: |
+        - Alkohol etylowy we krwi: **0,4‰** (odpowiada ok. jednemu kieliszkowi wina lub piwu).
+        - Leki: metoprolol (lek nasercowy) w stężeniu terapeutycznym.
+        - Substancje odurzające, leki nasenne: **nie wykryto**.
+
+        Wynik nie wskazuje, by pokrzywdzony był w chwili zdarzenia odurzony lub nieprzytomny.
+      signature: "Pracownia Toksykologii ZMS"
+
+  - id: m15
+    type: cctv
+    title: Monitoring – kamera nad wejściem głównym hotelu
+    date: "14.11.2025, 18:00–24:00"
+    source: Rejestrator w recepcji hotelu
+    summary: Kamera obejmuje wyłącznie przedni parking i wejście główne. Tył budynku poza zasięgiem.
+    body:
+      kind: cctv
+      camera: "CAM-1"
+      location: "Hotel „Pod Lipami” – parking przedni"
+      frames:
+        - t: "18:31:05"
+          image: c01.svg
+          caption: Z parkingu wyjeżdża biały samochód osobowy.
+          hotspots:
+            - id: h_cam_fabia
+              x: 0.42
+              y: 0.62
+              r: 0.1
+              minZoom: 2
+              label: Biała Skoda Fabia, tablica TZA 47…
+              description: Samochód kierowniczki hotelu wyjeżdża z przedniego parkingu o 18:31 – zgodnie z jej zeznaniem.
+              effects: { set: [fabia_known] }
+        - t: "20:05:40"
+          image: c02.svg
+          caption: Kobieta w kurtce wychodzi wejściem głównym i odchodzi pieszo w stronę ulicy.
+        - t: "21:28:12"
+          image: c03.svg
+          caption: Na parking wjeżdża biały bus dostawczy. Kierowca idzie w stronę bramy bocznej.
+          hotspots:
+            - id: h_cam_van
+              x: 0.55
+              y: 0.58
+              r: 0.12
+              label: Bus z napisem „BĄK-REMONTY”
+              description: Na boku busa logo firmy wykonawcy remontu. Kierowca – mężczyzna w kurtce roboczej.
+              effects: { set: [van_seen] }
+        - t: "21:41:30"
+          image: c04.svg
+          caption: Bus wyjeżdża z parkingu. W lewym górnym rogu kadru widać zapalone światło w oknie na parterze.
+        - t: "23:58:00"
+          image: c05.svg
+          caption: Parking pusty. Światło w oknie na parterze nadal się pali.
+      log:
+        - { t: "18:31", text: "Ruch: pojazd osobowy wyjeżdża" }
+        - { t: "20:05", text: "Ruch: osoba piesza – wejście główne" }
+        - { t: "21:28", text: "Ruch: pojazd dostawczy wjeżdża" }
+        - { t: "21:41", text: "Ruch: pojazd dostawczy wyjeżdża" }
+        - { t: "23:58", text: "Brak ruchu (zapis kontrolny)" }
+
+  - id: m16
+    type: cctv
+    title: Monitoring – stacja paliw Orlen, ul. Wiślana
+    date: "14.11.2025, 21:30–23:30"
+    source: Stacja paliw Orlen nr 4411
+    summary: Kamera dystrybutorów częściowo obejmuje jezdnię ul. Wiślanej. Ulica łączy tylny wjazd do hotelu z Osiedlem Słonecznym.
+    body:
+      kind: cctv
+      camera: "Orlen-K3"
+      location: "ul. Wiślana 40 – widok na jezdnię"
+      frames:
+        - t: "21:46:18"
+          image: c06.svg
+          caption: Ulicą przejeżdża biały bus dostawczy, w kierunku centrum.
+          hotspots:
+            - id: h_orlen_van
+              x: 0.50
+              y: 0.55
+              r: 0.12
+              label: Bus „BĄK-REMONTY” na Wiślanej
+              description: Ten sam bus co na parkingu hotelu – o 21:46 jest już kilometr od hotelu.
+              effects: { set: [van_left] }
+        - t: "22:09:51"
+          image: c07.svg
+          caption: Przejeżdża mały biały samochód osobowy, od strony ul. Lipowej (tył hotelu) w stronę osiedla.
+          hotspots:
+            - id: h_orlen_fabia
+              x: 0.47
+              y: 0.60
+              r: 0.06
+              minZoom: 2
+              label: Biała Skoda Fabia, tablica „TZA 47…”
+              description: Fragment tablicy rejestracyjnej czytelny po przybliżeniu – ten sam początek co w samochodzie z parkingu hotelu.
+              effects: { set: [fabia_night] }
+        - t: "22:31:07"
+          image: c08.svg
+          caption: Przejeżdża taksówka (oznakowanie „Zawierzbie Taxi”).
+        - t: "23:20:44"
+          image: c09.svg
+          caption: Jezdnia pusta.
+      log:
+        - { t: "21:46", text: "Pojazd dostawczy biały – kierunek centrum" }
+        - { t: "22:09", text: "Pojazd osobowy biały – kierunek Os. Słoneczne" }
+        - { t: "22:31", text: "Taxi – kierunek dworzec" }
+
+  - id: m20
+    type: report
+    title: Opinia biegłego informatyka – dziennik routera Wi-Fi hotelu
+    date: "zabezpieczono logi"
+    source: biegły sądowy z zakresu informatyki, inż. Michał Stróż
+    onRead: { inc: { grounds: 1 } }
+    body:
+      kind: document
+      format: report
+      text: |
+        Zabezpieczono dziennik routera TP-Link w zapleczu recepcji (pojemność bufora – ok. 5 dób, wpisy starsze są nadpisywane).
+
+        Połączenia z siecią „PodLipami-Staff” w dniu **14.11.2025** po godz. 18:00:
+
+        | Urządzenie (nazwa sieciowa) | Adres MAC | Połączenie | Rozłączenie |
+        |---|---|---|---|
+        | WiktorO-Laptop | 3C:52:..:A1 | 06:58 | – (aktywne) |
+        | Galaxy-S23-Wiktor | 9A:11:..:4F | 07:02 | 21:58 (*) |
+        | Galaxy-A54-Joanna | F2:08:..:C7 | **21:23** | **22:02** |
+        | iPhone-Agnieszka | 6E:B3:..:20 | 13:55 | 20:05 |
+
+        (*) Telefon ofiary rozładował się – ostatni sygnał o 21:58.
+
+        Urządzenie „Galaxy-A54-Joanna” było przypisane wcześniej do tego samego adresu MAC w dniach roboczych (godz. 8–18).
+        Zasięg routera nie wychodzi poza budynek i ogród.
+      signature: "inż. Michał Stróż"
+
+  - id: m21
+    type: report
+    title: Rejestr zdarzeń systemu kart – drzwi personelu
+    date: "eksport SecurDoor"
+    source: SecurDoor sp. z o.o., Kielce
+    onRead: { inc: { grounds: 1 } }
+    body:
+      kind: table
+      columns: [Data i godzina, Zdarzenie, Karta, Użytkownik]
+      rows:
+        - ["12.11.2025 07:58", "Wejście", "07", "J. Kret"]
+        - ["13.11.2025 07:55", "Wejście", "07", "J. Kret"]
+        - ["14.11.2025 07:49", "Wejście", "07", "J. Kret"]
+        - ["14.11.2025 07:31", "Wejście", "14", "T. Lis"]
+        - ["14.11.2025 13:50", "Wejście", "11", "A. Wrona"]
+        - ["**14.11.2025 21:24**", "**Wejście**", "**07**", "**J. Kret**"]
+        - ["15.11.2025 07:32", "Wejście", "14", "T. Lis"]
+        - ["15.11.2025 08:31", "Wejście", "07", "J. Kret"]
+        - ["**15.11.2025 09:12**", "**Zgłoszenie telefoniczne: utrata karty**", "07", "J. Kret"]
+        - ["15.11.2025 09:13", "Blokada karty", "07", "—"]
+      note: |
+        System rejestruje wyłącznie wejścia z zewnątrz (wyjście – przycisk, bez zapisu). Karta nr 07 była używana w czwartek i piątek rano,
+        mimo że według zeznania kierowniczki zgubiono ją w środę. W sobotę o 8:31 ta sama karta otworzyła drzwi – przed zgłoszeniem utraty.
+
+  - id: m37
+    type: report
+    title: Protokół przeszukania – dom i garaż przy ul. Słonecznej 14
+    date: "przeszukanie"
+    source: KPP Zawierzbie
+    body:
+      kind: document
+      format: report
+      header:
+        - { label: Podstawa, value: "Postanowienie Prokuratury Rejonowej w Zawierzbiu" }
+        - { label: Obecna, value: "Joanna Kret (właścicielka)" }
+      text: |
+        Przeszukano dom, garaż i samochód Skoda Fabia nr rej. TZA 47816.
+
+        - **Garaż, regał przy kole zapasowym:** zawiniątko z białego ręcznika frotte z haftem „Pod Lipami”. Wewnątrz mosiężna statuetka
+          w kształcie drzewa lipy na **ośmiokątnej podstawie**, wys. ok. 30 cm, masa ok. 2,9 kg. Na podstawie tabliczka:
+          „Złota Lipa 2019 – Hotel Roku Ziemi Zawierzbiańskiej”. Na krawędzi podstawy ciemnobrunatne zacieki.
+        - Samochód: wnętrze świeżo umyte, zapach środka czyszczącego, dywaniki wyprane.
+        - Gabinet domowy: segregator z dokumentami firmy „Bud-Rem Serwis” – brak; pusta przegródka w szafie podpisana „B-R”.
+        - Kosz w kuchni: pusta koperta bankowa z nadrukiem „Hotel Pod Lipami – utarg”.
+
+        Osoba przeszukiwana oświadczyła, że statuetkę „ktoś musiał podrzucić” i że ręczniki z hotelu „ma każdy pracownik”.
+        Zabezpieczone przedmioty przekazano do badań.
+      signature: "asp. sztab. Robert Nowicki"
+
+  - id: m38
+    type: photo
+    title: "Fotografia z przeszukania: zawiniątko w garażu"
+    date: "przeszukanie"
+    source: Technik kryminalistyki
+    body:
+      kind: photo
+      image: a05.svg
+      caption: Regał w garażu, obok koła zapasowego. Zawiniątko rozłożone przez technika.
+      width: 1600
+      height: 1000
+      hotspots:
+        - id: h_statue_base
+          x: 0.55
+          y: 0.56
+          r: 0.06
+          minZoom: 2
+          label: Ośmiokątna podstawa z ciemnymi zaciekami
+          description: Krawędź mosiężnej podstawy jest lekko wgnieciona, a w zagłębieniu widać zaschnięte, ciemnobrunatne zacieki.
+          effects: { set: [statue_stains] }
+        - id: h_towel
+          x: 0.40
+          y: 0.66
+          r: 0.06
+          label: Haft „Pod Lipami” na ręczniku
+          description: Ręcznik pochodzi z hotelowej pralni – taki sam haft jak na ręcznikach w pokojach.
+
+  - id: m39
+    type: lab
+    title: Ekspertyza statuetki „Złota Lipa” – DNA i daktyloskopia
+    date: "laboratorium"
+    source: Laboratorium Kryminalistyczne KWP
+    body:
+      kind: document
+      format: lab
+      text: |
+        **Badania genetyczne:** zacieki z krawędzi podstawy – krew ludzka; profil DNA **zgodny z profilem Wiktora Ostrowskiego**
+        (prawdopodobieństwo przypadkowej zgodności < 1 : 10⁹).
+
+        **Daktyloskopia:** na korpusie statuetki ujawniono 2 ślady linii papilarnych przydatne do identyfikacji.
+        Ślad nr 1 – **zgodny z odbitką palca wskazującego prawej ręki Joanny Kret** (odbitki porównawcze z akt osobowych).
+        Ślad nr 2 – zgodny z odbitkami Wiktora Ostrowskiego.
+
+        **Lakier i stop:** mosiądz z lakierem nitrocelulozowym, skład zgodny z cząstkami z rany (pakiet A-3).
+        Kształt krawędzi podstawy (ośmiokąt, bok 5,6 cm) odpowiada opisowi wgłobienia w protokole sekcji.
+      signature: "Laboratorium Kryminalistyczne KWP"
+
+  - id: m40
+    type: report
+    title: Protokół przeszukania – wynik negatywny
+    date: "przeszukanie"
+    source: KPP Zawierzbie
+    body:
+      kind: document
+      format: report
+      text: |
+        Przeszukano dom, garaż i samochód Skoda Fabia nr rej. TZA 47816. **Nie ujawniono przedmiotów związanych ze sprawą.**
+
+        - Garaż świeżo uporządkowany, podłoga umyta; na regale przy kole zapasowym czysty ślad po zdjętym przedmiocie.
+        - Samochód: wnętrze świeżo umyte.
+        - Pusta przegródka w szafie podpisana „B-R”.
+
+        Osoba przeszukiwana: „Po tym, co piszą gazety, spodziewałam się was. Proszę szukać, nie mam nic do ukrycia.”
+        Sąsiedzi zeznali, że po publikacji w prasie właścicielka wyjeżdżała wieczorem w stronę Wisły.
+      signature: "asp. sztab. Robert Nowicki"

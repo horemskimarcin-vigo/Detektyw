@@ -1,0 +1,36 @@
+id: zawierzbie
+version: "1.0.0"
+title: "Ostatni gość hotelu Pod Lipami"
+teaser: >-
+  Zawierzbie, listopad. W gabinecie właściciela najstarszego hotelu w mieście sprzątaczka znajduje ciało.
+  Rozbite okno, pusta kasetka, a w mieście – sześć osób, które miały powód, by Wiktor Ostrowski zniknął.
+estimatedHours: "3–5 godzin (1–2 wieczory)"
+contentWarning: "Zabójstwo, opis obrażeń w stylu dokumentów medycznych, uzależnienie od hazardu. Bez drastycznych scen."
+calendar:
+  startDate: "2025-11-15"
+budget:
+  time: 20
+  lab: 4
+  police: 5
+  patience: 4
+briefing:
+  title: "Zabójstwo w hotelu „Pod Lipami”"
+  text: |
+    **Sobota, 15 listopada 2025, godz. 9:00. Komenda Powiatowa Policji w Zawierzbiu.**
+
+    Dziś o 7:40 sprzątaczka hotelu „Pod Lipami” przy ul. Lipowej 3 znalazła w gabinecie na parterze ciało właściciela,
+    **Wiktora Ostrowskiego (63 l.)**. Okno gabinetu jest wybite, kasetka z gotówką pusta. Lekarz stwierdził zgon
+    na skutek urazu głowy. Hotel jest od tygodnia zamknięty dla gości z powodu remontu nowego skrzydła.
+
+    Prokurator rejonowa **Beata Zając** powierzyła śledztwo Tobie. Masz **10 dni** na zebranie materiału,
+    który pozwoli wskazać sprawcę i obronić akt oskarżenia przed sądem.
+
+    Do dyspozycji masz:
+    - **zlecenia dla policji** (zabezpieczenie nagrań, billingi, wywiady),
+    - **zlecenia dla laboratorium i biegłych**,
+    - **cierpliwość prokuratora** – każdy chybiony wniosek ją nadwyręża,
+    - a przede wszystkim **czas**: każda rozmowa i wiele czynności zajmuje pół dnia.
+
+    Miasto już plotkuje, a lokalna prasa ma swoją wersję. Nie każda informacja w teczce jest prawdziwa,
+    nie każda jest istotna. Ułóż własną oś zdarzeń, a gdy zyskasz pewność – złóż akt oskarżenia.
+deadlineText: "Prokurator Zając: „Koniec czasu. Proszę o decyzję – akt oskarżenia albo wniosek o umorzenie.”"

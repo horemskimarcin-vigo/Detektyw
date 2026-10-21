@@ -1,0 +1,212 @@
+materials:
+  - id: m17
+    type: phone
+    title: Billing telefonu Wiktora Ostrowskiego (14.11.2025)
+    date: "dane od operatora"
+    source: Operator sieci komórkowej
+    body:
+      kind: table
+      columns: [Godzina, Typ, Numer, Abonent, Czas]
+      rows:
+        - ["09:12", "połączenie wych.", "+48 41 330 …", "Hurtownia Gastro-Pol", "3:05"]
+        - ["11:31", "SMS wych.", "+48 601 …", "Paweł Ostrowski", "—"]
+        - ["14:20", "połączenie przych.", "+48 605 …", "Tomasz Lisiecki", "0:48"]
+        - ["17:40", "połączenie wych.", "+48 41 335 …", "Biuro Rachunkowe E. Dziedzic", "4:12"]
+        - ["**20:15**", "połączenie przych.", "+48 692 …", "**Marta Ostrowska**", "**12:06**"]
+        - ["**21:05**", "połączenie wych.", "+48 783 …", "**Joanna Kret**", "**0:58**"]
+        - ["21:58", "—", "—", "ostatnie logowanie do sieci (bateria)", "—"]
+      note: Brak połączeń i wiadomości po 21:05. Telefon rozładował się o 21:58 (ostatnie logowanie do stacji bazowej Zawierzbie-Centrum).
+
+  - id: m18
+    type: phone
+    title: Billing i logowania telefonu Pawła Ostrowskiego
+    date: "dane od operatora"
+    source: Operator sieci komórkowej
+    body:
+      kind: table
+      columns: [Godzina, Zdarzenie, Szczegóły, Stacja bazowa (BTS)]
+      rows:
+        - ["17:52", "SMS wych.", "„Gruby” (+48 733 …)", "Zawierzbie-Centrum"]
+        - ["18:30–20:40", "transmisja danych", "—", "Zawierzbie-Lipowiec (okolice miejsca zamieszkania)"]
+        - ["20:40", "SMS wych.", "„Gruby” (+48 733 …)", "Zawierzbie-Lipowiec"]
+        - ["20:52", "połączenie wych.", "Marian Kołek, 0:31", "**Zawierzbie-Kolejowa**"]
+        - ["20:55–02:10", "transmisja danych", "—", "**Zawierzbie-Kolejowa**"]
+        - ["02:24", "transmisja danych", "—", "Zawierzbie-Lipowiec"]
+      note: BTS „Kolejowa” obsługuje rejon dworca i ul. Kolejowej (ok. 3 km od domu Pawła, ok. 2,5 km od hotelu – po przeciwnej stronie rzeki niż hotel).
+
+  - id: m19
+    type: phone
+    title: Billing i logowania telefonu Joanny Kret
+    date: "dane od operatora"
+    source: Operator sieci komórkowej
+    onRead: { inc: { grounds: 1 } }
+    body:
+      kind: table
+      columns: [Godzina, Zdarzenie, Szczegóły, Stacja bazowa (BTS)]
+      rows:
+        - ["18:40–19:10", "transmisja danych", "—", "Zawierzbie-Centrum"]
+        - ["19:15–21:10", "transmisja danych", "—", "Zawierzbie-Os. Słoneczne (okolice miejsca zamieszkania)"]
+        - ["**21:05**", "połączenie przych.", "**Wiktor Ostrowski, 0:58**", "Zawierzbie-Os. Słoneczne"]
+        - ["21:18–22:06", "transmisja danych (sporadycznie)", "—", "**Zawierzbie-Centrum** (obejmuje m.in. ul. Lipową)"]
+        - ["22:14–07:20", "transmisja danych", "—", "Zawierzbie-Os. Słoneczne"]
+        - ["**15.11 09:12**", "połączenie wych.", "SecurDoor – infolinia, 2:40", "Zawierzbie-Centrum"]
+      note: Między 21:18 a 22:06 telefon logował się wyłącznie do stacji obejmującej centrum miasta i ul. Lipową.
+
+  - id: m22
+    type: bank
+    title: Wyciąg z rachunku hotelu – przelewy na rzecz Bud-Rem Serwis
+    date: "01.2025–10.2025"
+    source: Bank Spółdzielczy w Zawierzbiu
+    body:
+      kind: table
+      columns: [Data, Odbiorca, Tytuł, Kwota, Zlecający (bankowość elektr.)]
+      rows:
+        - ["21.01.2025", "Bud-Rem Serwis Sp. z o.o.", "FV 01/2025 konserwacja instalacji", "11 800,00 zł", "jkret"]
+        - ["18.02.2025", "Bud-Rem Serwis Sp. z o.o.", "FV 04/2025 przegląd kotłowni", "9 450,00 zł", "jkret"]
+        - ["20.03.2025", "Bud-Rem Serwis Sp. z o.o.", "FV 07/2025 naprawy pokoje 101-112", "14 900,00 zł", "jkret"]
+        - ["…", "…", "(8 kolejnych przelewów)", "…", "jkret"]
+        - ["13.10.2025", "Bud-Rem Serwis Sp. z o.o.", "FV 31/2025 serwis klimatyzacji", "16 300,00 zł", "jkret"]
+        - ["29.10.2025", "Bud-Rem Serwis Sp. z o.o.", "FV 33/2025 prace dodatkowe", "21 700,00 zł", "jkret"]
+        - ["", "", "**RAZEM (14 przelewów)**", "**186 450,00 zł**", ""]
+      note: |
+        Wszystkie przelewy zlecono z konta użytkownika **„jkret”** w bankowości internetowej hotelu. Właściciel zatwierdzał zbiorcze paczki przelewów raz w miesiącu.
+        Rachunek odbiorcy prowadzony w innym banku; z informacji banku: środki wypłacane gotówką w ciągu kilku dni od wpływu.
+
+  - id: m23
+    type: other
+    title: Zestawienie od księgowej – faktury Bud-Rem Serwis
+    date: "16.11.2025"
+    source: Biuro Rachunkowe Ewa Dziedzic
+    onRead: { set: [fraud_known] }
+    body:
+      kind: document
+      format: report
+      text: |
+        Na prośbę organów ścigania przekazuję zestawienie, o które w czwartek pytał pan Ostrowski.
+
+        | Dostawca | Liczba faktur 2025 | Kwota brutto | Protokoły odbioru prac |
+        |---|---|---|---|
+        | BĄK-REMONTY (remont skrzydła) | 6 | 312 000 zł | są, podpisane przez p. Ostrowskiego |
+        | Gastro-Pol (zaopatrzenie) | 41 | 268 300 zł | dokumenty WZ |
+        | **Bud-Rem Serwis Sp. z o.o.** | **14** | **186 450 zł** | **brak – żadnego** |
+
+        Faktury Bud-Rem były opisywane i wprowadzane do systemu przez kierownika hotelu, zgodnie z procedurą obowiązującą od 2020 r.
+        Właściciel zatwierdzał zbiorcze zestawienia.
+
+        **Informacja z KRS** (pobrana 13.11.2025 na prośbę p. Ostrowskiego): Bud-Rem Serwis Sp. z o.o., wpisana 9.12.2024,
+        siedziba: "Kielce (adres wirtualnego biura), prezes zarządu i jedyny wspólnik: **Dariusz Kret**."
+
+        W czwartek o 17:40 pan Ostrowski zadzwonił do mnie jeszcze raz. Powiedział, że „wszystko jasne” i że w poniedziałek
+        idzie do prokuratury, ale najpierw „da tej osobie szansę się wytłumaczyć – po ludzku, twarzą w twarz”.
+      signature: "Ewa Dziedzic, biegła rewident"
+
+  - id: m41
+    type: other
+    title: Plik z laptopa ofiary – „zawiadomienie_projekt.docx”
+    date: "utworzono 13.11.2025, 22:41"
+    source: Biegły informatyk – analiza laptopa
+    onRead: { inc: { grounds: 1 } }
+    body:
+      kind: document
+      format: letter
+      text: |
+        Zawierzbie, dnia 17 listopada 2025 r.
+
+        **Prokuratura Rejonowa w Zawierzbiu**
+
+        **ZAWIADOMIENIE O PODEJRZENIU POPEŁNIENIA PRZESTĘPSTWA**
+
+        Jako właściciel Hotelu „Pod Lipami” zawiadamiam o podejrzeniu popełnienia przestępstwa z art. 284 § 2 k.k. (przywłaszczenie
+        powierzonego mienia) oraz art. 296 k.k. na szkodę hotelu. W okresie od stycznia do października 2025 r. na rachunek
+        spółki Bud-Rem Serwis wypłacono **186 450 zł** za usługi, których nikt w hotelu nie widział.
+        Faktury wprowadzała i opisywała **kierowniczka hotelu**, Pani J.K., a jedynym wspólnikiem spółki jest osoba o tym samym nazwisku.
+
+        [Tu dopisać: rozmowa w piątek – czy odda pieniądze? Jeżeli tak, może wniosek o łagodny wymiar…]
+
+        W załączeniu: zestawienie faktur, wydruk z KRS, wyciągi (teczka B-R).
+      signature: "Wiktor Ostrowski (niepodpisane)"
+
+  - id: m35
+    type: other
+    title: Polisa na życie – Wiktor Ostrowski
+    date: "polisa z 2011 r."
+    source: Towarzystwo ubezpieczeniowe
+    redHerring: true
+    body:
+      kind: document
+      format: report
+      text: |
+        Ubezpieczony: "Wiktor Ostrowski. Suma ubezpieczenia: **400 000 zł**."
+        Uposażony: **Marta Ostrowska** (żona) – 100%. Ostatnia zmiana uposażonego: brak (od 2011 r.).
+
+        Adnotacja agenta z 03.10.2025: „Klient pytał o procedurę zmiany uposażonego w związku z rozwodem. Nie złożył wniosku.”
+
+  - id: m36
+    type: other
+    title: Pismo pełnomocnika Marty Ostrowskiej – projekt ugody rozwodowej
+    date: "07.11.2025"
+    source: Kancelaria adw. Lucyny Bednarek, Radom
+    redHerring: true
+    body:
+      kind: document
+      format: letter
+      text: |
+        W imieniu mojej Mocodawczyni przedstawiam projekt ugody: podział majątku wspólnego przez przyznanie Panu Wiktorowi Ostrowskiemu
+        hotelu wraz z nieruchomością, ze spłatą na rzecz Pani Marty Ostrowskiej w kwocie **1 200 000 zł** w czterech ratach.
+
+        Wyznaczam termin na odpowiedź do **30 listopada 2025 r.** Brak odpowiedzi skutkować będzie wnioskiem o podział majątku
+        w postępowaniu sądowym, w tym o ustanowienie zarządcy przymusowego.
+
+  - id: m30
+    type: messages
+    title: Wiadomości z telefonu Pawła Ostrowskiego – kontakt „Gruby”
+    date: "11–14.11.2025"
+    source: Telefon Pawła Ostrowskiego
+    body:
+      kind: messages
+      participants: [Paweł, Gruby]
+      messages:
+        - { from: Gruby, t: "11.11 22:10", text: "Piątek. 60 koła. Nie jestem bankiem." }
+        - { from: Paweł, t: "11.11 22:14", text: "Będzie. Stary mi da." }
+        - { from: Gruby, t: "14.11 17:30", text: "I co, dał?" }
+        - { from: Paweł, t: "14.11 17:52", text: "Nie. Daj mi tydzień." }
+        - { from: Gruby, t: "14.11 18:05", text: "Masz do poniedziałku. Potem przyjadę do hotelu." }
+        - { from: Paweł, t: "14.11 20:40", text: "Dziś gram u Mariana. Odbiję się, zobaczysz." }
+        - { from: Gruby, t: "15.11 11:02", text: "Słyszałem o starym. Przykro mi. Termin aktualny." }
+
+  - id: m31
+    type: testimony
+    title: Protokół przesłuchania świadka – Marian Kołek
+    date: "przesłuchanie"
+    source: KPP Zawierzbie
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Marian Kołek, l. 60, emeryt kolejarz" }
+      text: |
+        W piątek 14 listopada u mnie w garażu na Kolejowej 7 grało pięciu panów w karty, w tym Paweł Ostrowski.
+        Przyjechał przed dziewiątą wieczorem, wyjechał po drugiej w nocy. **Ani razu nie wychodził na dłużej**, najwyżej na papierosa przed garaż.
+        Przegrał koło czterech tysięcy. Nazwiska pozostałych podam – potwierdzą.
+      signature: "Odczytano, podpisano: M. Kołek"
+
+  - id: m32
+    type: other
+    title: Paragon – stacja paliw Moya, ul. Krakowska
+    date: "14.11.2025, 21:52"
+    source: Przekazany przez dr. Tomasza Lisieckiego
+    redHerring: true
+    body:
+      kind: document
+      format: receipt
+      text: |
+        **MOYA – Stacja nr 118, Zawierzbie, ul. Krakowska 112**
+
+        14.11.2025 21:52:08 · Kasa 1
+
+        - Papierosy Davidoff Gold × 2 – 41,98 zł
+        - Guma do żucia miętowa – 4,49 zł
+
+        **SUMA: 46,47 zł** · Karta ****4471
+
+        Stacja Moya przy Krakowskiej leży na północnym krańcu miasta, ok. 6 km od hotelu „Pod Lipami” i ok. 3 km od Dworku Zawierzbie.

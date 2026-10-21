@@ -1,0 +1,313 @@
+materials:
+  - id: m01
+    type: report
+    title: Notatka urzędowa z oględzin miejsca zdarzenia
+    date: "15.11.2025"
+    source: KPP Zawierzbie, asp. sztab. Robert Nowicki
+    start: true
+    body:
+      kind: document
+      format: report
+      header:
+        - { label: Sygnatura, value: "RSD-418/25" }
+        - { label: Miejsce, value: "Hotel „Pod Lipami”, ul. Lipowa 3, Zawierzbie – gabinet właściciela (parter, skrzydło wschodnie)" }
+        - { label: Godzina przybycia, value: "08:02" }
+      text: |
+        W dniu 15.11.2025 r. o godz. 07:46 dyżurny KPP Zawierzbie otrzymał zgłoszenie od **Teresy Lis**, pracownicy sprzątającej hotelu,
+        o znalezieniu w gabinecie właściciela nieprzytomnego mężczyzny. Lekarz PRM stwierdził zgon **Wiktora Ostrowskiego** (ur. 1962).
+
+        **Stan pomieszczenia:**
+        - Ciało leżało twarzą do podłogi, przy ścianie z sejfem, głową w kierunku sejfu.
+        - Szyba w oknie gabinetu (okno od strony ogrodu) wybita. Zimno w pomieszczeniu, kaloryfer włączony.
+        - Kasetka na gotówkę na biurku otwarta i pusta. Według kierowniczki hotelu J. Kret było w niej ok. **3 400 zł** utargu z restauracji.
+        - Sejf zamknięty, bez śladów forsowania.
+        - Na biurku laptop (włączony, zablokowany), zegarek naręczny, liczne dokumenty w nieładzie.
+        - Oświetlenie gabinetu włączone.
+        - Drzwi gabinetu na korytarz zamknięte, niezamknięte na klucz.
+        - Tylne drzwi personelu (korytarz gospodarczy) zamknięte – zamek samozatrzaskowy, otwierane kartą od zewnątrz, przyciskiem od wewnątrz.
+
+        **Wstępna hipoteza patrolu:** włamanie przez okno, zaskoczenie właściciela przez sprawcę/sprawców.
+
+        Zabezpieczono: kasetkę, odłamki szkła z wnętrza pomieszczenia (nieliczne), laptop, kalendarz i dokumenty z biurka pozostawiono do oględzin technicznych.
+        Wykonano dokumentację fotograficzną. Ciało przekazano do Zakładu Medycyny Sądowej.
+      signature: "asp. sztab. Robert Nowicki"
+
+  - id: m02
+    type: photo
+    title: "Fotografia nr 3: gabinet – widok od drzwi"
+    date: "15.11.2025, 08:35"
+    source: Technik kryminalistyki
+    summary: Zdjęcie wykonane po przewiezieniu ciała. Żółte tabliczki oznaczają miejsca zabezpieczeń.
+    start: true
+    body:
+      kind: photo
+      image: a01.svg
+      caption: Gabinet właściciela. Ciało już przewiezione, tabliczki 1–4 oznaczają ślady.
+      width: 1600
+      height: 1000
+      hotspots:
+        - id: h_shelf
+          x: 0.80
+          y: 0.27
+          r: 0.05
+          minZoom: 2
+          label: Czysty ośmiokąt w kurzu na półce
+          description: Na zakurzonej półce odznacza się czysty, ośmiokątny ślad. Coś ciężkiego stało tu jeszcze niedawno, a teraz go nie ma.
+          effects: { set: [statuette_gap] }
+        - id: h_papers
+          x: 0.42
+          y: 0.64
+          r: 0.06
+          label: Gruby kalendarz pod stertą papierów
+          description: Spod faktur wystaje papierowy kalendarz książkowy, otwarty na bieżącym tygodniu. Zabezpieczono go do oględzin.
+          effects: { unlock: [m10] }
+        - id: h_valuables
+          x: 0.57
+          y: 0.60
+          r: 0.05
+          label: Zegarek i laptop na biurku
+          description: Złoty zegarek (Rolex) leży obok laptopa. Włamywacz, który zabrał kilka tysięcy z kasetki, zostawił rzeczy warte kilkadziesiąt tysięcy.
+          effects: { set: [robbery_doubt] }
+        - id: h_safe
+          x: 0.14
+          y: 0.58
+          r: 0.06
+          label: Nienaruszony sejf
+          description: Sejf zamknięty, bez rys i śladów narzędzi. Ofiara leżała tuż przy nim.
+          effects: { set: [robbery_doubt] }
+        - id: h_cashbox
+          x: 0.68
+          y: 0.66
+          r: 0.045
+          label: Pusta kasetka
+          description: Kasetka otwarta kluczykiem, który wciąż tkwi w zamku. Bez śladów siłowego otwarcia.
+
+  - id: m03
+    type: photo
+    title: "Fotografia nr 7: okno gabinetu od strony ogrodu"
+    date: "15.11.2025, 08:50"
+    source: Technik kryminalistyki
+    start: true
+    body:
+      kind: photo
+      image: a02.svg
+      caption: Okno gabinetu widziane z ogrodu. Pod oknem trawnik i rabata.
+      width: 1600
+      height: 1000
+      hotspots:
+        - id: h_glass
+          x: 0.50
+          y: 0.84
+          r: 0.09
+          label: Szkło na trawniku
+          description: Większość odłamków szyby leży na zewnątrz, na trawniku – nawet półtora metra od ściany. Szybę wybito od środka.
+          effects: { set: [glass_outside] }
+        - id: h_latch
+          x: 0.50
+          y: 0.40
+          r: 0.035
+          minZoom: 2
+          label: Zamknięta klamka okna
+          description: Klamka okna ustawiona w pozycji „zamknięte”. Przez otwór w szybie nikt nie przeszedł – ostre krawędzie są czyste, bez włókien i krwi.
+          effects: { set: [window_never_opened] }
+        - id: h_soil
+          x: 0.28
+          y: 0.78
+          r: 0.06
+          label: Rabata bez śladów butów
+          description: Miękka, wilgotna ziemia rabaty pod oknem jest gładka. Nikt tu nie stał w nocy.
+          effects: { set: [no_footprints] }
+
+  - id: m44
+    type: photo
+    title: "Fotografia nr 12: tylny parking i ogród hotelu"
+    date: "15.11.2025, 09:20"
+    source: Technik kryminalistyki
+    summary: Tył hotelu – parking gospodarczy, wejście dla personelu, brama od strony remontu.
+    start: true
+    body:
+      kind: photo
+      image: a03.svg
+      caption: Widok z ogrodu na tylny parking. Po prawej brama do skrzydła w remoncie, po lewej altana.
+      width: 1600
+      height: 1000
+      hotspots:
+        - id: h_tracks
+          x: 0.36
+          y: 0.76
+          r: 0.08
+          label: Świeże ślady opon
+          description: Na rozmokłym żwirze świeże ślady wąskich opon – mały samochód osobowy zawracał tu niedawno. Parking nie jest objęty monitoringiem.
+          effects: { set: [small_car_tracks] }
+        - id: h_butts
+          x: 0.83
+          y: 0.70
+          r: 0.045
+          minZoom: 2
+          label: Niedopałki przy bramie
+          description: Trzy niedopałki papierosów jednej marki przy bramie do skrzydła w remoncie. Ktoś czekał tu albo bywał regularnie.
+          effects: { set: [butts_found] }
+        - id: h_shed
+          x: 0.14
+          y: 0.46
+          r: 0.08
+          label: Koc i butelki w altanie
+          description: W altanie ogrodowej leży stary koc, karton i puste butelki. Ktoś tu nocuje.
+          effects: { set: [shed_found] }
+
+  - id: m04
+    type: report
+    title: Karta oględzin zewnętrznych zwłok (lekarz PRM)
+    date: "15.11.2025, 08:10"
+    source: Lekarz Pogotowia Ratunkowego
+    start: true
+    body:
+      kind: document
+      format: report
+      header:
+        - { label: Lekarz, value: "lek. Marcin Pawlak" }
+        - { label: Godzina badania, value: "08:10" }
+      text: |
+        Mężczyzna ok. 60 lat, zwłoki w pozycji leżącej na brzuchu.
+
+        - Plamy opadowe ustalone, nie przemieszczają się pod uciskiem.
+        - Stężenie pośmiertne wyraźne we wszystkich grupach mięśni.
+        - Rana tłuczona w okolicy potylicznej, z zaschniętą krwią; włosy zlepione.
+        - Brak widocznych obrażeń dłoni i przedramion.
+
+        **Wstępnie:** zgon nastąpił **kilka do kilkunastu godzin** przed badaniem, prawdopodobnie między 21:00 a 24:00 dnia poprzedniego.
+        Dokładne ustalenia – sekcja zwłok.
+
+  - id: m11
+    type: inventory
+    title: Spis przedmiotów zabezpieczonych w gabinecie
+    date: "15.11.2025"
+    source: Technik kryminalistyki
+    start: true
+    body:
+      kind: table
+      columns: [Lp., Przedmiot, Miejsce, Uwagi]
+      rows:
+        - ["1", "Laptop Dell Latitude", "biurko", "włączony, zablokowany hasłem"]
+        - ["2", "Zegarek Rolex Datejust", "biurko, obok laptopa", "sprawny"]
+        - ["3", "Kasetka na gotówkę", "biurko", "otwarta kluczykiem (kluczyk w zamku), pusta"]
+        - ["4", "Portfel skórzany", "marynarka na wieszaku", "640 zł, karty płatnicze, dokumenty"]
+        - ["5", "Telefon Samsung", "kieszeń spodni ofiary", "rozładowany"]
+        - ["6", "Kalendarz książkowy 2025", "biurko, pod dokumentami", "otwarty na tygodniu 10–16.11"]
+        - ["7", "Segregatory: „Remont 2025”, „Kadry”, „Umowy”", "regał", "na półce widoczna luka po segregatorze"]
+        - ["8", "Dyplom „Hotel Roku Ziemi Zawierzbiańskiej 2019”", "półka nad regałem", "w ramce"]
+        - ["9", "Puchary: „Turniej Golfowy 2016”, „Bieg Lipowy 2021”", "półka nad regałem", "–"]
+        - ["10", "Odłamki szkła (kilkanaście drobnych)", "parapet wewnętrzny, podłoga", "większość szyby poza pomieszczeniem"]
+      note: |
+        Na grzbietach segregatorów naklejki z napisami w kolejności alfabetycznej. Między „Kadry” a „Remont 2025” brak jednego segregatora.
+        Personel nie potrafił od razu wskazać, czego dotyczył.
+
+  - id: m07
+    type: field
+    title: Notatka – personel i dostęp do budynku
+    date: "15.11.2025"
+    source: asp. sztab. Robert Nowicki
+    start: true
+    body:
+      kind: document
+      format: note
+      text: |
+        **Personel hotelu (stan na 14.11.2025 – hotel zamknięty dla gości, trwa remont skrzydła zachodniego):**
+
+        | Osoba | Funkcja | Karta |
+        |---|---|---|
+        | Wiktor Ostrowski | właściciel | 01 |
+        | Paweł Ostrowski | zastępca dyrektora (syn) | 02 |
+        | Joanna Kret | kierowniczka hotelu | 07 |
+        | Agnieszka Wrona | recepcja (zmiana do 20:00) | 11 |
+        | Teresa Lis | sprzątanie | 14 |
+
+        - Wejście dla personelu (tył budynku) – zamek elektroniczny na karty. **System rejestruje wejścia; logi przechowuje dostawca systemu** (firma SecurDoor, Kielce).
+        - Brama boczna do skrzydła w remoncie – klucz ma wykonawca, **Krzysztof Bąk** (firma BĄK-REMONTY).
+        - Księgi rachunkowe prowadzi zewnętrzne biuro **Ewy Dziedzic** (Zawierzbie, ul. Ogrodowa 8).
+        - Monitoring: jedna kamera nad wejściem głównym, obejmuje **wyłącznie przedni parking**. Rejestrator w recepcji.
+        - Hotelowa sieć Wi-Fi – router w zapleczu recepcji. Według informatyka obsługującego hotel **dziennik połączeń jest nadpisywany po ok. 5 dniach**.
+
+  - id: m06
+    type: testimony
+    title: Protokół przesłuchania świadka – Teresa Lis
+    date: "15.11.2025, 09:30"
+    source: KPP Zawierzbie
+    start: true
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Teresa Lis, l. 49, sprzątaczka" }
+      text: |
+        Pracuję w hotelu od dziewięciu lat. Codziennie zaczynam o 7:30. Dziś weszłam tylnymi drzwiami swoją kartą.
+        Na korytarzu było zimno, więc zajrzałam do gabinetu, bo tam ciągnęło. Światło było zapalone.
+        Pan Wiktor leżał na podłodze przy sejfie. Dotknęłam jego ręki, była zimna. Zadzwoniłam na 112 z komórki, o 7:46.
+
+        Nikogo nie widziałam. Niczego nie ruszałam, tylko wyszłam na korytarz i czekałam na policję.
+        Pan Wiktor często siedział w gabinecie do późna, odkąd hotel zamknięto na remont.
+      signature: "Odczytano, podpisano: T. Lis"
+
+  - id: m08
+    type: testimony
+    title: Protokół przesłuchania świadka – Joanna Kret
+    date: "15.11.2025, 10:15"
+    source: KPP Zawierzbie
+    start: true
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Joanna Kret, l. 41, kierowniczka hotelu" }
+      text: |
+        Jestem kierowniczką hotelu od sześciu lat. W piątek wyszłam z pracy o wpół do siódmej. Pan Ostrowski został w gabinecie,
+        był sam. Nie wspominał o żadnym spotkaniu. Pojechałam na zakupy, a potem do domu na Osiedle Słoneczne.
+        **Cały wieczór byłam w domu**, czytałam, wcześnie poszłam spać. Mieszkam sama.
+
+        W kasetce był piątkowy utarg z restauracji dla ekipy remontowej i cateringu – ok. 3 400 zł. Miałam go odwieźć do banku w poniedziałek.
+
+        Pan Ostrowski miał konflikt z wykonawcą remontu, panem Bąkiem, który mu publicznie groził.
+        Dodam, że **w środę zgubiłam swoją kartę do drzwi personelu**, chyba na parkingu. Dziś rano to zgłosiłam do firmy od systemu.
+      signature: "Odczytano, podpisano: J. Kret"
+
+  - id: m09
+    type: testimony
+    title: Protokół przesłuchania świadka – Paweł Ostrowski
+    date: "15.11.2025, 11:40"
+    source: KPP Zawierzbie
+    start: true
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Paweł Ostrowski, l. 29, zastępca dyrektora hotelu, syn zmarłego" }
+      text: |
+        Z ojcem widziałem się w piątek około piątej po południu w hotelu. Rozmawialiśmy o remoncie, była różnica zdań, podniesione głosy.
+        Wyszedłem około wpół do szóstej. **Wieczór spędziłem w domu**, oglądałem mecz, wcześnie poszedłem spać. Nikt tego nie potwierdzi.
+
+        Ojciec nie miał wrogów, poza tym budowlańcem, Bąkiem. No i doktor Lisiecki chciał od nas kupić hotel, ojciec odmówił.
+      signature: "Odczytano, podpisano: P. Ostrowski"
+
+  - id: m05
+    type: press
+    title: "„Kurier Zawierzbiański”: Brutalne włamanie w hotelu"
+    date: "15.11.2025"
+    source: kurierzawierzbie.pl
+    start: true
+    redHerring: true
+    body:
+      kind: press
+      outlet: Kurier Zawierzbiański
+      headline: "Krwawa noc w „Pod Lipami”. Właściciel zabity przez włamywaczy?"
+      lead: "Wiktor Ostrowski, jeden z najbardziej znanych przedsiębiorców w mieście, nie żyje. Nieoficjalnie: sprawcy weszli przez okno."
+      text: |
+        Jak ustalił „Kurier”, do tragedii doszło **po północy** z piątku na sobotę. Sprawcy mieli wybić okno gabinetu
+        i zaskoczyć właściciela, który – jak mówią pracownicy – często pracował po nocach.
+        Z gabinetu zniknęła gotówka.
+
+        Mieszkańcy ulicy Lipowej przypominają, że od tygodni w hotelu kręcą się „obcy” – ekipa remontowa.
+        Wykonawca remontu, **Krzysztof B.**, jeszcze w październiku pisał na Facebooku, że właściciel „jeszcze pożałuje”.
+        Według naszych informacji mężczyzna był w przeszłości karany za pobicie.
+
+        Policja nie komentuje. Apelujemy do Czytelników, którzy widzieli coś niepokojącego w okolicy hotelu.
+      byline: Oprac. (red)

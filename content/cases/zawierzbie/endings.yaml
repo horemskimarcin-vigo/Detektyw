@@ -1,0 +1,181 @@
+# SPOILERY. Teksty zakończeń nie mogą wskazywać faktycznego sprawcy (sprawdza walidator).
+endings:
+  - id: end_full
+    title: Akt oskarżenia nie do podważenia
+    tone: positive
+    priority: 100
+    when:
+      all:
+        - { accusedCorrect: true }
+        - { strength: { gte: 10 } }
+        - { reasoning: { gte: 3 } }
+        - { not: { flag: press_staff } }
+        - { not: { flag: bak_arrested } }
+        - { not: { flag: pawel_arrested } }
+    epilogue: |
+      Proces trwa jedenaście dni. Obrona próbuje podważyć wszystko po kolei, ale każdy element Twojej układanki trzyma się pozostałych:
+      motyw udokumentowany co do złotówki, sposób potwierdzony przez biegłych, godzina po godzinie odtworzony wieczór 14 listopada.
+
+      Sąd Okręgowy skazuje oskarżoną za zabójstwo na 25 lat pozbawienia wolności. W uzasadnieniu sędzia mówi o „śledztwie prowadzonym
+      bez pośpiechu i bez uprzedzeń”. Prokurator Zając po raz pierwszy od lat uśmiecha się na korytarzu sądu.
+
+      Hotel „Pod Lipami” otwiera się wiosną, po remoncie dokończonym przez ekipę Krzysztofa Bąka – zaległa faktura została zapłacona przez spadkobierców.
+      Na środku półki w odnowionym gabinecie stoi nowa statuetka. Ktoś przykleił pod nią karteczkę: „Za Wiktora”.
+    addenda:
+      - when: { hints: { lte: 0 } }
+        text: "Henryk Wilk przy kawie: „Bez jednej mojej podpowiedzi. Czterdzieści lat w policji, a takiej roboty dawno nie widziałem.”"
+      - when: { hints: { gte: 7 } }
+        text: "Henryk Wilk przy kawie: „Trochę Cię prowadziłem za rękę, ale to Ty podpisał(-a)ś akt. Następnym razem dasz radę sam(-a).”"
+
+  - id: end_costly
+    title: Sprawiedliwość z rysą
+    tone: positive
+    priority: 90
+    when:
+      all:
+        - { accusedCorrect: true }
+        - { strength: { gte: 7 } }
+        - { reasoning: { gte: 2 } }
+        - any: [{ flag: press_staff }, { flag: bak_arrested }, { flag: pawel_arrested }]
+    epilogue: |
+      Wyrok zapada: winna zabójstwa, 25 lat. Akt oskarżenia obronił się – ale nie wszyscy wychodzą z tej sprawy cało.
+
+      Zawierzbie pamięta, że zanim padło właściwe nazwisko, ktoś inny był publicznie wytykany palcami. Plotki nie znikają razem z wyrokiem.
+      Na Twoje biurko trafia skarga, a w komendzie wojewódzkiej ktoś zapisuje Twoje nazwisko w zeszycie, którego nikt nie chce mieć.
+
+      Sprawa zamknięta. Sumienie – nie do końca.
+    addenda:
+      - when: { flag: bak_arrested }
+        text: "Krzysztof Bąk traci dwa zlecenia po pokazowym zatrzymaniu. Przeprosiny komendanta czyta w gazecie na ostatniej stronie."
+      - when: { flag: pawel_arrested }
+        text: "Paweł Ostrowski, zatrzymany na oczach pracowników, nie wraca do hotelu. Matka zapowiada pozew o odszkodowanie."
+      - when: { flag: search_empty }
+        text: "Narzędzia zbrodni nigdy nie odnaleziono. Obrona będzie to powtarzać w apelacji."
+
+  - id: end_procedural
+    title: Wyrok mimo zgrzytów
+    tone: positive
+    priority: 80
+    when:
+      all:
+        - { accusedCorrect: true }
+        - { strength: { gte: 5 } }
+        - { reasoning: { gte: 2 } }
+    epilogue: |
+      Obrona punktuje luki: brak bezpośredniego dowodu, niejasności w osi czasu, poszlaki zamiast pewników. Sąd pierwszej instancji
+      skazuje oskarżoną, ale kwalifikuje czyn łagodniej – jako pobicie ze skutkiem śmiertelnym. Dwanaście lat.
+
+      Apelacja potrwa miesiącami. Prokurator Zając wzdycha: „Wygraliśmy. Ale gdyby ktoś mnie zapytał, czy wygraliśmy przekonująco…”
+    addenda:
+      - when: { hints: { gte: 7 } }
+        text: "Henryk Wilk: „Doszedłeś, doszłaś – mniejsza o formę. Ale z takimi dziurami w akcie lepiej się nie przyzwyczajać do zwycięstw.”"
+
+  - id: end_acquitted
+    title: Za mało dowodów
+    tone: negative
+    priority: 70
+    when: { accusedCorrect: true }
+    epilogue: |
+      Na sali sądowej Twoje argumenty rozsypują się jeden po drugim. Obrona pyta o motyw, o narzędzie, o godzinę – i za każdym razem
+      okazuje się, że odpowiedź opiera się na przypuszczeniu.
+
+      Sąd uniewinnia oskarżoną z braku dowodów. Wychodząc, nie patrzy w Twoją stronę. Czy wskazanie było trafne? Tego już nikt nie rozstrzygnie –
+      zasada ne bis in idem zamyka sprawę na zawsze.
+
+  - id: end_strikes_again
+    title: Cisza przed kolejną burzą
+    tone: negative
+    priority: 60
+    when:
+      all:
+        - { accusedCorrect: false }
+        - { closedCase: false }
+        - { flag: press_staff }
+    epilogue: |
+      Twój podejrzany trafia przed sąd, a gazety ogłaszają koniec sprawy. Ale po komunikacie dla prasy ktoś zdążył posprzątać –
+      ślady, które mogły wszystko zmienić, zniknęły w nurcie Wisły.
+
+      W marcu, w hotelu w sąsiednim powiecie, właściciel zostaje znaleziony martwy w swoim gabinecie. „Włamanie”, pusta kasetka.
+      Prokuratura wznawia stare akta z Zawierzbia. Już bez Ciebie.
+
+  - id: end_scapegoat
+    title: Kozioł ofiarny
+    tone: negative
+    priority: 50
+    when: { all: [{ accusedCorrect: false }, { accused: p_bak }] }
+    epilogue: |
+      „Kurier Zawierzbiański” ma swój nagłówek: „Budowlaniec zabójcą hotelarza”. Wpis na Facebooku, dawny wyrok, bus na parkingu –
+      ława przysięgłych opinii publicznej wydała wyrok, zanim zebrał się sąd.
+
+      Krzysztof Bąk słyszy wyrok 15 lat więzienia, powtarzając tylko: „Ja go nie ruszyłem”. Jego firma upada, żona wyjeżdża z dziećmi do matki.
+      Ktoś inny w Zawierzbiu oddycha z ulgą – ale tego nie zapisze żaden protokół.
+
+  - id: end_son
+    title: Syn za kratami
+    tone: negative
+    priority: 50
+    when: { all: [{ accusedCorrect: false }, { accused: p_pawel }] }
+    epilogue: |
+      Długi, kłótnia z ojcem kilka godzin przed śmiercią, kłamstwo o wieczorze w domu – akt oskarżenia pisał się sam.
+      Tylko że świadkowie z garażu przy Kolejowej mówią przed sądem jednym głosem.
+
+      Proces kończy się uniewinnieniem po dwóch latach aresztu. Paweł wychodzi z długiem większym niż przed sprawą i z nazwiskiem,
+      którego nikt w mieście nie wypowiada bez przyciszenia głosu. Marta Ostrowska składa skargę na prowadzenie śledztwa. Wygrywa.
+
+  - id: end_widow
+    title: Wdowa w kajdankach
+    tone: negative
+    priority: 50
+    when: { all: [{ accusedCorrect: false }, { accused: p_marta }] }
+    epilogue: |
+      Polisa, ugoda na milion dwieście, kłamstwo o telefonie – w gazetach wyglądało to jak gotowy scenariusz serialu.
+      Sąd potrzebuje jednak czegoś więcej niż scenariusza: dwadzieścia osób z urodzin w Radomiu potwierdza jej alibi.
+
+      Uniewinnienie, a potem pozew o odszkodowanie za zatrzymanie. Ogólnopolskie media robią z „wdowy w kajdankach” symbol policyjnej
+      nadgorliwości. Twoje nazwisko pojawia się w telewizji śniadaniowej – i nie jest to dobry dzień.
+
+  - id: end_trial
+    title: Proces dekady
+    tone: negative
+    priority: 50
+    when: { all: [{ accusedCorrect: false }, { accused: p_lisiecki }] }
+    epilogue: |
+      Wpływowy inwestor, ofiara, która odmówiła sprzedaży, wyjazd z gali – brzmiało przekonująco do momentu, gdy obrona położyła
+      na stole paragon z drugiego końca miasta i zeznania kasjerki.
+
+      Proces dekady kończy się kompromitacją. Mecenas dr. Lisieckiego wygrywa sprawę o naruszenie dóbr osobistych, a Ty dostajesz
+      przeniesienie do wydziału prewencji w komendzie na drugim końcu województwa. Hotel kupuje fundusz z Warszawy.
+
+  - id: end_absurd
+    title: Upadek kariery
+    tone: negative
+    priority: 40
+    when: { all: [{ accusedCorrect: false }, { closedCase: false }] }
+    epilogue: |
+      Akt oskarżenia wraca z prokuratury z jedną adnotacją na marginesie: „Na jakiej podstawie?”.
+      Prokurator Zając odbiera Ci sprawę jeszcze tego samego dnia. W Zawierzbiu długo opowiada się o śledczym, który oskarżył
+      przypadkową osobę, bo „ktoś musiał”.
+
+      Sprawa trafia do innego zespołu. Ty – na zwolnienie lekarskie, a potem do archiwum, segregować akta cudzych śledztw.
+
+  - id: end_timeout
+    title: Umorzenie po terminie
+    tone: neutral
+    priority: 20
+    when: { all: [{ closedCase: true }, { timeout: true }] }
+    epilogue: |
+      Termin mija, a materiału, który obroniłby się w sądzie, nie ma. Prokurator Zając podpisuje postanowienie o umorzeniu śledztwa
+      „wobec niewykrycia sprawcy”.
+
+      Teczka trafia do archiwum z adnotacją „do ewentualnego podjęcia”. W Zawierzbiu nikt nie zostaje oskarżony –
+      i ktoś w tym mieście dobrze o tym wie.
+
+  - id: end_shelved
+    title: Na boczny tor
+    tone: neutral
+    priority: 10
+    when: true
+    epilogue: |
+      Wniosek o umorzenie przed terminem zaskakuje nawet prokurator. „Skoro tak Pan/Pani uważa…” – podpisuje go bez słowa komentarza.
+
+      Kilka tygodni później sprawę przejmuje wydział kryminalny z województwa. Ty dostajesz biurko przy oknie i stertę kradzieży rowerów.

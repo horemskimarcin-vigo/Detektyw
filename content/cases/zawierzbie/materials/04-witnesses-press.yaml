@@ -1,0 +1,159 @@
+materials:
+  - id: m25
+    type: testimony
+    title: Protokół przesłuchania świadka – Halina Gajda
+    date: "przesłuchanie"
+    source: KPP Zawierzbie
+    onRead: { inc: { grounds: 1 } }
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Halina Gajda, l. 71, emerytka, ul. Słoneczna 12" }
+      text: |
+        Mieszkam przez płot z panią Joanną Kret, od czterech lat. Mam okno kuchni na jej podjazd i garaż.
+
+        W piątek 14 listopada jej białego samochodu **nie było cały wieczór**. Przyjechała **po wpół do jedenastej** – jestem pewna,
+        bo właśnie zaczynał się mój serial na Polsacie, który leci o 22:30, i reflektory mi świeciły po ścianie.
+        Wjechała prosto do garażu i zamknęła bramę. **W garażu paliło się światło do północy**, potem zgasło.
+
+        W sobotę o siódmej rano myła samochód na podjeździe. W listopadzie! I w środku też odkurzała, długo.
+        Wcześniej nigdy tego nie robiła sama, jeździła do myjni.
+      signature: "Odczytano, podpisano: H. Gajda"
+
+  - id: m26
+    type: field
+    title: Notatka z wywiadu środowiskowego – Os. Słoneczne i ul. Lipowiec
+    date: "wywiad"
+    source: dzielnicowy st. sierż. Karol Malec
+    body:
+      kind: document
+      format: note
+      text: |
+        **Ul. Lipowiec 5 (Paweł Ostrowski):** sąsiedzi z naprzeciwka twierdzą, że w piątek wieczorem w mieszkaniu było ciemno
+        „od dziewiątej”, a samochód Pawła (czarne BMW) zniknął sprzed bloku ok. 20:45 i wrócił „w nocy”. Paweł ma opinię
+        osoby zadłużonej; w październiku pod blokiem widziano „dwóch łysych, którzy go szukali”.
+
+        **Ul. Słoneczna 14 (Joanna Kret):** spokojna, uprzejma, mieszka sama. Według sąsiadów od roku „żyje ponad stan” –
+        nowy samochód, remont domu, wakacje na Zanzibarze. Sąsiadka przez płot, **pani Halina Gajda (Słoneczna 12)**,
+        uchodzi za osobę, która „wie, kto i kiedy przyjeżdża” – zalecam przesłuchanie.
+
+        **Ul. Lipowa (okolice hotelu):** bezdomny **Zenon Mazur** bywa widywany w ogrodzie hotelu; właściciel tolerował jego nocowanie w altanie.
+      signature: "st. sierż. Karol Malec"
+
+  - id: m27
+    type: testimony
+    title: Protokół przesłuchania świadka – Krzysztof Bąk (uzupełniający)
+    date: "przesłuchanie"
+    source: KPP Zawierzbie
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Krzysztof Bąk, l. 46, właściciel firmy BĄK-REMONTY" }
+      text: |
+        Prostuję wcześniejsze wyjaśnienia. W piątek 14.11 **byłem w hotelu ok. 21:30**. Przyjechałem po swoje narzędzia
+        (młotowiertarka, poziomica laserowa), bo Ostrowski zapowiedział, że w poniedziałek zmienia zamki i „nic nie odbiorę”.
+        Wszedłem bramą boczną od strony remontu, na swój klucz. Wyszedłem po kilkunastu minutach.
+
+        Idąc z narzędziami wzdłuż ogrodu, przechodziłem pod oknem gabinetu. Okno było uchylone, paliło się światło.
+        Słyszałem rozmowę: **Ostrowski i kobieta**. Ona mówiła cicho, nerwowo. Słowa „Wiktor, proszę cię” słyszałem wyraźnie.
+        On odpowiedział twardo, coś w rodzaju „nie ma mowy, w poniedziałek”. Nie zaglądałem. Odjechałem przed 21:45.
+        Głosu kobiety nie rozpoznałem z pewnością. Nikogo nie skrzywdziłem.
+      signature: "Odczytano, podpisano: K. Bąk"
+
+  - id: m43
+    type: testimony
+    title: Protokół przesłuchania świadka – Zenon Mazur
+    date: "przesłuchanie"
+    source: KPP Zawierzbie
+    onRead: { inc: { grounds: 1 } }
+    body:
+      kind: document
+      format: testimony
+      header:
+        - { label: Świadek, value: "Zenon Mazur, l. 58, bez stałego miejsca zamieszkania" }
+        - { label: Uwagi, value: "Świadek trzeźwy w chwili przesłuchania (badanie alkomatem 0,0‰)." }
+      text: |
+        Z piątku na sobotę spałem w altanie w ogrodzie hotelu, za kuchnią. Szef pozwalał, jak było zimno.
+
+        Koło wpół do dziesiątej był bus tego budowlańca – krótko, pokręcił się z narzędziami i pojechał.
+        Potem, **koło dziesiątej**, może chwilę wcześniej, z tylnych drzwi wyszła kobieta. **Jasny płaszcz**, szła szybko,
+        niosła coś zawiniętego w **biały ręcznik**, trzymała to jak niemowlę, przy sobie. Wsiadła do **małego białego auta**
+        na tylnym parkingu i odjechała **bez świateł** – włączyła je dopiero na ulicy. Twarzy nie widziałem, było ciemno.
+        Wzrost średni, włosy chyba spięte.
+      signature: "Odczytano, podpisano: Z. Mazur"
+
+  - id: m33
+    type: cctv
+    title: Monitoring – parking Dworku Zawierzbie (gala charytatywna)
+    date: "14.11.2025, 19:00–24:00"
+    source: Dworek Zawierzbie
+    redHerring: true
+    body:
+      kind: cctv
+      camera: "DW-PARK"
+      location: "Dworek Zawierzbie, ul. Parkowa 2 – parking gości"
+      frames:
+        - t: "21:39:44"
+          image: c10.svg
+          caption: Ciemne Audi A6 wyjeżdża z parkingu. Kierowca w smokingu.
+          hotspots:
+            - id: h_gala_audi
+              x: 0.50
+              y: 0.58
+              r: 0.12
+              label: Audi dr. Lisieckiego
+              description: Samochód dr. Tomasza Lisieckiego opuszcza galę o 21:39.
+              effects: { set: [lisiecki_left] }
+        - t: "22:11:02"
+          image: c11.svg
+          caption: To samo Audi wraca i parkuje w tym samym miejscu.
+        - t: "23:31:15"
+          image: c12.svg
+          caption: Goście wychodzą po zakończeniu gali.
+      log:
+        - { t: "21:39", text: "Wyjazd: Audi A6 (TZA 9…)" }
+        - { t: "22:11", text: "Wjazd: Audi A6 (TZA 9…)" }
+
+  - id: m28
+    type: press
+    title: "„Echo Powiatu”: Syn hazardzista i miliony w tle?"
+    date: "16.11.2025"
+    source: echopowiatu.pl
+    redHerring: true
+    unlockWhen: { time: { gte: 2 } }
+    body:
+      kind: press
+      outlet: Echo Powiatu
+      headline: Syn zamordowanego hotelarza tonął w długach
+      lead: Paweł O. – nieoficjalnie – był winien „poważnym ludziom” dziesiątki tysięcy złotych. W dniu śmierci ojca mieli się pokłócić.
+      text: |
+        Według naszych informatorów młody Ostrowski od miesięcy obstawiał zakłady i grał w karty. „Ojciec nie chciał płacić jego długów”
+        – mówi osoba z otoczenia rodziny. Świadkowie słyszeli w piątek po południu głośną kłótnię w holu hotelu.
+
+        Czy to przypadek, że syn odziedziczy część majątku wartego kilka milionów? Pytania mnożą się także wokół **żony** zmarłego,
+        z którą był w separacji, oraz **inwestora**, który od miesięcy chciał przejąć hotel.
+
+        Prokuratura odmawia komentarza. „Echo” będzie informować na bieżąco.
+      byline: Sylwia Krajewska
+
+  - id: m29
+    type: press
+    title: "„Kurier Zawierzbiański”: Inwestor chciał hotelu za wszelką cenę"
+    date: "18.11.2025"
+    source: kurierzawierzbie.pl
+    redHerring: true
+    unlockWhen: { time: { gte: 6 } }
+    body:
+      kind: press
+      outlet: Kurier Zawierzbiański
+      headline: Lisiecki, hotel i „propozycja nie do odrzucenia”
+      lead: Znany stomatolog i inwestor od dwóch lat próbował kupić „Pod Lipami”. Ostrowski odmawiał. Teraz decyzję podejmą spadkobiercy.
+      text: |
+        Dr Tomasz Lisiecki, właściciel sieci klinik i inwestor w branży nieruchomości, potwierdza, że jego oferta – **4,2 mln zł** – „jest aktualna”.
+        Nieoficjalnie: na gali charytatywnej w piątek wieczorem dr Lisiecki „na jakiś czas zniknął”, choć sam twierdzi, że był tam cały wieczór.
+
+        W sprawie wykonawcy remontu, Krzysztofa B., „Kurier” ustalił, że policja przesłuchiwała go już dwukrotnie.
+        Mieszkańcy pytają: dlaczego jeszcze nikt nie został zatrzymany?
+      byline: Oprac. (red)

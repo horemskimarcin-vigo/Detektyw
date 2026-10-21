@@ -106,15 +106,8 @@ export function MiniMarkdown({ text }: { text: string }) {
     const para: string[] = [];
     while (i < lines.length && lines[i]!.trim() && !/^(#{1,3}\s|\||---|\s*[-•]\s)/.test(lines[i]!))
       para.push(lines[i++]!);
-    blocks.push(
-      <p key={key}>
-        {para.flatMap((p, j) =>
-          j === 0
-            ? inline(p, `${key}${j}`)
-            : [<br key={`${key}br${j}`} />, ...inline(p, `${key}${j}`)],
-        )}
-      </p>,
-    );
+    // Pojedyncze złamania wiersza to tylko zawijanie tekstu źródłowego (jak w Markdown).
+    blocks.push(<p key={key}>{inline(para.map((p) => p.trim()).join(' '), key)}</p>);
   }
   return <>{blocks}</>;
 }

@@ -1526,3 +1526,18 @@ th {
     max-height: calc(100dvh - 260px);
   }
 }
+
+/* tabele w dokumentach: przewijanie w poziomie zamiast łamania słów */
+.paper table {
+  min-width: 520px;
+}
+.paper th,
+.paper td {
+  overflow-wrap: normal;
+  word-break: normal;
+}
+@media (max-width: 600px) {
+  .paper {
+    padding: 1rem 0.85rem;
+  }
+}

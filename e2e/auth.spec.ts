@@ -19,7 +19,7 @@ test('rejestracja, nowa sprawa, wylogowanie i ponowne logowanie', async ({ page 
   await page.getByRole('button', { name: 'Rozpocznij śledztwo' }).first().click();
   await expect(page).toHaveURL(/\/gra\//);
 
-  await page.getByRole('link', { name: 'Sprawy' }).click();
+  await page.getByRole('link', { name: 'Wróć do listy spraw' }).click();
   await expect(page.getByRole('link', { name: 'Wznów' })).toHaveCount(1);
 
   await page.getByRole('link', { name: 'Profil' }).click();
@@ -47,7 +47,7 @@ test('reset hasła przez link z e-maila', async ({ page, request }) => {
   await page.getByRole('link', { name: 'Nie pamiętasz hasła?' }).click();
   await page.getByLabel('E-mail').fill(email);
   await page.getByRole('button', { name: 'Wyślij link' }).click();
-  await expect(page.getByRole('status')).toContainText('link');
+  await expect(page.getByText(/wiadomość z linkiem jest już w drodze/)).toBeVisible();
 
   const outbox = await (await request.get('/api/test/outbox')).json();
   const mail = outbox.mails.findLast((m: { to: string }) => m.to === email);

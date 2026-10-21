@@ -10,7 +10,7 @@
     "node": ">=22"
   },
   "scripts": {
-    "dev": "npm run dev -w @detektyw/server & npm run dev -w @detektyw/client",
+    "dev": "concurrently -k -n serwer,klient -c yellow,cyan \"npm run dev -w @detektyw/server\" \"npm run dev -w @detektyw/client\"",
     "build": "npm run build -w @detektyw/client && npm run build -w @detektyw/server",
     "start": "npm run start -w @detektyw/server",
     "typecheck": "npm run typecheck --workspaces --if-present",
@@ -22,11 +22,14 @@
     "format": "prettier --write .",
     "validate": "tsx tools/validate-case.ts",
     "check:bundle": "tsx tools/check-bundle.ts",
-    "check": "npm run typecheck && npm test && npm run validate && npm run build && npm run check:bundle"
+    "check": "npm run typecheck && npm test && npm run validate && npm run build && npm run check:bundle",
+    "playthrough": "tsx tools/playthrough.ts",
+    "play": "node tools/play.mjs"
   },
   "devDependencies": {
     "@detektyw/engine": "*",
     "@playwright/test": "1.56.1",
+    "concurrently": "^9.2.1",
     "prettier": "^3.6.2",
     "tsx": "^4.20.6",
     "typescript": "~5.9.3"

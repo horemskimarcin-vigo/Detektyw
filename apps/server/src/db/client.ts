@@ -4,7 +4,7 @@ import { migrate as migratePg } from 'drizzle-orm/node-postgres/migrator';
 import { migrate as migratePglite } from 'drizzle-orm/pglite/migrator';
 import type { PgDatabase, PgQueryResultHKT } from 'drizzle-orm/pg-core';
 import { fileURLToPath } from 'node:url';
-import { existsSync } from 'node:fs';
+import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
 import * as schema from './schema.js';
 
@@ -33,6 +33,7 @@ export async function openDb(url: string): Promise<DbHandle> {
   if (url.startsWith('pglite:')) {
     const { PGlite } = await import('@electric-sql/pglite');
     const target = url.slice('pglite:'.length);
+    if (target !== 'memory') mkdirSync(path.dirname(path.resolve(target)), { recursive: true });
     const client = target === 'memory' ? new PGlite() : new PGlite(target);
     const db = drizzlePglite(client, { schema }) as unknown as Db;
     return {

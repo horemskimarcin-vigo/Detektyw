@@ -1,0 +1,6 @@
+# Reverse proxy z automatycznym certyfikatem TLS (Let's Encrypt).
+# Ustaw DOMAIN w pliku .env (np. DOMAIN=detektyw.twojadomena.pl) i skieruj rekord DNS na serwer.
+{$DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:3000
+}

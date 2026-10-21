@@ -1,10 +1,14 @@
+import path from 'node:path';
 import { z } from 'zod';
 
 const envSchema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   HOST: z.string().default('0.0.0.0'),
   PORT: z.coerce.number().int().default(3000),
-  DATABASE_URL: z.string().default('pglite:./.data/pglite'),
+  // Domyślnie wbudowany Postgres w katalogu .data w miejscu uruchomienia npm (korzeń repozytorium).
+  DATABASE_URL: z
+    .string()
+    .default(`pglite:${path.join(process.env.INIT_CWD ?? process.cwd(), '.data', 'pglite')}`),
   APP_URL: z.string().url().default('http://localhost:5173'),
   SMTP_URL: z.string().optional(),
   MAIL_FROM: z.string().default('Detektyw <no-reply@localhost>'),

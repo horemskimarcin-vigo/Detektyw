@@ -1,5 +1,5 @@
-# Lokalnie: `docker compose up --build` → http://localhost:3000 (Mailpit: http://localhost:8025)
-# Na VPS: ustaw APP_URL na adres https i postaw przed aplikacją reverse proxy z TLS (np. Caddy).
+# Lokalnie: `docker compose up --build` → http://localhost:3000 (Mailpit: `--profile dev`, http://localhost:8025)
+# Na VPS z HTTPS: ustaw DOMAIN i APP_URL w .env, potem `docker compose --profile https up -d --build`.
 services:
   app:
     build: .
@@ -10,6 +10,8 @@ services:
       SMTP_URL: ${SMTP_URL:-smtp://mailpit:1025}
       MAIL_FROM: ${MAIL_FROM:-Detektyw <no-reply@localhost>}
       TRUST_PROXY: ${TRUST_PROXY:-false}
+      ASSISTANT_LLM: ${ASSISTANT_LLM:-off}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
     ports:
       - '3000:3000'
     depends_on:
@@ -28,6 +30,20 @@ services:
       test: ['CMD-SHELL', 'pg_isready -U detektyw']
       interval: 5s
       retries: 10
+  caddy:
+    image: caddy:2.10
+    profiles: ['https']
+    restart: unless-stopped
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+    depends_on:
+      - app
   mailpit:
     image: axllent/mailpit:v1.27
     profiles: ['dev']
@@ -35,3 +51,4 @@ services:
       - '8025:8025'
 volumes:
   pgdata:
+  caddy_data:

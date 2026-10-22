@@ -186,41 +186,41 @@ materials:
     title: Monitoring – stacja paliw Orlen, ul. Wiślana
     date: "14.11.2025, 21:30–23:30"
     source: Stacja paliw Orlen nr 4411
-    summary: Kamera dystrybutorów częściowo obejmuje jezdnię ul. Wiślanej. Ulica łączy tylny wjazd do hotelu z Osiedlem Słonecznym.
+    summary: Kamery przy dystrybutorach (K3) i nad wiatą (K1) częściowo obejmują jezdnię ul. Wiślanej. Ulica łączy tylny wjazd do hotelu z Osiedlem Słonecznym.
     body:
       kind: cctv
-      camera: "Orlen-K3"
+      camera: "Orlen K3 / K1"
       location: "ul. Wiślana 40 – widok na jezdnię"
       frames:
         - t: "21:46:18"
-          image: c06.svg
+          image: c06.jpg
           caption: Ulicą przejeżdża biały bus dostawczy, w kierunku centrum.
           hotspots:
             - id: h_orlen_van
-              x: 0.50
-              y: 0.55
+              x: 0.55
+              y: 0.42
               r: 0.12
               label: Bus „BĄK-REMONTY” na Wiślanej
               description: Ten sam bus co na parkingu hotelu – o 21:46 jest już kilometr od hotelu.
               effects: { set: [van_left] }
         - t: "22:09:51"
-          image: c07.svg
+          image: c07.jpg
           caption: Przejeżdża mały biały samochód osobowy, od strony ul. Lipowej (tył hotelu) w stronę osiedla.
           hotspots:
             - id: h_orlen_fabia
-              x: 0.47
-              y: 0.60
+              x: 0.475
+              y: 0.493
               r: 0.06
               minZoom: 2
               label: Biała Skoda Fabia, tablica „TZA 47…”
               description: Fragment tablicy rejestracyjnej czytelny po przybliżeniu – ten sam początek co w samochodzie z parkingu hotelu.
               effects: { set: [fabia_night] }
         - t: "22:31:07"
-          image: c08.svg
-          caption: Przejeżdża taksówka (oznakowanie „Zawierzbie Taxi”).
+          image: c08.jpg
+          caption: "Kamera K1: przejeżdża taksówka (oznakowanie „Zawierzbie Taxi”)."
         - t: "23:20:44"
-          image: c09.svg
-          caption: Jezdnia pusta.
+          image: c09.jpg
+          caption: "Kamera K1: jezdnia pusta."
       log:
         - { t: "21:46", text: "Pojazd dostawczy biały – kierunek centrum" }
         - { t: "22:09", text: "Pojazd osobowy biały – kierunek Os. Słoneczne" }

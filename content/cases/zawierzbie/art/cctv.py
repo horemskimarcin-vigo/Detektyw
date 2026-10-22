@@ -120,16 +120,106 @@ def plate(img, box, text):
     return img
 
 
-def van_logo(img, origin, shear=-0.04):
+def van_logo(img, origin, shear=-0.04, scale=1.0):
     """Logo firmy na boku busa (lekko ścięte, zgodnie z perspektywą)."""
     layer = Image.new("RGBA", (215, 48), (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
     d.text((2, 20), "BĄK-REMONTY", font=font(SANS_BOLD_CANDIDATES, 24), fill=(28, 58, 120, 240), anchor="lm")
     d.text((4, 41), "tel. 600 123 456", font=font(SANS_BOLD_CANDIDATES, 9), fill=(28, 58, 120, 200), anchor="lm")
+    if scale != 1.0:
+        layer = layer.resize((round(215 * scale), round(48 * scale)), Image.LANCZOS)
     layer = layer.transform(layer.size, Image.AFFINE, (1, 0, 0, shear, 1, 0), resample=Image.BICUBIC)
     img = img.convert("RGBA")
     img.alpha_composite(layer.filter(ImageFilter.GaussianBlur(0.3)), origin)
     return img.convert("RGB")
+
+
+def erase_text(img, poly, light_text, max_sat=1.0):
+    """Usuwa napis w wielokącie: piksele napisu zastępuje kolorem tła (mediana z wielokąta)."""
+    im = np.asarray(img).astype(float)
+    mask = Image.new("L", img.size, 0)
+    ImageDraw.Draw(mask).polygon(poly, fill=255)
+    inside = np.asarray(mask) > 0
+    lum = im.mean(axis=2)
+    sat = (im.max(axis=2) - im.min(axis=2)) / (im.max(axis=2) + 1)
+    lo, hi = np.percentile(lum[inside], [8, 92])
+    thr = (lo + hi) / 2
+    text = ((lum > thr) if light_text else (lum < thr)) & (sat <= max_sat) & inside
+    text = np.asarray(Image.fromarray((text * 255).astype("uint8")).filter(ImageFilter.MaxFilter(3))) > 0
+    text &= inside
+    bg = np.median(im[inside & ~text], axis=0)
+    rng = np.random.default_rng(7)
+    im[text] = bg + rng.normal(0, 2.5, (text.sum(), 3))
+    out = Image.fromarray(np.clip(im, 0, 255).astype("uint8"))
+    soft = Image.fromarray((text * 255).astype("uint8")).filter(ImageFilter.GaussianBlur(1))
+    return Image.composite(out.filter(ImageFilter.GaussianBlur(0.8)), out, soft)
+
+
+def text_at(img, center, text, size, fill, angle=0.0, bold=True, blur=0.4):
+    """Napis wyśrodkowany w punkcie, obrócony o kąt (stopnie, przeciwnie do ruchu wskazówek zegara)."""
+    f = font(SANS_BOLD_CANDIDATES if bold else MONO_CANDIDATES, size)
+    w = int(ImageDraw.Draw(Image.new("L", (1, 1))).textlength(text, font=f)) + 8
+    layer = Image.new("RGBA", (w, size * 2), (0, 0, 0, 0))
+    ImageDraw.Draw(layer).text((w / 2, size), text, font=f, fill=fill, anchor="mm")
+    layer = layer.rotate(angle, resample=Image.BICUBIC, expand=True).filter(ImageFilter.GaussianBlur(blur))
+    img = img.convert("RGBA")
+    img.alpha_composite(layer, (round(center[0] - layer.width / 2), round(center[1] - layer.height / 2)))
+    return img.convert("RGB")
+
+
+def unyellow(img, box):
+    """Żółta (brytyjska) tablica → biała."""
+    im = np.asarray(img).astype(float)
+    x0, y0, x1, y1 = box
+    r = im[y0:y1, x0:x1]
+    yellow = np.clip((np.minimum(r[..., 0], r[..., 1]) - r[..., 2] - 20) / 40, 0, 1)[..., None]
+    lum = r.mean(axis=2, keepdims=True)
+    white = np.concatenate([lum, lum, lum * 1.03], axis=2) * 1.15
+    r[:] = r * (1 - yellow) + white * yellow
+    return Image.fromarray(np.clip(im, 0, 255).astype("uint8"))
+
+
+def eu_plate(img, center, size, text, angle=0.0, font_size=8):
+    """Polska tablica rejestracyjna (biała, niebieski pasek UE), obrócona zgodnie z perspektywą."""
+    w, h = size
+    k = 4  # rysujemy w większej skali i zmniejszamy – czytelniejsze krawędzie
+    layer = Image.new("RGBA", (w * k, h * k), (226, 228, 226, 255))
+    d = ImageDraw.Draw(layer)
+    d.rectangle((0, 0, round(w * k * 0.11), h * k), fill=(32, 64, 160, 255))
+    d.text((w * k * 0.16, h * k / 2), text, font=font(SANS_BOLD_CANDIDATES, font_size * k), fill=(25, 25, 25, 255), anchor="lm")
+    layer = layer.resize((w, h), Image.LANCZOS).rotate(angle, resample=Image.BICUBIC, expand=True)
+    img = img.convert("RGBA")
+    img.alpha_composite(layer.filter(ImageFilter.GaussianBlur(0.35)),
+                        (round(center[0] - layer.width / 2), round(center[1] - layer.height / 2)))
+    return img.convert("RGB")
+
+
+def frame(img, crop, ts, cam, name):
+    """Kadr 16:9 → 1600×900 ze znacznikiem czasu i numerem kamery."""
+    img = img.crop(crop).resize(SIZE, Image.LANCZOS)
+    d = ImageDraw.Draw(img)
+    text = f"{cam}   14-11-2025 {ts}"
+    f = font(MONO_CANDIDATES, 18)
+    d.rectangle((SIZE[0] - d.textlength(text, font=f) - 14, 0, SIZE[0], 24), fill=(18, 18, 18))
+    d.text((SIZE[0] - 6, 2), text, font=f, fill=(238, 238, 238), anchor="ra")
+    img.save(OUT / name, quality=86, optimize=True, progressive=True)
+
+
+def orlen_pump(img, dy):
+    """Dystrybutor: angielskie napisy → polskie (dy – przesunięcie kadru między klatkami)."""
+    img = erase_text(img, [(179, 446 + dy), (190, 446 + dy), (192, 487 + dy), (181, 487 + dy)], light_text=True)
+    img = text_at(img, (185.5, 466 + dy), "ON", 10, (235, 235, 235, 235), angle=-86)
+    img = erase_text(img, [(197, 440 + dy), (209, 438 + dy), (214, 490 + dy), (202, 492 + dy)], light_text=True, max_sat=0.3)
+    img = text_at(img, (205.5, 465 + dy), "Pb95", 10, (235, 240, 235, 235), angle=-86)
+    img = erase_text(img, [(259, 552 + dy), (314, 539 + dy), (314, 561 + dy), (259, 574 + dy)], light_text=False, max_sat=0.45)
+    img = text_at(img, (287, 557 + dy), "PALIWA", 13, (70, 40, 60, 235), angle=13.5)
+    return img
+
+
+def orlen_shop(img, dy):
+    """Szyld „NEWSAGENTS” → „PRASA”."""
+    img = erase_text(img, [(484, 134 + dy), (563, 130 + dy), (563, 146 + dy), (484, 150 + dy)], light_text=False)
+    return text_at(img, (523, 140 + dy), "PRASA", 12, (30, 30, 34, 235), angle=3)
 
 
 def save(img, name):
@@ -173,7 +263,35 @@ def build():
     timestamp(img, "14-11-2025 23:58:00")
     save(img, "c05.jpg")
 
+    # c06 – stacja paliw, kamera K3: bus Bąka na Wiślanej
+    img = Image.open(SRC / "c06.jpg").convert("RGB")
+    img = orlen_pump(img, 0)
+    img = orlen_shop(img, 0)
+    img = eu_plate(img, (552, 357), (24, 7), "TZ 52K1", angle=-12, font_size=5)
+    img = van_logo(img, (698, 244), shear=0.14, scale=0.55)
+    frame(img, (0, 0, 1239, 697), "21:46:18", "ORLEN K3", "c06.jpg")
+
+    # c07 – kamera K3: mały biały samochód, fragment tablicy
+    img = Image.open(SRC / "c07.jpg").convert("RGB")
+    img = orlen_pump(img, -5)
+    img = orlen_shop(img, -5)
+    img = patch(img, 586, 311, 6)
+    img = unyellow(img, (566, 334, 600, 352))
+    img = eu_plate(img, (583, 343), (32, 9), "TZA 47816", angle=-3, font_size=6)
+    frame(img, (0, 0, 1230, 692), "22:09:51", "ORLEN K3", "c07.jpg")
+
+    # c08 – kamera K1 (nad wiatą): taksówka
+    img = Image.open(SRC / "c08.jpg").convert("RGB")
+    img = erase_text(img, [(929, 405), (948, 405), (948, 414), (929, 414)], light_text=False)
+    img = text_at(img, (938.5, 410), "TAXI", 7, (40, 30, 10, 230))
+    img = unyellow(img, (1070, 467, 1092, 484))
+    frame(img, (21, 0, 1386, 768), "22:31:07", "ORLEN K1", "c08.jpg")
+
+    # c09 – kamera K1: pusto
+    img = Image.open(SRC / "c09.jpg").convert("RGB")
+    frame(img, (42, 0, 1366, 745), "23:20:44", "ORLEN K1", "c09.jpg")
+
 
 if __name__ == "__main__":
     build()
-    print("Zapisano:", ", ".join(sorted(p.name for p in OUT.glob("c0*.jpg"))))
+    print("Zapisano:", ", ".join(sorted(p.name for p in OUT.glob("c*.jpg"))))

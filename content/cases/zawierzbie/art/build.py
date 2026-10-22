@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
-Generator ilustracji sprawy „zawierzbie” (SVG, styl: sepiowe zdjęcia techników i zielonkawy monitoring).
+Generator klatek monitoringu sprawy „zawierzbie” (SVG, zielonkawy monitoring).
+Funkcje a01–a05 to dawne zastępcze ilustracje – zdjęcia buduje teraz photos.py.
 Uruchom: python3 content/cases/zawierzbie/art/build.py
 Położenie elementów MUSI odpowiadać współrzędnym szczegółów (hotspots) w plikach materiałów.
 Pliki wynikowe mają neutralne nazwy (a01.svg, c01.svg…), by nie zdradzać treści.
@@ -428,5 +429,6 @@ def cctv_all():
 
 
 if __name__ == "__main__":
-    a01(); a02(); a03(); a04(); a05(); cctv_all()
+    # Fotografie a01–a05 pochodzą z art/src i są przygotowywane przez photos.py.
+    cctv_all()
     print("Zapisano:", ", ".join(sorted(p.name for p in OUT.glob("*.svg"))))

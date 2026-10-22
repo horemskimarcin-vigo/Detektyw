@@ -7,35 +7,35 @@ materials:
     summary: Kalendarz książkowy otwarty na tygodniu 10–16 listopada. Pismo ofiary – drobne, pochyłe.
     body:
       kind: photo
-      image: a04.svg
+      image: a04.jpg
       caption: Rozkładówka kalendarza. Lewa strona – środa, czwartek, piątek; prawa – weekend i poniedziałek.
-      width: 1600
-      height: 1000
+      width: 1408
+      height: 768
       hotspots:
         - id: h_cal_wed
-          x: 0.28
-          y: 0.25
+          x: 0.348
+          y: 0.254
           r: 0.07
           label: "Środa: „13:00 Lisiecki – obiad (NIE sprzedaję!)”"
           description: Wpis podkreślony dwa razy. Ostrowski nie zamierzał sprzedawać hotelu.
           effects: { set: [cal_lisiecki] }
         - id: h_cal_thu
-          x: 0.28
-          y: 0.51
+          x: 0.348
+          y: 0.514
           r: 0.07
           label: "Czwartek: „17:30 E. Dziedzic – faktury?? B-R / KRS”"
           description: Wpis o spotkaniu lub telefonie z księgową. „B-R” zakreślone kółkiem.
           effects: { set: [cal_accountant] }
         - id: h_cal_fri
-          x: 0.28
-          y: 0.78
+          x: 0.334
+          y: 0.753
           r: 0.08
           label: "Piątek: „21:30 J.K. – faktury B-R !!”"
           description: Wieczorne spotkanie w piątek, w dniu śmierci. Inicjały „J.K.” i ponownie „B-R”. Trzy wykrzykniki.
           effects: { set: [diary_jk] }
         - id: h_cal_mon
-          x: 0.72
-          y: 0.62
+          x: 0.668
+          y: 0.573
           r: 0.08
           label: "Poniedziałek: „10:00 Prokuratura – zawiadomienie (teczka!)”"
           description: Ostrowski planował w poniedziałek złożyć w prokuraturze zawiadomienie. „Teczka” – może chodzi o brakujący segregator?
@@ -309,22 +309,22 @@ materials:
     source: Technik kryminalistyki
     body:
       kind: photo
-      image: a05.svg
+      image: a05.jpg
       caption: Regał w garażu, obok koła zapasowego. Zawiniątko rozłożone przez technika.
-      width: 1600
-      height: 1000
+      width: 1408
+      height: 768
       hotspots:
         - id: h_statue_base
-          x: 0.55
-          y: 0.56
+          x: 0.636
+          y: 0.586
           r: 0.06
           minZoom: 2
           label: Ośmiokątna podstawa z ciemnymi zaciekami
           description: Krawędź mosiężnej podstawy jest lekko wgnieciona, a w zagłębieniu widać zaschnięte, ciemnobrunatne zacieki.
           effects: { set: [statue_stains] }
         - id: h_towel
-          x: 0.40
-          y: 0.66
+          x: 0.593
+          y: 0.762
           r: 0.06
           label: Haft „Pod Lipami” na ręczniku
           description: Ręcznik pochodzi z hotelowej pralni – taki sam haft jak na ręcznikach w pokojach.

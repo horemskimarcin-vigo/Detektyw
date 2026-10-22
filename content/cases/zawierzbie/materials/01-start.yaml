@@ -41,44 +41,44 @@ materials:
     start: true
     body:
       kind: photo
-      image: a01.svg
+      image: a01.jpg
       caption: Gabinet właściciela. Ciało już przewiezione, tabliczki 1–4 oznaczają ślady.
-      width: 1600
-      height: 1000
+      width: 1408
+      height: 768
       hotspots:
         - id: h_shelf
-          x: 0.80
-          y: 0.27
-          r: 0.05
+          x: 0.832
+          y: 0.204
+          r: 0.035
           minZoom: 2
           label: Czysty ośmiokąt w kurzu na półce
           description: Na zakurzonej półce odznacza się czysty, ośmiokątny ślad. Coś ciężkiego stało tu jeszcze niedawno, a teraz go nie ma.
           effects: { set: [statuette_gap] }
         - id: h_papers
-          x: 0.42
-          y: 0.64
+          x: 0.387
+          y: 0.612
           r: 0.06
-          label: Gruby kalendarz pod stertą papierów
-          description: Spod faktur wystaje papierowy kalendarz książkowy, otwarty na bieżącym tygodniu. Zabezpieczono go do oględzin.
+          label: Gruby kalendarz na stercie papierów
+          description: Na fakturach leży gruby kalendarz książkowy, otwarty na bieżącym tygodniu. Zabezpieczono go do oględzin.
           effects: { unlock: [m10] }
         - id: h_valuables
-          x: 0.57
-          y: 0.60
-          r: 0.05
+          x: 0.529
+          y: 0.645
+          r: 0.06
           label: Zegarek i laptop na biurku
           description: Złoty zegarek (Rolex) leży obok laptopa. Włamywacz, który zabrał kilka tysięcy z kasetki, zostawił rzeczy warte kilkadziesiąt tysięcy.
           effects: { set: [robbery_doubt] }
         - id: h_safe
-          x: 0.14
-          y: 0.58
-          r: 0.06
+          x: 0.170
+          y: 0.495
+          r: 0.08
           label: Nienaruszony sejf
           description: Sejf zamknięty, bez rys i śladów narzędzi. Ofiara leżała tuż przy nim.
           effects: { set: [robbery_doubt] }
         - id: h_cashbox
-          x: 0.68
-          y: 0.66
-          r: 0.045
+          x: 0.678
+          y: 0.534
+          r: 0.05
           label: Pusta kasetka
           description: Kasetka otwarta kluczykiem, który wciąż tkwi w zamku. Bez śladów siłowego otwarcia.
 
@@ -90,32 +90,32 @@ materials:
     start: true
     body:
       kind: photo
-      image: a02.svg
+      image: a02.jpg
       caption: Okno gabinetu widziane z ogrodu. Pod oknem trawnik i rabata.
-      width: 1600
-      height: 1000
+      width: 1408
+      height: 768
       hotspots:
         - id: h_glass
-          x: 0.50
-          y: 0.84
-          r: 0.09
+          x: 0.554
+          y: 0.768
+          r: 0.1
           label: Szkło na trawniku
           description: Większość odłamków szyby leży na zewnątrz, na trawniku – nawet półtora metra od ściany. Szybę wybito od środka.
           effects: { set: [glass_outside] }
         - id: h_latch
-          x: 0.50
-          y: 0.40
-          r: 0.035
+          x: 0.508
+          y: 0.247
+          r: 0.05
           minZoom: 2
-          label: Zamknięta klamka okna
-          description: Klamka okna ustawiona w pozycji „zamknięte”. Przez otwór w szybie nikt nie przeszedł – ostre krawędzie są czyste, bez włókien i krwi.
+          label: Okno zamknięte na klamkę
+          description: Przez otwór w szybie widać, że okno jest zamknięte na klamkę. Przez dziurę nikt nie przeszedł – ostre krawędzie są czyste, bez włókien i krwi.
           effects: { set: [window_never_opened] }
         - id: h_soil
-          x: 0.28
-          y: 0.78
-          r: 0.06
+          x: 0.327
+          y: 0.682
+          r: 0.05
           label: Rabata bez śladów butów
-          description: Miękka, wilgotna ziemia rabaty pod oknem jest gładka. Nikt tu nie stał w nocy.
+          description: Miękka, wilgotna ziemia rabaty pod oknem jest gładka – leży na niej tylko szkło. Nikt tu nie stał w nocy.
           effects: { set: [no_footprints] }
 
   - id: m44
@@ -127,29 +127,29 @@ materials:
     start: true
     body:
       kind: photo
-      image: a03.svg
+      image: a03.jpg
       caption: Widok z ogrodu na tylny parking. Po prawej brama do skrzydła w remoncie, po lewej altana.
-      width: 1600
-      height: 1000
+      width: 1408
+      height: 768
       hotspots:
         - id: h_tracks
-          x: 0.36
-          y: 0.76
-          r: 0.08
+          x: 0.497
+          y: 0.638
+          r: 0.09
           label: Świeże ślady opon
           description: Na rozmokłym żwirze świeże ślady wąskich opon – mały samochód osobowy zawracał tu niedawno. Parking nie jest objęty monitoringiem.
           effects: { set: [small_car_tracks] }
         - id: h_butts
-          x: 0.83
-          y: 0.70
-          r: 0.045
+          x: 0.774
+          y: 0.866
+          r: 0.05
           minZoom: 2
           label: Niedopałki przy bramie
           description: Trzy niedopałki papierosów jednej marki przy bramie do skrzydła w remoncie. Ktoś czekał tu albo bywał regularnie.
           effects: { set: [butts_found] }
         - id: h_shed
-          x: 0.14
-          y: 0.46
+          x: 0.170
+          y: 0.612
           r: 0.08
           label: Koc i butelki w altanie
           description: W altanie ogrodowej leży stary koc, karton i puste butelki. Ktoś tu nocuje.

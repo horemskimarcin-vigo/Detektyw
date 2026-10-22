@@ -39,15 +39,15 @@ test('śledztwo solo: szczegóły na zdjęciach, przesłuchanie, zapis i zakońc
   // Odprawa i teczka startowa
   await expect(page.getByText(/Zabójstwo w hotelu/)).toBeVisible();
   await page.getByRole('link', { name: /Fotografia nr 3: gabinet/ }).click();
-  await tapPhoto(page, 0.42, 0.64);
+  await tapPhoto(page, 0.387, 0.612);
   await expect(
-    page.getByText('Zauważono szczegół: Gruby kalendarz pod stertą papierów'),
+    page.getByText('Zauważono szczegół: Gruby kalendarz na stercie papierów'),
   ).toBeVisible();
 
   // Nowy materiał z kalendarzem – szczegół wpisu z piątku
   await nav(page, /Teczka/).click();
   await page.getByRole('link', { name: /Fotografia nr 15: kalendarz/ }).click();
-  await tapPhoto(page, 0.28, 0.78);
+  await tapPhoto(page, 0.334, 0.753);
   await expect(page.getByRole('heading', { name: 'Zauważone szczegóły' })).toBeVisible();
 
   // Przesłuchanie księgowej

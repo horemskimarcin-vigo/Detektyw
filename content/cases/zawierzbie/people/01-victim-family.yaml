@@ -1,6 +1,7 @@
 people:
   - id: p_victim
     name: Wiktor Ostrowski
+    portrait: p01.jpg
     role: victim
     title: właściciel hotelu „Pod Lipami”
     age: 63
@@ -28,6 +29,7 @@ people:
 
   - id: p_marta
     name: Marta Ostrowska
+    portrait: p02.jpg
     role: suspect
     title: żona ofiary (w separacji)
     age: 57
@@ -118,6 +120,7 @@ people:
 
   - id: p_pawel
     name: Paweł Ostrowski
+    portrait: p03.jpg
     role: suspect
     title: syn ofiary, zastępca dyrektora hotelu
     age: 29

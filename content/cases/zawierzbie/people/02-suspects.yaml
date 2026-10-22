@@ -1,6 +1,7 @@
 people:
   - id: p_joanna
     name: Joanna Kret
+    portrait: p04.jpg
     role: suspect
     title: kierowniczka hotelu
     age: 41
@@ -151,6 +152,7 @@ people:
 
   - id: p_lisiecki
     name: dr Tomasz Lisiecki
+    portrait: p05.jpg
     role: suspect
     title: stomatolog i inwestor, chciał kupić hotel
     age: 52

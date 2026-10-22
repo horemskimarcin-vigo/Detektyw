@@ -7,7 +7,7 @@ Uruchom: python3 content/cases/zawierzbie/art/cctv.py   (wymaga Pillow i numpy)
 - przemalowuje biały samochód zaparkowany na ulicy w późniejszych klatkach na ciemny
   (żeby nie mylił się z autem, które wyjeżdża o 18:31),
 - nanosi logo firmy na bus i fragment tablicy rejestracyjnej.
-Klatki, których nie ma w art/src, generuje build.py (SVG).
+Stacja paliw i dworek: polskie napisy zamiast angielskich, polskie tablice, opis kamery.
 """
 from pathlib import Path
 
@@ -23,6 +23,12 @@ MONO_CANDIDATES = [
     "/usr/share/fonts/truetype/liberation/LiberationMono-Regular.ttf",
     "C:/Windows/Fonts/consola.ttf",
     "/Library/Fonts/Courier New.ttf",
+]
+SERIF_CANDIDATES = [
+    "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf",
+    "/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf",
+    "C:/Windows/Fonts/times.ttf",
+    "/Library/Fonts/Times New Roman.ttf",
 ]
 SANS_BOLD_CANDIDATES = [
     "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
@@ -134,7 +140,7 @@ def van_logo(img, origin, shear=-0.04, scale=1.0):
     return img.convert("RGB")
 
 
-def erase_text(img, poly, light_text, max_sat=1.0):
+def erase_text(img, poly, light_text, max_sat=1.0, smooth=False):
     """Usuwa napis w wielokącie: piksele napisu zastępuje kolorem tła (mediana z wielokąta)."""
     im = np.asarray(img).astype(float)
     mask = Image.new("L", img.size, 0)
@@ -147,17 +153,25 @@ def erase_text(img, poly, light_text, max_sat=1.0):
     text = ((lum > thr) if light_text else (lum < thr)) & (sat <= max_sat) & inside
     text = np.asarray(Image.fromarray((text * 255).astype("uint8")).filter(ImageFilter.MaxFilter(3))) > 0
     text &= inside
-    bg = np.median(im[inside & ~text], axis=0)
     rng = np.random.default_rng(7)
-    im[text] = bg + rng.normal(0, 2.5, (text.sum(), 3))
+    if smooth:  # tło z gradientem (np. podświetlony baner): wypełnienie rozmytym otoczeniem
+        keep = (~text).astype(float)
+        num = np.stack([np.asarray(Image.fromarray(np.clip(im[..., c] * keep, 0, 255).astype("uint8"))
+                                   .filter(ImageFilter.GaussianBlur(5))).astype(float) for c in range(3)], axis=-1)
+        den = np.asarray(Image.fromarray((keep * 255).astype("uint8")).filter(ImageFilter.GaussianBlur(5))).astype(float) / 255
+        fill = num / np.maximum(den, 0.05)[..., None]
+        im[text] = fill[text] + rng.normal(0, 2.5, (text.sum(), 3))
+    else:
+        bg = np.median(im[inside & ~text], axis=0)
+        im[text] = bg + rng.normal(0, 2.5, (text.sum(), 3))
     out = Image.fromarray(np.clip(im, 0, 255).astype("uint8"))
     soft = Image.fromarray((text * 255).astype("uint8")).filter(ImageFilter.GaussianBlur(1))
     return Image.composite(out.filter(ImageFilter.GaussianBlur(0.8)), out, soft)
 
 
-def text_at(img, center, text, size, fill, angle=0.0, bold=True, blur=0.4):
+def text_at(img, center, text, size, fill, angle=0.0, bold=True, blur=0.4, fonts=None):
     """Napis wyśrodkowany w punkcie, obrócony o kąt (stopnie, przeciwnie do ruchu wskazówek zegara)."""
-    f = font(SANS_BOLD_CANDIDATES if bold else MONO_CANDIDATES, size)
+    f = font(fonts or (SANS_BOLD_CANDIDATES if bold else MONO_CANDIDATES), size)
     w = int(ImageDraw.Draw(Image.new("L", (1, 1))).textlength(text, font=f)) + 8
     layer = Image.new("RGBA", (w, size * 2), (0, 0, 0, 0))
     ImageDraw.Draw(layer).text((w / 2, size), text, font=f, fill=fill, anchor="mm")
@@ -220,6 +234,21 @@ def orlen_shop(img, dy):
     """Szyld „NEWSAGENTS” → „PRASA”."""
     img = erase_text(img, [(484, 134 + dy), (563, 130 + dy), (563, 146 + dy), (484, 150 + dy)], light_text=False)
     return text_at(img, (523, 140 + dy), "PRASA", 12, (30, 30, 34, 235), angle=3)
+
+
+def gala(img, dy, plate_center, plate_angle):
+    """Dworek: baner i opis kamery po polsku, tablica limuzyny."""
+    poly = [(898, 243 + dy), (998, 243 + dy), (998, 290 + dy), (898, 290 + dy)]
+    img = erase_text(img, poly, light_text=False, smooth=True)
+    ink = (62, 46, 36, 225)
+    img = text_at(img, (948, 257 + dy), "GALA", 17, ink, fonts=SERIF_CANDIDATES, blur=0.5)
+    img = text_at(img, (948, 277 + dy), "CHARYTATYWNA", 11, ink, fonts=SERIF_CANDIDATES, blur=0.5)
+    y0 = 650 + dy
+    d = ImageDraw.Draw(img)
+    d.rectangle((1000, y0, 1392, y0 + 38), fill=(10, 10, 10))
+    d.text((1196, y0 + 19), "KAM 2 · PARKING GOŚCI · WYJAZD", font=font(SANS_BOLD_CANDIDATES, 20),
+           fill=(240, 240, 240), anchor="mm")
+    return eu_plate(img, plate_center, (30, 10), "TZA 91530", angle=plate_angle, font_size=7)
 
 
 def save(img, name):
@@ -290,6 +319,14 @@ def build():
     # c09 – kamera K1: pusto
     img = Image.open(SRC / "c09.jpg").convert("RGB")
     frame(img, (42, 0, 1366, 745), "23:20:44", "ORLEN K1", "c09.jpg")
+
+    # c10–c12 – parking dworku (gala)
+    img = gala(Image.open(SRC / "c10.jpg").convert("RGB"), 0, (762, 539), -15)
+    frame(img, (162, 0, 1408, 701), "21:39:44", "DW-PARK", "c10.jpg")
+    img = gala(Image.open(SRC / "c11.jpg").convert("RGB"), 10, (704, 532), -13)
+    frame(img, (142, 0, 1408, 712), "22:11:02", "DW-PARK", "c11.jpg")
+    img = gala(Image.open(SRC / "c12.jpg").convert("RGB"), 9, (704, 528), -13)
+    frame(img, (149, 0, 1408, 708), "23:31:15", "DW-PARK", "c12.jpg")
 
 
 if __name__ == "__main__":

@@ -96,25 +96,25 @@ materials:
       location: "Dworek Zawierzbie, ul. Parkowa 2 – parking gości"
       frames:
         - t: "21:39:44"
-          image: c10.svg
-          caption: Ciemne Audi A6 wyjeżdża z parkingu. Kierowca w smokingu.
+          image: c10.jpg
+          caption: Ciemnoszara limuzyna rusza z parkingu. Za kierownicą mężczyzna w smokingu.
           hotspots:
             - id: h_gala_audi
-              x: 0.50
-              y: 0.58
+              x: 0.61
+              y: 0.70
               r: 0.12
-              label: Audi dr. Lisieckiego
+              label: Limuzyna dr. Lisieckiego
               description: Samochód dr. Tomasza Lisieckiego opuszcza galę o 21:39.
               effects: { set: [lisiecki_left] }
         - t: "22:11:02"
-          image: c11.svg
-          caption: To samo Audi wraca i parkuje w tym samym miejscu.
+          image: c11.jpg
+          caption: Ta sama limuzyna stoi z powrotem na parkingu. Mężczyzna w smokingu odchodzi w stronę dworku.
         - t: "23:31:15"
-          image: c12.svg
-          caption: Goście wychodzą po zakończeniu gali.
+          image: c12.jpg
+          caption: Goście wychodzą po zakończeniu gali i rozchodzą się do samochodów.
       log:
-        - { t: "21:39", text: "Wyjazd: Audi A6 (TZA 9…)" }
-        - { t: "22:11", text: "Wjazd: Audi A6 (TZA 9…)" }
+        - { t: "21:39", text: "Wyjazd: limuzyna, ciemnoszara (TZA 9…)" }
+        - { t: "22:11", text: "Wjazd: limuzyna, ciemnoszara (TZA 9…)" }
 
   - id: m28
     type: press

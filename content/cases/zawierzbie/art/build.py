@@ -11,6 +11,7 @@ from pathlib import Path
 
 OUT = Path(__file__).resolve().parent.parent / "assets"
 OUT.mkdir(exist_ok=True)
+SRC = Path(__file__).resolve().parent / "src"
 
 FONT = "font-family='Helvetica, Arial, sans-serif'"
 HAND = "font-family='Segoe Print, Bradley Hand, Comic Sans MS, cursive'"
@@ -278,6 +279,8 @@ def a05():
 
 # ---------------------------------------------------------------- monitoring
 def cctv(name, label, ts, body, night=True):
+    if (SRC / name.replace(".svg", ".jpg")).exists():
+        return  # klatka ze zdjęcia źródłowego – generuje ją cctv.py
     W, H = 1600, 900
     tint = '#0f1a14' if night else '#2a3a30'
     svg = f"""<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 {W} {H}' width='{W}' height='{H}'>

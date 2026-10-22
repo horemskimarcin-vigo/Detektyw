@@ -143,36 +143,36 @@ materials:
       location: "Hotel „Pod Lipami” – parking przedni"
       frames:
         - t: "18:31:05"
-          image: c01.svg
+          image: c01.jpg
           caption: Z parkingu wyjeżdża biały samochód osobowy.
           hotspots:
             - id: h_cam_fabia
-              x: 0.42
-              y: 0.62
-              r: 0.1
+              x: 0.76
+              y: 0.51
+              r: 0.06
               minZoom: 2
               label: Biała Skoda Fabia, tablica TZA 47…
               description: Samochód kierowniczki hotelu wyjeżdża z przedniego parkingu o 18:31 – zgodnie z jej zeznaniem.
               effects: { set: [fabia_known] }
         - t: "20:05:40"
-          image: c02.svg
+          image: c02.jpg
           caption: Kobieta w kurtce wychodzi wejściem głównym i odchodzi pieszo w stronę ulicy.
         - t: "21:28:12"
-          image: c03.svg
-          caption: Na parking wjeżdża biały bus dostawczy. Kierowca idzie w stronę bramy bocznej.
+          image: c03.jpg
+          caption: Na parkingu stoi biały bus dostawczy. Kierowca w kurtce roboczej idzie w stronę bramy bocznej.
           hotspots:
             - id: h_cam_van
-              x: 0.55
-              y: 0.58
-              r: 0.12
+              x: 0.585
+              y: 0.38
+              r: 0.1
               label: Bus z napisem „BĄK-REMONTY”
               description: Na boku busa logo firmy wykonawcy remontu. Kierowca – mężczyzna w kurtce roboczej.
               effects: { set: [van_seen] }
         - t: "21:41:30"
-          image: c04.svg
-          caption: Bus wyjeżdża z parkingu. W lewym górnym rogu kadru widać zapalone światło w oknie na parterze.
+          image: c04.jpg
+          caption: Bus z zapalonymi światłami rusza z parkingu. Po lewej stronie kadru widać zapalone światło w oknie na parterze.
         - t: "23:58:00"
-          image: c05.svg
+          image: c05.jpg
           caption: Parking pusty. Światło w oknie na parterze nadal się pali.
       log:
         - { t: "18:31", text: "Ruch: pojazd osobowy wyjeżdża" }

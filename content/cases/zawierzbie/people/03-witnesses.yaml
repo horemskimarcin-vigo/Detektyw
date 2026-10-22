@@ -1,6 +1,7 @@
 people:
   - id: p_agnieszka
     name: Agnieszka Wrona
+    portrait: p07.jpg
     role: witness
     title: recepcjonistka (zmiana dzienna do 20:00)
     age: 27
@@ -80,6 +81,7 @@ people:
 
   - id: p_teresa
     name: Teresa Lis
+    portrait: p08.jpg
     role: witness
     title: sprzątaczka, znalazła ciało
     age: 49
@@ -142,6 +144,7 @@ people:
 
   - id: p_halina
     name: Halina Gajda
+    portrait: p09.jpg
     role: witness
     title: sąsiadka Joanny Kret (ul. Słoneczna 12)
     age: 71
@@ -197,6 +200,7 @@ people:
 
   - id: p_zenon
     name: Zenon Mazur
+    portrait: p10.jpg
     role: witness
     title: bezdomny, nocował w altanie hotelu
     age: 58

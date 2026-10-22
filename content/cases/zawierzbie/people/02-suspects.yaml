@@ -225,6 +225,7 @@ people:
 
   - id: p_bak
     name: Krzysztof Bąk
+    portrait: p06.jpg
     role: suspect
     title: wykonawca remontu (BĄK-REMONTY)
     age: 46

@@ -21,6 +21,11 @@ CROPS = {
     "p03.jpg": (875, 35, 430),  # Paweł Ostrowski
     "p04.jpg": (815, 35, 430),  # Joanna Kret
     "p05.jpg": (775, 35, 430),  # dr Tomasz Lisiecki
+    "p06.jpg": (785, 35, 430),  # Krzysztof Bąk
+    "p07.jpg": (765, 40, 430),  # Agnieszka Wrona
+    "p08.jpg": (770, 45, 430),  # Teresa Lis (identyfikator z innym imieniem poza kadrem)
+    "p09.jpg": (785, 45, 430),  # Halina Gajda
+    "p10.jpg": (800, 75, 430),  # Zenon Mazur
 }
 
 

@@ -3,6 +3,8 @@ import { Link, useNavigate, useParams } from 'react-router';
 import type { Attitude, Mood, PersonView, Tone } from '@detektyw/shared';
 import { foundHotspots, useGame, useGamePath } from '../../lib/game';
 import { Confirm, Sheet } from '../../components/Sheet';
+import { TalkingPortrait } from '../../components/TalkingPortrait';
+import { primeSpeech, speakable, useSpeech, useVoiceSetting, wordStarts } from '../../lib/speech';
 
 const ROLE: Record<PersonView['role'], string> = {
   victim: 'Ofiara',
@@ -181,16 +183,76 @@ function Interview({ p }: { p: PersonView }) {
   const [confront, setConfront] = useState(false);
   const logRef = useRef<HTMLDivElement>(null);
   const sessions = [...new Set(iv.transcript.map((t) => t.session))];
+  const voiced = !!(p.voice && p.portrait);
+  const [sound, setSound] = useVoiceSetting();
+  const { state: speech, speak, stop } = useSpeech();
+  const seen = useRef(iv.transcript.length);
 
   useEffect(() => {
     logRef.current?.scrollTo({ top: logRef.current.scrollHeight });
   }, [iv.transcript.length]);
 
+  // Nowe kwestie rozmówcy (także zadane przez partnera w kooperacji) – na głos. Historia przy wejściu – nie.
+  useEffect(() => {
+    const fresh = iv.transcript.slice(seen.current);
+    seen.current = iv.transcript.length;
+    if (!voiced || !fresh.length) return;
+    const text = fresh.map(speakable).filter(Boolean).join(' ');
+    if (text) void speak(text, p.voice!, sound);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [iv.transcript.length]);
+
+  const lastSpoken = [...iv.transcript].reverse().map(speakable).find(Boolean) ?? '';
   return (
-    <section className="stack interview" aria-labelledby="iv-head">
+    <section
+      className="stack interview"
+      aria-labelledby="iv-head"
+      onPointerDownCapture={voiced && sound ? primeSpeech : undefined}
+    >
       <h3 id="iv-head" className="small-heading">
         Przesłuchanie
       </h3>
+      {voiced && (iv.inSession || speech.talking) && (
+        <div className="iv-stage">
+          <TalkingPortrait
+            src={p.portrait!}
+            mouth={p.voice!.mouth}
+            talking={speech.talking}
+            word={speech.word}
+            size={200}
+            label={`${p.name}${speech.talking ? ' mówi' : ''}`}
+          />
+          <div className="iv-stage-side">
+            <Subtitle text={speech.text} word={speech.word} />
+            {speech.talking && !speech.audible && sound && (
+              <p className="small muted">
+                Przeglądarka nie ma polskiego głosu – napisy bez dźwięku.
+              </p>
+            )}
+            <div className="toolbar">
+              <button
+                className="chip"
+                aria-pressed={sound}
+                onClick={() => setSound(!sound)}
+                title="Głos postaci (synteza mowy przeglądarki)"
+              >
+                {sound ? '🔊 Głos: wł.' : '🔇 Głos: wył.'}
+              </button>
+              {speech.talking ? (
+                <button className="chip" onClick={stop}>
+                  ⏹ Przerwij
+                </button>
+              ) : (
+                lastSpoken && (
+                  <button className="chip" onClick={() => void speak(lastSpoken, p.voice!, sound)}>
+                    ↻ Powtórz
+                  </button>
+                )
+              )}
+            </div>
+          </div>
+        </div>
+      )}
       <div className="interview-status">
         <span>
           Nastrój: <strong>{MOOD[iv.mood]}</strong>
@@ -322,6 +384,24 @@ function Interview({ p }: { p: PersonView }) {
         <p className="muted">{iv.unavailableReason}</p>
       )}
     </section>
+  );
+}
+
+/** Napisy: słowa już wypowiedziane wyraźne, kolejne przygaszone. */
+function Subtitle({ text, word }: { text: string; word: number }) {
+  if (!text)
+    return (
+      <p className="iv-subtitle muted small">
+        Zadaj pytanie – odpowiedź usłyszysz i przeczytasz tutaj.
+      </p>
+    );
+  const starts = wordStarts(text);
+  const spoken = word >= starts.length ? text.length : (starts[word + 1] ?? text.length);
+  return (
+    <p className="iv-subtitle" aria-hidden>
+      <span>{text.slice(0, spoken)}</span>
+      <span className="iv-subtitle-rest">{text.slice(spoken)}</span>
+    </p>
   );
 }
 

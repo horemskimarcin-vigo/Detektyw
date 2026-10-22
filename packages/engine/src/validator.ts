@@ -156,6 +156,7 @@ export function validateCase(def: CaseDef, opts: ValidateOptions = {}): Validati
     if (p.portrait && opts.assets && !opts.assets.includes(p.portrait)) {
       errors.push(`osoba ${p.id}: brak pliku portretu „${p.portrait}”.`);
     }
+    if (p.voice && !p.portrait) errors.push(`osoba ${p.id}: głos wymaga portretu (animacja ust).`);
     const iv = p.interview;
     if (!iv) continue;
     checkCond(iv.availableWhen, `przesłuchanie ${p.id}`);

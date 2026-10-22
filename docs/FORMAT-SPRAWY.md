@@ -108,6 +108,12 @@ Monitoring (`cctv`) ma klatki o proporcjach 16:9 (`frames`) i dziennik (`log`). 
 - id: t_baker
   name: Jan Piekarz
   role: witness # victim | suspect | witness | other
+  portrait: p01.jpg # kwadratowy portret w assets/
+  voice: # opcjonalnie: głos i mówiący portret w przesłuchaniu
+    gender: male # female | male – wybór polskiego głosu przeglądarki
+    pitch: 0.9 # wysokość głosu (0.5–2)
+    rate: 1 # tempo mowy (0.5–2)
+    mouth: { x: 0.49, y: 0.53, w: 0.12, chin: 0.11 } # usta na portrecie (ułamki boku)
   knownWhen: <warunek> # domyślnie znana od startu
   facts: [{ text: '…', when: <warunek> }]
   interview:
@@ -138,6 +144,11 @@ Monitoring (`cctv`) ma klatki o proporcjach 16:9 (`frames`) i dziennik (`log`). 
 Ton pytania zmienia stres i zaufanie (spokojnie +2/+1, empatycznie −6/+5, naciskając +14×wrażliwość/−6).
 Odpowiedź **wymijająca** (gdy istnieje lepsza, warunkowa wersja z efektem) nie zamyka pytania, więc gracz może do niego wrócić.
 Między rozmowami stres opada o 25 w stronę poziomu wyjściowego.
+
+**Głos (`voice`).** Kwestie rozmówcy czyta synteza mowy przeglądarki (polskie głosy systemu), a portret porusza ustami.
+Czytana jest tylko wypowiedź po pauzie dialogowej („– …”); narracja przed nią zostaje w protokole.
+`mouth`: `x`, `y` – środek linii między wargami, `w` – szerokość ust, `chin` – odległość od linii ust do brody,
+wszystko jako ułamek boku portretu. Bez polskiego głosu w systemie gra pokazuje napisy z animacją, bez dźwięku.
 
 ## Decyzje
 

@@ -226,6 +226,7 @@ people:
   - id: p_bak
     name: Krzysztof Bąk
     portrait: p06.jpg
+    voice: { gender: male, pitch: 0.8, rate: 1.0, mouth: { x: 0.488, y: 0.529, w: 0.12, chin: 0.115 } }
     role: suspect
     title: wykonawca remontu (BĄK-REMONTY)
     age: 46

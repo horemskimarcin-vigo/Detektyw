@@ -205,6 +205,7 @@ export function project(
         age: p.age,
         bio: p.bio,
         portrait: p.portrait ? ctx.assetUrl(p.portrait) : undefined,
+        voice: p.voice,
         facts: p.facts.filter((f) => evaluate(f.when, ectx)).map((f) => f.text),
         relations: p.relations
           .filter((r) => state.knownPeople.includes(r.person) && evaluate(r.when, ectx))

@@ -1541,3 +1541,66 @@ th {
     padding: 1rem 0.85rem;
   }
 }
+
+/* przesłuchanie: mówiący portret i napisy */
+.iv-stage {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+  padding: 0.75rem;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+}
+.iv-stage-side {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.talking-frame {
+  flex-shrink: 0;
+  max-width: 45vw;
+  max-height: 45vw;
+  overflow: hidden;
+  border-radius: 14px;
+  background: var(--bg);
+}
+.talking {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 85%;
+}
+.talking img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  user-select: none;
+}
+.talking-mouth {
+  position: absolute;
+  border-radius: 50% / 30% 30% 70% 70%;
+  background: radial-gradient(ellipse closest-side at 50% 40%, #120707 45%, rgba(70, 30, 28, 0.85) 75%, rgba(110, 55, 50, 0) 100%);
+}
+.iv-subtitle {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.45;
+  min-height: 3em;
+}
+.iv-subtitle-rest {
+  opacity: 0.38;
+}
+@media (max-width: 520px) {
+  .iv-stage {
+    flex-direction: column;
+    align-items: center;
+  }
+  .iv-stage-side {
+    width: 100%;
+  }
+}

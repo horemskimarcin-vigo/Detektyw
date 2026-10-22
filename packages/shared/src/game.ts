@@ -179,6 +179,14 @@ export interface TranscriptEntry {
   text: string;
 }
 
+export interface PersonVoice {
+  gender: 'female' | 'male';
+  pitch: number;
+  rate: number;
+  /** Usta na portrecie (ułamki boku): środek linii ust, szerokość ust, odległość do brody. */
+  mouth: { x: number; y: number; w: number; chin: number };
+}
+
 export interface PersonView {
   id: string;
   name: string;
@@ -187,6 +195,7 @@ export interface PersonView {
   age?: number;
   bio: string;
   portrait?: string;
+  voice?: PersonVoice;
   facts: string[];
   relations: { personId: string; label: string }[];
   interview?: {

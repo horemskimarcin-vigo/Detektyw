@@ -41,17 +41,27 @@ test('reset hasła przez link z e-maila', async ({ page, request }) => {
   await page.getByLabel('Hasło', { exact: true }).fill(PASSWORD);
   await page.getByLabel(/ukończone 18 lat/).check();
   await page.getByRole('button', { name: 'Załóż konto' }).click();
+  await expect(page.getByRole('heading', { name: 'Moje sprawy' })).toBeVisible();
   await page.getByRole('link', { name: 'Profil' }).click();
   await page.getByRole('button', { name: 'Wyloguj' }).click();
 
   await page.getByRole('link', { name: 'Nie pamiętasz hasła?' }).click();
+  await expect(page.getByRole('heading', { name: 'Reset hasła' })).toBeVisible();
   await page.getByLabel('E-mail').fill(email);
+  await expect(page.getByLabel('E-mail')).toHaveValue(email);
   await page.getByRole('button', { name: 'Wyślij link' }).click();
   await expect(page.getByText(/wiadomość z linkiem jest już w drodze/)).toBeVisible();
 
-  const outbox = await (await request.get('/api/test/outbox')).json();
-  const mail = outbox.mails.findLast((m: { to: string }) => m.to === email);
-  const link = mail.text.match(/http\S+reset-hasla\/\S+/)[0];
+  // e-mail wychodzi asynchronicznie po odpowiedzi serwera – czekamy, aż trafi do skrzynki testowej
+  let mail: { to: string; text: string } | undefined;
+  await expect
+    .poll(async () => {
+      const outbox = await (await request.get('/api/test/outbox')).json();
+      mail = outbox.mails.findLast((m: { to: string }) => m.to === email);
+      return !!mail;
+    })
+    .toBe(true);
+  const link = mail!.text.match(/http\S+reset-hasla\/\S+/)![0];
   await page.goto(new URL(link).pathname);
   await page.getByLabel('Nowe hasło').fill('zupelnie-nowe-456');
   await page.getByRole('button', { name: 'Ustaw nowe hasło' }).click();

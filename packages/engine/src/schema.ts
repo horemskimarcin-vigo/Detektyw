@@ -296,6 +296,17 @@ export const personSchema = z
     age: z.number().int().optional(),
     bio: z.string(),
     portrait: z.string().optional(),
+    /** Głos i animacja portretu w przesłuchaniu (synteza mowy w przeglądarce gracza). */
+    voice: z
+      .object({
+        gender: z.enum(['female', 'male']),
+        pitch: z.number().min(0.5).max(2).default(1),
+        rate: z.number().min(0.5).max(2).default(1),
+        /** Usta na portrecie, w ułamkach boku: środek linii ust (x, y), szerokość ust, odległość linii ust od brody. */
+        mouth: z.object({ x: z.number(), y: z.number(), w: z.number(), chin: z.number() }).strict(),
+      })
+      .strict()
+      .optional(),
     knownWhen: condSchema.optional(),
     facts: z
       .array(z.object({ text: z.string(), when: condSchema.optional() }).strict())

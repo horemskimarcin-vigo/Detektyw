@@ -26,6 +26,8 @@ CROPS = {
     "p08.jpg": (770, 45, 430),  # Teresa Lis (identyfikator z innym imieniem poza kadrem)
     "p09.jpg": (785, 45, 430),  # Halina Gajda
     "p10.jpg": (800, 75, 430),  # Zenon Mazur
+    "p11.jpg": (785, 35, 430),  # Ewa Dziedzic
+    "p12.jpg": (780, 35, 430),  # Marian Kołek
 }
 
 

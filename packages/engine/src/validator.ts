@@ -1,4 +1,5 @@
-import type { GameAction } from '@detektyw/shared';
+import { voiceFile, type GameAction } from '@detektyw/shared';
+import { voiceLines } from './voice-lines.js';
 import { indexCase } from './case-index.js';
 import { condRefs } from './conditions.js';
 import { applyAction, EngineError, startGame } from './engine.js';
@@ -157,6 +158,17 @@ export function validateCase(def: CaseDef, opts: ValidateOptions = {}): Validati
       errors.push(`osoba ${p.id}: brak pliku portretu „${p.portrait}”.`);
     }
     if (p.voice && !p.portrait) errors.push(`osoba ${p.id}: głos wymaga portretu (animacja ust).`);
+    if (p.voice?.elevenlabs && opts.assets) {
+      const lines = voiceLines(p);
+      const missing = lines.filter((l) => !opts.assets!.includes(voiceFile(p.id, l))).length;
+      if (missing)
+        warnings.push(
+          `osoba ${p.id}: brak ${missing} z ${lines.length} nagrań kwestii – uruchom „npm run voices”.`,
+        );
+    }
+    for (const f of p.video ? [p.video.idle, p.video.talk] : [])
+      if (opts.assets && !opts.assets.includes(f))
+        errors.push(`osoba ${p.id}: brak pliku animacji „${f}”.`);
     const iv = p.interview;
     if (!iv) continue;
     checkCond(iv.availableWhen, `przesłuchanie ${p.id}`);

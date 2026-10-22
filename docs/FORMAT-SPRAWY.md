@@ -114,6 +114,12 @@ Monitoring (`cctv`) ma klatki o proporcjach 16:9 (`frames`) i dziennik (`log`). 
     pitch: 0.9 # wysokość głosu (0.5–2)
     rate: 1 # tempo mowy (0.5–2)
     mouth: { x: 0.49, y: 0.53, w: 0.12, chin: 0.11 } # usta na portrecie (ułamki boku)
+    elevenlabs: # opcjonalnie: nagrania kwestii (npm run voices)
+      voiceId: abc123 # ID głosu z ElevenLabs
+      stability: 0.45 # 0–1, mniej = więcej emocji
+      similarity: 0.8
+      style: 0.25
+  video: { idle: p01-cisza.mp4, talk: p01-mowa.mp4 } # opcjonalnie: animowana postać (pętle)
   knownWhen: <warunek> # domyślnie znana od startu
   facts: [{ text: '…', when: <warunek> }]
   interview:
@@ -149,6 +155,17 @@ Między rozmowami stres opada o 25 w stronę poziomu wyjściowego.
 Czytana jest tylko wypowiedź po pauzie dialogowej („– …”); narracja przed nią zostaje w protokole.
 `mouth`: `x`, `y` – środek linii między wargami, `w` – szerokość ust, `chin` – odległość od linii ust do brody,
 wszystko jako ułamek boku portretu. Bez polskiego głosu w systemie gra pokazuje napisy z animacją, bez dźwięku.
+
+**Nagrania (`voice.elevenlabs`).** `npm run voices` nagrywa przez ElevenLabs każdą kwestię postaci
+(klucz `ELEVENLABS_API_KEY` w `.env`) do `assets/v-<osoba>-<skrót>.mp3`. Skrót liczony jest z tekstu kwestii,
+więc po zmianie tekstu wystarczy uruchomić skrypt ponownie – nagra tylko zmienione kwestie
+(`--prune` usuwa nieaktualne pliki, `--dry` tylko liczy znaki). Skrypt nie wypisuje treści kwestii.
+Serwer wydaje nagranie dopiero wtedy, gdy kwestia padła w rozmowie. Walidator ostrzega o brakujących nagraniach.
+Gra odtwarza nagranie, a gdy go brak – używa syntezy mowy przeglądarki.
+
+**Animacje (`video`).** Dwie zapętlone animacje w tym samym kadrze: `idle` (cisza – oddech, mruganie, usta zamknięte)
+i `talk` (mówienie). Podczas kwestii widać pętlę mówienia, potem płynny powrót do ciszy. Kwadrat (np. 720×720),
+5–8 s, bez dźwięku; MP4 (H.264) albo WebM. Portret służy jako obraz zastępczy, zanim animacja się wczyta.
 
 ## Decyzje
 

@@ -24,7 +24,8 @@
     "check:bundle": "tsx tools/check-bundle.ts",
     "check": "npm run typecheck && npm test && npm run validate && npm run build && npm run check:bundle",
     "playthrough": "tsx tools/playthrough.ts",
-    "play": "node tools/play.mjs"
+    "play": "node tools/play.mjs",
+    "voices": "tsx tools/voices.ts"
   },
   "devDependencies": {
     "@detektyw/engine": "*",

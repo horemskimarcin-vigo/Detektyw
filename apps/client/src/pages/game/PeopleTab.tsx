@@ -3,8 +3,16 @@ import { Link, useNavigate, useParams } from 'react-router';
 import type { Attitude, Mood, PersonView, Tone } from '@detektyw/shared';
 import { foundHotspots, useGame, useGamePath } from '../../lib/game';
 import { Confirm, Sheet } from '../../components/Sheet';
+import { speakable, type TranscriptEntry } from '@detektyw/shared';
 import { TalkingPortrait } from '../../components/TalkingPortrait';
-import { primeSpeech, speakable, useSpeech, useVoiceSetting, wordStarts } from '../../lib/speech';
+import { VideoAvatar } from '../../components/VideoAvatar';
+import {
+  primeSpeech,
+  useSpeech,
+  useVoiceSetting,
+  wordStarts,
+  type SpeechPart,
+} from '../../lib/speech';
 
 const ROLE: Record<PersonView['role'], string> = {
   victim: 'Ofiara',
@@ -183,7 +191,8 @@ function Interview({ p }: { p: PersonView }) {
   const [confront, setConfront] = useState(false);
   const logRef = useRef<HTMLDivElement>(null);
   const sessions = [...new Set(iv.transcript.map((t) => t.session))];
-  const voiced = !!(p.voice && p.portrait);
+  const voiced = !!(p.voice && (p.portrait || p.video));
+  const toPart = (t: TranscriptEntry): SpeechPart => ({ text: speakable(t), audio: t.audio });
   const [sound, setSound] = useVoiceSetting();
   const { state: speech, speak, stop } = useSpeech();
   const seen = useRef(iv.transcript.length);
@@ -197,12 +206,15 @@ function Interview({ p }: { p: PersonView }) {
     const fresh = iv.transcript.slice(seen.current);
     seen.current = iv.transcript.length;
     if (!voiced || !fresh.length) return;
-    const text = fresh.map(speakable).filter(Boolean).join(' ');
-    if (text) void speak(text, p.voice!, sound);
+    const parts = fresh.map(toPart).filter((x) => x.text);
+    if (parts.length) void speak(parts, p.voice!, sound);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [iv.transcript.length]);
 
-  const lastSpoken = [...iv.transcript].reverse().map(speakable).find(Boolean) ?? '';
+  const lastSpoken = [...iv.transcript]
+    .reverse()
+    .map(toPart)
+    .find((x) => x.text);
   return (
     <section
       className="stack interview"
@@ -214,19 +226,30 @@ function Interview({ p }: { p: PersonView }) {
       </h3>
       {voiced && (iv.inSession || speech.talking) && (
         <div className="iv-stage">
-          <TalkingPortrait
-            src={p.portrait!}
-            mouth={p.voice!.mouth}
-            talking={speech.talking}
-            word={speech.word}
-            size={200}
-            label={`${p.name}${speech.talking ? ' mówi' : ''}`}
-          />
+          {p.video ? (
+            <VideoAvatar
+              idle={p.video.idle}
+              talk={p.video.talk}
+              poster={p.portrait}
+              talking={speech.talking}
+              size={200}
+              label={`${p.name}${speech.talking ? ' mówi' : ''}`}
+            />
+          ) : (
+            <TalkingPortrait
+              src={p.portrait!}
+              mouth={p.voice!.mouth}
+              talking={speech.talking}
+              word={speech.word}
+              size={200}
+              label={`${p.name}${speech.talking ? ' mówi' : ''}`}
+            />
+          )}
           <div className="iv-stage-side">
             <Subtitle text={speech.text} word={speech.word} />
             {speech.talking && !speech.audible && sound && (
               <p className="small muted">
-                Przeglądarka nie ma polskiego głosu – napisy bez dźwięku.
+                Brak nagrania i polskiego głosu w przeglądarce – napisy bez dźwięku.
               </p>
             )}
             <div className="toolbar">
@@ -244,7 +267,10 @@ function Interview({ p }: { p: PersonView }) {
                 </button>
               ) : (
                 lastSpoken && (
-                  <button className="chip" onClick={() => void speak(lastSpoken, p.voice!, sound)}>
+                  <button
+                    className="chip"
+                    onClick={() => void speak([lastSpoken], p.voice!, sound)}
+                  >
                     ↻ Powtórz
                   </button>
                 )

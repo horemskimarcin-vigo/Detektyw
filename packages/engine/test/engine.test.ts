@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { project, EngineError } from '../src/index.js';
+import { speakable, voiceFile } from '@detektyw/shared';
+import { canAccessAsset, project, EngineError } from '../src/index.js';
 import { act, def, newGame, projCtx, run } from './helpers.js';
 
 describe('start i materiały', () => {
@@ -344,5 +345,59 @@ describe('tablica i oś czasu', () => {
     expect(s.timeline[0]!.refs).toEqual(['t_m_testimony_guard']);
     s = act(s, { type: 'timeline_move', entryId: s.timeline[1]!.id, direction: -1 }).state;
     expect(s.timeline[0]!.label).toBe('alarm wyłączony');
+  });
+});
+
+describe('nagrania kwestii', () => {
+  const file = voiceFile('t_curator', 'O pensję. To nie tajemnica.');
+  const asked = () => {
+    const s = act(newGame(), { type: 'start_interview', personId: 't_curator' }).state;
+    return act(s, {
+      type: 'ask',
+      personId: 't_curator',
+      questionId: 't_q_curator_fight',
+      tone: 'calm',
+    }).state;
+  };
+
+  it('udostępnia nagranie dopiero, gdy kwestia padła w rozmowie', () => {
+    const before = act(newGame(), { type: 'start_interview', personId: 't_curator' }).state;
+    expect(canAccessAsset(def, before, 1, file)).toBe(false);
+    expect(canAccessAsset(def, asked(), 1, file)).toBe(true);
+    // nagranie innej osoby o tym samym skrócie – nie
+    expect(canAccessAsset(def, asked(), 1, file.replace('t_curator', 't_baker'))).toBe(false);
+  });
+
+  it('dołącza adres nagrania do wpisu protokołu tylko, gdy plik istnieje', () => {
+    const s = asked();
+    const entries = (has: boolean) =>
+      project(def, s, 1, { ...projCtx, hasAsset: () => has }).people.find(
+        (p) => p.id === 't_curator',
+      )!.interview!.transcript;
+    expect(entries(true).find((t) => t.kind === 'answer')?.audio).toBe(`/assets/${file}`);
+    expect(entries(true).find((t) => t.kind === 'question')?.audio).toBeUndefined();
+    expect(entries(false).some((t) => t.audio)).toBe(false);
+  });
+
+  it('wysyła klientowi głos bez ustawień ElevenLabs', () => {
+    const p = project(def, newGame(), 1, projCtx).people.find((x) => x.id === 't_curator')!;
+    expect(p.voice).toEqual({
+      gender: 'female',
+      pitch: 1,
+      rate: 1,
+      mouth: { x: 0.5, y: 0.6, w: 0.1, chin: 0.1 },
+    });
+  });
+});
+
+describe('część mówiona kwestii', () => {
+  it('pomija narrację przed pauzą dialogową i pytania gracza', () => {
+    expect(speakable({ kind: 'opening', text: 'Patrzy na zegarek. – Słucham.' })).toBe('Słucham.');
+    expect(speakable({ kind: 'opening', text: 'Patrzy na zegarek.' })).toBe('');
+    expect(speakable({ kind: 'answer', text: '– Nie wiem – mówi – nic.' })).toBe(
+      'Nie wiem – mówi – nic.',
+    );
+    expect(speakable({ kind: 'answer', text: '**Tak.**' })).toBe('Tak.');
+    expect(speakable({ kind: 'question', text: 'Gdzie pani była?' })).toBe('');
   });
 });

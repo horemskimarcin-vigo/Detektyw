@@ -1,6 +1,7 @@
 import type { FastifyInstance } from 'fastify';
 import { desc, eq, inArray } from 'drizzle-orm';
 import { createReadStream } from 'node:fs';
+import { stat } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import { createGameRequest, type GameListItem } from '@detektyw/shared';
@@ -14,6 +15,9 @@ const MIME: Record<string, string> = {
   '.png': 'image/png',
   '.jpg': 'image/jpeg',
   '.webp': 'image/webp',
+  '.mp3': 'audio/mpeg',
+  '.mp4': 'video/mp4',
+  '.webm': 'video/webm',
 };
 
 export default async function gameRoutes(app: FastifyInstance) {
@@ -134,7 +138,24 @@ export default async function gameRoutes(app: FastifyInstance) {
     reply.header('Content-Type', MIME[path.extname(file)] ?? 'application/octet-stream');
     reply.header('Cache-Control', 'private, max-age=86400');
     reply.header('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'");
-    return reply.send(createReadStream(path.join(asset.dir, asset.file)));
+    // Zakresy bajtów – wymagane przez Safari do odtwarzania audio i wideo
+    const full = path.join(asset.dir, asset.file);
+    const { size } = await stat(full);
+    reply.header('Accept-Ranges', 'bytes');
+    const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range ?? '');
+    if (range && (range[1] || range[2])) {
+      const start = range[1] ? Number(range[1]) : Math.max(0, size - Number(range[2]));
+      const end = range[1] && range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+      if (start >= size || start > end) {
+        reply.header('Content-Range', `bytes */${size}`);
+        return reply.status(416).send();
+      }
+      reply.header('Content-Range', `bytes ${start}-${end}/${size}`);
+      reply.header('Content-Length', end - start + 1);
+      return reply.status(206).send(createReadStream(full, { start, end }));
+    }
+    reply.header('Content-Length', size);
+    return reply.send(createReadStream(full));
   });
 
   app.get('/games/:id/chat', async (req) => {

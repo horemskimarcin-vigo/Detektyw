@@ -9,6 +9,7 @@ import type {
   Mood,
   PersonView,
 } from '@detektyw/shared';
+import { speakable, voiceFile, voiceFilePerson } from '@detektyw/shared';
 import { indexCase } from './case-index.js';
 import { evaluate } from './conditions.js';
 import {
@@ -35,6 +36,8 @@ export interface ProjectionCtx {
   inviteCode?: string;
   /** Adres zasobu graficznego (serwer sprawdza uprawnienia przy pobieraniu). */
   assetUrl: (file: string) => string;
+  /** Czy sprawa ma dany plik (np. nagranie kwestii); domyślnie – nie. */
+  hasAsset?: (file: string) => boolean;
 }
 
 const WEEKDAYS = ['nd', 'pn', 'wt', 'śr', 'cz', 'pt', 'sb'];
@@ -205,7 +208,16 @@ export function project(
         age: p.age,
         bio: p.bio,
         portrait: p.portrait ? ctx.assetUrl(p.portrait) : undefined,
-        voice: p.voice,
+        voice: p.voice && {
+          gender: p.voice.gender,
+          pitch: p.voice.pitch,
+          rate: p.voice.rate,
+          mouth: p.voice.mouth,
+        },
+        video: p.video && {
+          idle: ctx.assetUrl(p.video.idle),
+          talk: ctx.assetUrl(p.video.talk),
+        },
         facts: p.facts.filter((f) => evaluate(f.when, ectx)).map((f) => f.text),
         relations: p.relations
           .filter((r) => state.knownPeople.includes(r.person) && evaluate(r.when, ectx))
@@ -230,7 +242,11 @@ export function project(
                       topic: q.topic,
                     }))
                   : [],
-                transcript: i.transcript,
+                transcript: i.transcript.map((t) => {
+                  const spoken = p.voice ? speakable(t) : '';
+                  const file = spoken && voiceFile(p.id, spoken);
+                  return file && ctx.hasAsset?.(file) ? { ...t, audio: ctx.assetUrl(file) } : t;
+                }),
               }
             : undefined,
       };
@@ -342,6 +358,13 @@ export function canAccessAsset(
   seat: number,
   file: string,
 ): boolean {
+  // Nagranie kwestii – tylko gdy ta kwestia już padła w protokole rozmowy
+  const speaker = voiceFilePerson(file);
+  if (speaker)
+    return (state.interviews[speaker]?.transcript ?? []).some((t) => {
+      const spoken = speakable(t);
+      return !!spoken && voiceFile(speaker, spoken) === file;
+    });
   const ref = indexCase(def).assets.get(file);
   if (!ref) return false;
   return (

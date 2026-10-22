@@ -81,6 +81,19 @@ ANTHROPIC_API_KEY=sk-ant-...
 ASSISTANT_LLM_MAX_PER_HOUR=30   # limit zapytań na grę na godzinę
 ```
 
+### Opcjonalnie: nagrane głosy postaci (ElevenLabs)
+
+Postacie z ustawionym głosem ElevenLabs (`voice.elevenlabs.voiceId` w danych sprawy) mogą mówić nagranymi głosami.
+Nagrania tworzy się raz, na swoim komputerze:
+
+```
+ELEVENLABS_API_KEY=...          # w pliku .env (nie wysyłaj go na GitHuba)
+npm run voices -- --dry         # policz znaki (bez kosztów)
+npm run voices                  # nagraj brakujące kwestie
+```
+
+Skrypt nie wypisuje treści kwestii, więc nie zdradza sprawy. Bez nagrań gra używa głosu przeglądarki.
+
 ---
 
 ## Dla programistów

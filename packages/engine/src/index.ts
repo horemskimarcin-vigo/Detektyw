@@ -7,3 +7,4 @@ export * from './hints.js';
 export * from './projection.js';
 export * from './solver.js';
 export * from './validator.js';
+export * from './voice-lines.js';

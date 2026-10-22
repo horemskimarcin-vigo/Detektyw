@@ -177,6 +177,8 @@ export interface TranscriptEntry {
   kind: 'opening' | 'question' | 'confront' | 'answer' | 'system';
   tone?: Tone;
   text: string;
+  /** Nagranie kwestii (gdy sprawa je ma). */
+  audio?: string;
 }
 
 export interface PersonVoice {
@@ -196,6 +198,8 @@ export interface PersonView {
   bio: string;
   portrait?: string;
   voice?: PersonVoice;
+  /** Animacje postaci: pętla w ciszy i pętla mówienia (ten sam kadr). */
+  video?: { idle: string; talk: string };
   facts: string[];
   relations: { personId: string; label: string }[];
   interview?: {

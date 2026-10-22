@@ -35,11 +35,17 @@ export class Agent {
     }
   }
 
-  async request(method: string, url: string, body?: unknown, opts: { csrf?: boolean } = {}) {
+  async request(
+    method: string,
+    url: string,
+    body?: unknown,
+    opts: { csrf?: boolean; headers?: Record<string, string> } = {},
+  ) {
     if (!this.cookies.has(CSRF_COOKIE) && method !== 'GET')
       await this.request('GET', '/api/auth/me');
     const headers: Record<string, string> = {
       cookie: [...this.cookies].map(([k, v]) => `${k}=${v}`).join('; '),
+      ...opts.headers,
     };
     if (opts.csrf !== false && this.cookies.has(CSRF_COOKIE))
       headers[CSRF_HEADER] = this.cookies.get(CSRF_COOKIE)!;
@@ -56,8 +62,8 @@ export class Agent {
       headers: res.headers,
     };
   }
-  get(url: string) {
-    return this.request('GET', url);
+  get(url: string, headers?: Record<string, string>) {
+    return this.request('GET', url, undefined, { headers });
   }
   post(url: string, body?: unknown, opts?: { csrf?: boolean }) {
     return this.request('POST', url, body ?? {}, opts);

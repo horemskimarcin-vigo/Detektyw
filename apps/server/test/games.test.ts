@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { Agent, makeApp, registerUser } from './helpers.js';
 import { safeOutput } from '../src/services/assistant-llm.js';
+import { voiceFile } from '@detektyw/shared';
 
 let ctx: Awaited<ReturnType<typeof makeApp>>;
 beforeAll(async () => {
@@ -101,6 +102,34 @@ describe('rozgrywka przez API', () => {
     const b = new Agent(ctx.app);
     await registerUser(b, 'obcy2@example.com');
     expect((await b.get(`/api/games/${id}/assets/t_photo.svg`)).status).toBe(404);
+  });
+
+  it('wydaje nagranie kwestii dopiero po pytaniu, także we fragmentach (Range)', async () => {
+    const a = new Agent(ctx.app);
+    await registerUser(a, 'glos@example.com');
+    const id = await newGame(a);
+    const file = voiceFile('t_curator', 'O pensję. To nie tajemnica.');
+    expect((await a.get(`/api/games/${id}/assets/${file}`)).status).toBe(404);
+    await act(a, id, { type: 'start_interview', personId: 't_curator' });
+    const r = await act(a, id, {
+      type: 'ask',
+      personId: 't_curator',
+      questionId: 't_q_curator_fight',
+      tone: 'calm',
+    });
+    const answer = r.body.view.people
+      .find((p: { id: string }) => p.id === 't_curator')
+      .interview.transcript.find((t: { kind: string }) => t.kind === 'answer');
+    expect(answer.audio).toBe(`/api/games/${id}/assets/${file}`);
+    const whole = await a.get(answer.audio);
+    expect(whole.status).toBe(200);
+    expect(whole.headers['content-type']).toBe('audio/mpeg');
+    expect(whole.headers['accept-ranges']).toBe('bytes');
+    const part = await a.get(answer.audio, { range: 'bytes=100-199' });
+    expect(part.status).toBe(206);
+    expect(part.headers['content-range']).toBe('bytes 100-199/4096');
+    expect(part.headers['content-length']).toBe('100');
+    expect((await a.get(answer.audio, { range: 'bytes=9000-' })).status).toBe(416);
   });
 
   it('zapisuje zakończenie w kolekcji gracza', async () => {

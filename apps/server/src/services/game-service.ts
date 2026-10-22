@@ -183,6 +183,7 @@ export class GameService {
       collection: { unlocked: collected?.n ?? 0, total: entry.def.endings.length },
       inviteCode: game.inviteCode ?? undefined,
       assetUrl: (file) => `/api/games/${game.id}/assets/${encodeURIComponent(file)}`,
+      hasAsset: (file) => entry.assets.has(file),
     });
   }
 

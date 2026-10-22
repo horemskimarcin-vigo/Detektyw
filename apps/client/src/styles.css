@@ -1584,7 +1584,12 @@ th {
 .talking-mouth {
   position: absolute;
   border-radius: 50% / 30% 30% 70% 70%;
-  background: radial-gradient(ellipse closest-side at 50% 40%, #120707 45%, rgba(70, 30, 28, 0.85) 75%, rgba(110, 55, 50, 0) 100%);
+  background: radial-gradient(
+    ellipse closest-side at 50% 40%,
+    #120707 45%,
+    rgba(70, 30, 28, 0.85) 75%,
+    rgba(110, 55, 50, 0) 100%
+  );
 }
 .iv-subtitle {
   margin: 0;
@@ -1603,4 +1608,21 @@ th {
   .iv-stage-side {
     width: 100%;
   }
+}
+.video-avatar {
+  position: relative;
+}
+.video-avatar video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.video-avatar video + video {
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.video-avatar video.on {
+  opacity: 1;
 }

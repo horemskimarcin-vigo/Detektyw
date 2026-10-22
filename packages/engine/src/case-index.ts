@@ -20,7 +20,7 @@ export interface CaseIndex {
   decisions: Map<string, DecisionDef>;
   hotspots: Map<string, HotspotRef>;
   questions: Map<string, { personId: string; def: QuestionDef }>;
-  /** Plik grafiki → materiały/osoby, które go używają. */
+  /** Plik grafiki lub animacji → materiały/osoby, które go używają (nagrania kwestii – osobno). */
   assets: Map<string, { materials: string[]; people: string[] }>;
 }
 
@@ -56,6 +56,7 @@ export function indexCase(def: CaseDef): CaseIndex {
   }
   for (const p of def.people) {
     if (p.portrait) asset(p.portrait).people.push(p.id);
+    if (p.video) for (const f of [p.video.idle, p.video.talk]) asset(f).people.push(p.id);
     for (const q of p.interview?.questions ?? [])
       idx.questions.set(q.id, { personId: p.id, def: q });
   }
